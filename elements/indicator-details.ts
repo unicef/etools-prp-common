@@ -33,8 +33,8 @@ import {GenericObject} from '../typings/globals.types';
 import Endpoints from '../endpoints';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {buttonsStyles} from '../styles/buttons-styles';
-import {disaggregationsFetch} from '../../redux/actions/disaggregations';
-import {currentProgrammeDocument} from '../../redux/selectors/programmeDocuments';
+import {disaggregationsFetch} from '../redux/actions/disaggregations';
+import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
 import {RootState} from '../typings/redux.types';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 

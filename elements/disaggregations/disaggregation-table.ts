@@ -15,7 +15,7 @@ import {disaggregationTableStyles} from '../../styles/disaggregation-table-style
 import {GenericObject} from '../../typings/globals.types';
 import Endpoints from '../../endpoints';
 import {fireEvent} from '../../utils/fire-custom-event';
-import {disaggregationsUpdateForLocation} from '../../../redux/actions/disaggregations';
+import {disaggregationsUpdateForLocation} from '../../redux/actions/disaggregations';
 import {EtoolsPrpAjaxEl} from '../etools-prp-ajax';
 
 /**
