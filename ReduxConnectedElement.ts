@@ -1,5 +1,5 @@
 import {PolymerElement} from '@polymer/polymer';
-import {store} from '../redux/store';
+import {store} from './redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {property} from '@polymer/decorators';
 import {RootState} from './typings/redux.types';
