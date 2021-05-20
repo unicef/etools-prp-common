@@ -1,7 +1,7 @@
 import {property} from '@polymer/decorators';
 import {Constructor} from '../typings/globals.types';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {BASE_PATH} from '../../config';
+import {BASE_PATH} from '../config';
 
 /**
  * @polymer

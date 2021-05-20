@@ -1,6 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import {property} from '@polymer/decorators/lib/decorators';
-import {sharedStyles} from '../../styles/shared-styles';
+import {sharedStyles} from '../styles/shared-styles';
 
 /**
  * @polymer

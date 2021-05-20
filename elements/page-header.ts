@@ -9,7 +9,7 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 
 import LocalizeMixin from '../mixins/localize-mixin';
 import RoutingMixin from '../mixins/routing-mixin';
-import {sharedStyles} from '../../styles/shared-styles';
+import {sharedStyles} from '../styles/shared-styles';
 
 /**
  * @polymer

@@ -1,7 +1,7 @@
 import {PolymerElement} from '@polymer/polymer';
 import {Constructor, GenericObject} from '../typings/globals.types';
 import {property} from '@polymer/decorators';
-import Settings from '../../settings';
+import Settings from '../settings';
 
 /**
  * @polymer

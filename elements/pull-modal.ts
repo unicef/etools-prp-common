@@ -28,7 +28,7 @@ import './status-badge';
 import './etools-prp-ajax';
 import {fireEvent} from '../utils/fire-custom-event';
 import Endpoints from '../endpoints';
-import {tableStyles} from '../../styles/table-styles';
+import {tableStyles} from '../styles/table-styles';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
