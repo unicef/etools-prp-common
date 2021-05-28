@@ -67,7 +67,7 @@ class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
       new Promise((resolve) => {
         self.addEventListener('opened-changed', function onOpenedChanged() {
           self.removeEventListener('opened-changed', onOpenedChanged);
-          resolve();
+          resolve(true);
         });
       })
     );

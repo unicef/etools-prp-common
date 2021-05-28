@@ -27,7 +27,7 @@ import './list-placeholder';
 import './status-badge';
 import './etools-prp-ajax';
 import {fireEvent} from '../utils/fire-custom-event';
-import Endpoints from '../endpoints';
+import Endpoints from '../../endpoints';
 import {tableStyles} from '../styles/table-styles';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';

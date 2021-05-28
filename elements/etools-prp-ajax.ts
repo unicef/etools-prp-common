@@ -7,7 +7,7 @@ import NotificationsMixin from '../mixins/notifications-mixin';
 import {GenericObject} from '../typings/globals.types';
 import {fireEvent} from '../utils/fire-custom-event';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {setToken, resetToken} from '../redux/actions';
+import {setToken, resetToken} from '../../redux/actions';
 
 /**
  * @polymer

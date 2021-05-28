@@ -1,7 +1,7 @@
 import UtilsMixin from '../mixins/utils-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {setToken} from '../redux/actions';
+import {setToken} from '../../redux/actions';
 
 /**
  * @polymer

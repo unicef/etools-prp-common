@@ -30,12 +30,12 @@ import UtilsMixin from '../mixins/utils-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {fireEvent} from '../utils/fire-custom-event';
 import {GenericObject} from '../typings/globals.types';
-import Endpoints from '../endpoints';
+import Endpoints from '../../endpoints';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {buttonsStyles} from '../styles/buttons-styles';
-import {disaggregationsFetch} from '../redux/actions/disaggregations';
+import {disaggregationsFetch} from '../../redux/actions/disaggregations';
 import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
-import {RootState} from '../typings/redux.types';
+import {RootState} from '../../typings/redux.types';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 
 /**
