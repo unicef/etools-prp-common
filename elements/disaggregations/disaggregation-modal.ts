@@ -83,7 +83,7 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement
   _save() {
     const tableSlot = this.shadowRoot!.querySelectorAll('.table')[0] as HTMLSlotElement;
     let tableElem: DisaggregationTableEl | null = null;
-    if (tableSlot && tableSlot!.assignedElements) {
+    if (tableSlot && tableSlot.assignedElements) {
       tableSlot.assignedElements().forEach((el: any) => {
         if (!tableElem && String(el.tagName).toUpperCase() === 'DISAGGREGATION-TABLE') {
           tableElem = el;

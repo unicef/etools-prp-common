@@ -1,4 +1,4 @@
-import {RootState} from '../../typings/redux.types';
+import {RootState} from '../../../typings/redux.types';
 import {createSelector} from 'reselect';
 import {GenericObject} from '../../typings/globals.types';
 
@@ -22,18 +22,19 @@ export const loadedProgrammeDocuments = createSelector(getAllPD, (docs: any[]) =
 
 export const currentProgrammeDocument = createSelector(getAllPD, getCurrentPDId, getCurrentPD);
 
-export const programmeDocuments_CurrentAuthorizedPartners = createSelector(getAllPD, getCurrentPDId, function (
-  allPDs: any[],
-  pdId: string
-) {
-  return (getCurrentPD(allPDs, pdId).partner_focal_point || [])
-    .filter(function (officer: any) {
-      return officer.is_authorized_officer;
-    })
-    .map(function (focalPoint: any) {
-      return {
-        value: focalPoint.email,
-        title: focalPoint.name + ' ' + focalPoint.title
-      };
-    });
-});
+export const programmeDocuments_CurrentAuthorizedPartners = createSelector(
+  getAllPD,
+  getCurrentPDId,
+  function (allPDs: any[], pdId: string) {
+    return (getCurrentPD(allPDs, pdId).partner_focal_point || [])
+      .filter(function (officer: any) {
+        return officer.is_authorized_officer;
+      })
+      .map(function (focalPoint: any) {
+        return {
+          value: focalPoint.email,
+          title: focalPoint.name + ' ' + focalPoint.title
+        };
+      });
+  }
+);

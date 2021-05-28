@@ -6,7 +6,7 @@ import '@polymer/paper-dropdown-menu/paper-dropdown-menu';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
 import RoutingMixin from '../mixins/routing-mixin';
-import {setWorkspace} from '../redux/actions';
+import {setWorkspace} from '../../redux/actions';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {GenericObject} from '../typings/globals.types';
 
