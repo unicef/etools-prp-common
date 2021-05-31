@@ -13,7 +13,7 @@ import LocalizeMixin from '../../mixins/localize-mixin';
 import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {GenericObject} from '../../typings/globals.types';
-import Endpoints from '../../../endpoints';
+import Endpoints from '../../endpoints';
 import {fireEvent} from '../../utils/fire-custom-event';
 import {disaggregationsUpdateForLocation} from '../../../redux/actions/disaggregations';
 import {EtoolsPrpAjaxEl} from '../etools-prp-ajax';
