@@ -6,4 +6,4 @@ export const getDomainByEnv = () => {
   return getBasePath().slice(0, -1);
 };
 
-export const BASE_PATH = '/' + getBasePath().replace(window.location.origin, '').slice(1, -1) + '/';
+export const BASE_PATH = getBasePath().replace(window.location.origin, '').slice(1, -1);
