@@ -26,9 +26,7 @@ class DisaggregationTableCell extends UtilsMixin(PolymerElement) {
 
       <template is="dom-if" if="[[!editableBool]]">
         <span class="cellValue">
-          <template is="dom-if" if="[[noValue]]" restamp="true">
-            0
-          </template>
+          <template is="dom-if" if="[[noValue]]" restamp="true"> 0 </template>
           <template is="dom-if" if="[[!noValue]]" restamp="true">
             <slot name="non-editable"></slot>
           </template>

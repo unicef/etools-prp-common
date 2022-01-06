@@ -378,9 +378,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
                             [[topLevelLocation.title]]
                           </p>
                           <template is="dom-if" if="[[hasPD]]" restamp="true">
-                            <p class="current-pd">
-                              [[currentPd.agreement]] | [[currentPd.title]]
-                            </p>
+                            <p class="current-pd">[[currentPd.agreement]] | [[currentPd.title]]</p>
                           </template>
                         </div>
                         <div class="layout vertical end-justified">

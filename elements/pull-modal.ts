@@ -119,18 +119,10 @@ class PullModal extends NotificationsMixin(ModalMixin(UtilsMixin(ReduxConnectedE
           <template id="list" is="dom-repeat" items="[[data.reports]]" as="report">
             <etools-data-table-row no-collapse>
               <div slot="row-data">
-                <div class="table-cell table-cell--text">
-                  [[report.report_name]]
-                </div>
-                <div class="table-cell table-cell--text">
-                  [[report.due_date]]
-                </div>
-                <div class="table-cell table-cell--text">
-                  [[report.start_date]] - [[report.end_date]]
-                </div>
-                <div class="table-cell table-cell--text">
-                  [[report.report_location_total.v]]
-                </div>
+                <div class="table-cell table-cell--text">[[report.report_name]]</div>
+                <div class="table-cell table-cell--text">[[report.due_date]]</div>
+                <div class="table-cell table-cell--text">[[report.start_date]] - [[report.end_date]]</div>
+                <div class="table-cell table-cell--text">[[report.report_location_total.v]]</div>
               </div>
             </etools-data-table-row>
           </template>
@@ -145,9 +137,7 @@ class PullModal extends NotificationsMixin(ModalMixin(UtilsMixin(ReduxConnectedE
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_save" raised>
-            OK
-          </paper-button>
+          <paper-button class="btn-primary" on-tap="_save" raised> OK </paper-button>
         </div>
 
         <confirm-box id="confirm"></confirm-box>

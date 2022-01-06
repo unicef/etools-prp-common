@@ -28,9 +28,7 @@ class ReportStatus extends LocalizeMixin(ReduxConnectedElement) {
       </style>
 
       <status-badge type="[[type]]"></status-badge>
-      <template is="dom-if" if="[[!noLabel]]">
-        [[label]]
-      </template>`;
+      <template is="dom-if" if="[[!noLabel]]"> [[label]] </template>`;
   }
 
   @property({type: String})

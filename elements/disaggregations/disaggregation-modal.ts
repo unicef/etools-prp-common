@@ -58,13 +58,9 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_save" raised>
-            [[localize('save')]]
-          </paper-button>
+          <paper-button class="btn-primary" on-tap="_save" raised> [[localize('save')]] </paper-button>
 
-          <paper-button class="btn-cancel" on-tap="close">
-            [[localize('cancel')]]
-          </paper-button>
+          <paper-button class="btn-cancel" on-tap="close"> [[localize('cancel')]] </paper-button>
         </div>
 
         <confirm-box id="confirm"></confirm-box>
