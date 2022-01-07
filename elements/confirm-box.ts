@@ -61,18 +61,12 @@ class ConfirmBox extends PolymerElement {
           <div class="prompt" style="max-width: [[config.maxWidth]];">
             <div class="info-wrapper">
               <iron-icon class="info-icon" icon="info-outline"></iron-icon>
-              <p>
-                [[config.body]]
-              </p>
+              <p>[[config.body]]</p>
             </div>
             <div class="layout horizontal-reverse">
-              <paper-button class="btn-primary" on-tap="_ok">
-                [[config.okLabel]]
-              </paper-button>
+              <paper-button class="btn-primary" on-tap="_ok"> [[config.okLabel]] </paper-button>
 
-              <paper-button on-tap="_cancel">
-                [[config.cancelLabel]]
-              </paper-button>
+              <paper-button on-tap="_cancel"> [[config.cancelLabel]] </paper-button>
             </div>
           </div>
         </div>

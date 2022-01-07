@@ -115,9 +115,7 @@ class DisaggregationTable extends LocalizeMixin(DisaggregationHelpersMixin(Utils
                 <dd>[[_withDefault(labels.label)]]</dd>
               </template>
               <template is="dom-if" if="[[!_equals(data.display_type, 'number')]]" restamp="true">
-                <dd>
-                  [[_withDefault(labels.numerator_label)]] / [[_withDefault(labels.denominator_label)]]
-                </dd>
+                <dd>[[_withDefault(labels.numerator_label)]] / [[_withDefault(labels.denominator_label)]]</dd>
               </template>
             </dl>
           </template>
