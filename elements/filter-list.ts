@@ -91,7 +91,12 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
       if (change.value && change.value.length) {
         newParams[change.name] = change.value;
       } else {
-        delete newParams[change.name];
+        if (typeof newParams[change.name] !== 'undefined') {
+          delete newParams[change.name];
+        } else {
+          // no change(nothing added or deleted), no need to set queryParams and reset pageNumber
+          return;
+        }
       }
 
       this.set('queryParams', newParams);
