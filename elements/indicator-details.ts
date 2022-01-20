@@ -271,7 +271,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
                 >
                   <paper-item id="tab-item">
                     <status-badge type="[[_computeLocationStatus(topLevelLocation)]]"></status-badge>
-                    [[topLevelLocation.title]]
+                    [[topLevelLocation.name]]
                   </paper-item>
                 </template>
               </paper-listbox>
@@ -319,7 +319,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
                               <dl class="printme">
                                 <dt style="display: inline;">[[localize('location')]]:</dt>
                                 <dd style="display: inline; margin: 0;">
-                                  [[location.location.title]] - [[location.reporting_entity.title]]
+                                  [[location.location.name]] - [[location.reporting_entity.title]]
                                 </dd>
                               </dl>
                             </div>
@@ -375,7 +375,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
                           <h3>[[indicatorName]]</h3>
                           <p class="location">
                             <iron-icon icon="maps:place"></iron-icon>
-                            [[topLevelLocation.title]]
+                            [[topLevelLocation.name]]
                           </p>
                           <template is="dom-if" if="[[hasPD]]" restamp="true">
                             <p class="current-pd">[[currentPd.agreement]] | [[currentPd.title]]</p>
@@ -666,7 +666,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
 
       if (typeof acc[locationId] === 'undefined') {
         acc[locationId] = {
-          title: location.location.title,
+          name: location.location.name,
           byEntity: [],
           selected: 0
         };
