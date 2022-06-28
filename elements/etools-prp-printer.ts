@@ -24,8 +24,7 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
     this.addEventListener('tap', this._onTap.bind(this));
   }
 
-  _onTap(e: CustomEvent) {
-    console.log(e.target);
+  _onTap(e: CustomEvent) {    
     if (!(e.target! as HTMLElement).classList.contains('print-btn')) {
       return;
     }
