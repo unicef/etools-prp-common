@@ -19,13 +19,18 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
   @property({type: Object})
   printWindow!: Window;
 
-  _onTap(e: CustomEvent) {
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('tap', this._onTap.bind(this));
+  }
+
+  _onTap(e: CustomEvent) {    
     if (!(e.target! as HTMLElement).classList.contains('print-btn')) {
       return;
     }
 
     // let parent = this.shadowRoot!.parentNode;
-    const toPrint = this.shadowRoot!.querySelectorAll(this.selector);
+    const toPrint = this.querySelectorAll(this.selector);
     const style = document.createElement('style');
 
     style.innerHTML = 'body { color: #212121; font: 14px/1.5 Roboto, Noto, sans-serif; }';
