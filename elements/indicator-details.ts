@@ -210,7 +210,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
 
       <template is="dom-if" if="[[dataLoaded]]">
         <div>
-          <template is="dom-if" if="[[isHfIndicator]]">
+          <template is="dom-if" if="[[showPullDataFromHR(isHfIndicator, mode)]]">
             <div class="tab-header layout horizontal justified">
               <div class="self-center">[[localize('for_this_indicator')]]</div>
               <div>
@@ -598,6 +598,10 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
 
   _computeIsHfIndicator(disaggregations: GenericObject) {
     return disaggregations !== undefined && this.reportIsQpr === true && disaggregations.is_hf_indicator === true;
+  }
+
+  showPullDataFromHR(isHfIndicator: boolean, mode: string) {
+    return isHfIndicator && mode != 'view';
   }
 
   _computeMode(mode: string, overrideMode: string) {
