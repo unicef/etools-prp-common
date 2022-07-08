@@ -273,7 +273,7 @@ function UtilsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _cloneNode(node: any) {
-      const newNode = node.cloneNode(true);
+      const newNode = node.shadowRoot ? this.deepClone(node) : node.cloneNode(true);
 
       for (const prop in node.properties) {
         if (Object.prototype.hasOwnProperty.call(node, prop)) {
@@ -285,6 +285,29 @@ function UtilsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       return newNode;
+    }
+
+    deepClone(host) {
+      const cloneNode = (node, parent) => {
+        const walkTree = (nextn, nextp) => {
+          while (nextn) {
+            cloneNode(nextn, nextp);
+            nextn = nextn.nextSibling;
+          }
+        };
+
+        const clone = node.cloneNode();
+        parent.appendChild(clone);
+        if (node.shadowRoot) {
+          walkTree(node.shadowRoot.firstChild, clone.attachShadow({mode: 'open'}));
+        }
+
+        walkTree(node.firstChild, clone);
+      };
+
+      const fragment = document.createDocumentFragment();
+      cloneNode(host, fragment);
+      return fragment;
     }
 
     _identity(arg: any) {
