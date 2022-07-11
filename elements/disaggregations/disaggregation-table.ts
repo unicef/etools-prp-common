@@ -1,4 +1,5 @@
 import {ReduxConnectedElement} from '../../ReduxConnectedElement';
+import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import {property} from '@polymer/decorators';
 import {html} from '@polymer/polymer';
 import '@polymer/paper-input/paper-input';

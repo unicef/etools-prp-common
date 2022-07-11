@@ -1,6 +1,7 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import '@polymer/polymer/lib/elements/dom-repeat';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
+import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
 import {property} from '@polymer/decorators/lib/decorators';
