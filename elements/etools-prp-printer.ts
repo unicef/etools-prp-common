@@ -24,12 +24,11 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
     this.addEventListener('tap', this._onTap.bind(this));
   }
 
-  _onTap(e: CustomEvent) {    
+  _onTap(e: CustomEvent) {
     if (!(e.target! as HTMLElement).classList.contains('print-btn')) {
       return;
     }
 
-    // let parent = this.shadowRoot!.parentNode;
     const toPrint = this.querySelectorAll(this.selector);
     const style = document.createElement('style');
 
@@ -43,6 +42,12 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
 
     // @ts-ignore
     this.printWindow!.document.head.appendChild(style);
+    // @ts-ignore
+    this.printWindow!.document.head.appendChild(this.getRootNode().querySelector('style'));
+    // @ts-ignore
+    this.printWindow!.document.head.appendChild(
+      '<script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>'
+    );
 
     toPrint.forEach((node) => {
       this.printWindow.document.body.appendChild(this._cloneNode(node));
