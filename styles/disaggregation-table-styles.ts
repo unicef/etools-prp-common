@@ -1,5 +1,6 @@
 import {html} from '@polymer/polymer';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
+import '@polymer/iron-flex-layout/iron-flex-layout';
 import {printStyles} from './print-styles';
 
 export const disaggregationTableStyles = html` ${printStyles}
