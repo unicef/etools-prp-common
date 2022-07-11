@@ -372,6 +372,9 @@ class DisaggregationTable extends LocalizeMixin(DisaggregationHelpersMixin(Utils
   }
 
   _computeViewData(data: GenericObject, totals: GenericObject) {
+    if (!data) {
+      return {};
+    }
     return Object.assign({}, data, {
       disaggregation: Object.assign({}, data.disaggregation, totals)
     });
