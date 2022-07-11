@@ -27,6 +27,7 @@ class ReportStatus extends LocalizeMixin(ReduxConnectedElement) {
         }
         status-badge {
           width: 16px;
+          height: 16px;
         }
       </style>
 
