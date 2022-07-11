@@ -204,6 +204,11 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
         disaggregation-modal disaggregation-table {
           margin-top: 1em;
         }
+        @media print {
+          .print-styles {
+            display: flex;
+          }
+        }
       </style>
 
       <etools-prp-ajax id="disaggregations" url="[[disaggregationsUrl]]" params="[[params]]"> </etools-prp-ajax>
@@ -350,9 +355,8 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
                                 </dd>
                               </template>
                             </dl>
-
                             <disaggregation-table
-                              class="printme"
+                              class="printme print-styles"
                               data="[[location]]"
                               mapping="[[disaggregations.disagg_lookup_map]]"
                               labels="[[disaggregations.labels]]"
