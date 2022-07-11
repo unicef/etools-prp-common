@@ -45,7 +45,7 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
     // @ts-ignore
     this.printWindow!.document.head.appendChild(this.getRootNode().querySelector('style'));
     // @ts-ignore
-    this.printWindow!.document.head.appendChild(
+    this.printWindow!.document.head.append(
       '<script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>'
     );
 
