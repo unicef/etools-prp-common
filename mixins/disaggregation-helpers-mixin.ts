@@ -131,7 +131,7 @@ function DisaggregationHelpersMixin<T extends Constructor<PolymerElement>>(baseC
       const x = coords[0];
       const y = coords[1];
 
-      // need all the values otherwise totals will we wrong
+      // need all the values otherwise totals will be wrong
       if (!x || !y) {
         return;
       }
@@ -173,7 +173,7 @@ function DisaggregationHelpersMixin<T extends Constructor<PolymerElement>>(baseC
       const y = coords[1];
       const z = coords[2];
 
-      // need all the values otherwise totals will we wrong
+      // need all the values otherwise totals will be wrong
       if (!x || !y || !z) {
         return;
       }
