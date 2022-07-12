@@ -131,6 +131,11 @@ function DisaggregationHelpersMixin<T extends Constructor<PolymerElement>>(baseC
       const x = coords[0];
       const y = coords[1];
 
+      // need all the values otherwise totals will we wrong
+      if (!x || !y) {
+        return;
+      }
+
       const xRe = this.matchers['(X,?)'](x);
       const yRe = this.matchers['(?,Y)'](y);
       const tRe = this.matchers['(?,Y)']('');
@@ -168,6 +173,7 @@ function DisaggregationHelpersMixin<T extends Constructor<PolymerElement>>(baseC
       const y = coords[1];
       const z = coords[2];
 
+      // need all the values otherwise totals will we wrong
       if (!x || !y || !z) {
         return;
       }
