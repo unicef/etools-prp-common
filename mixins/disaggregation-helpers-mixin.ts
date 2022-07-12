@@ -168,6 +168,10 @@ function DisaggregationHelpersMixin<T extends Constructor<PolymerElement>>(baseC
       const y = coords[1];
       const z = coords[2];
 
+      if (!x || !y || !z) {
+        return;
+      }
+
       const xyRe = this.matchers['(X,Y,?)'](x, y);
       const xzRe = this.matchers['(X,?,Z)'](x, z);
       const yzRe = this.matchers['(?,Y,Z)'](y, z);
