@@ -11,6 +11,15 @@ export const printStyles = html`
       :host {
         max-width: 500px;
       }
+      @media print {
+        tr {
+          display: flex;
+        }
+        th,
+        td {
+          flex: 1;
+        }
+      }
     }
   </style>
 `;
