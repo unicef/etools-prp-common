@@ -6,17 +6,17 @@ export const printStyles = html`
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
     }
+    tr {
+      display: flex;
+    }
+    th,
+    td {
+      flex: 1;
+    }
 
     @media print {
       :host {
         max-width: 500px;
-      }
-      tr {
-        display: flex;
-      }
-      th,
-      td {
-        flex: 1;
       }
     }
   </style>
