@@ -47,7 +47,7 @@ export const disaggregationTableStyles = html` ${printStyles}
 
     /*   Rows   */
     tr {
-      @apply --layout-horizontal;
+      display: flex;
       @apply --layout-center;
       border-bottom: 1px solid white;
     }
@@ -77,8 +77,7 @@ export const disaggregationTableStyles = html` ${printStyles}
       min-height: 25px;
       word-wrap: break-word;
       hyphens: auto;
-      @apply --layout-flex;
-      @apply --layout-self-stretch;
+      flex: 1;
       @apply --layout-center;
     }
 

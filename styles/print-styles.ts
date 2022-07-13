@@ -9,10 +9,6 @@ export const printStyles = html`
     tr {
       display: flex;
     }
-    th,
-    td {
-      flex: 1;
-    }
 
     @media print {
       :host {
