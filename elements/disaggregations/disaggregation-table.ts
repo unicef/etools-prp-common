@@ -1,4 +1,5 @@
 import {ReduxConnectedElement} from '../../ReduxConnectedElement';
+import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import {property} from '@polymer/decorators';
 import {html} from '@polymer/polymer';
 import '@polymer/paper-input/paper-input';
@@ -372,6 +373,9 @@ class DisaggregationTable extends LocalizeMixin(DisaggregationHelpersMixin(Utils
   }
 
   _computeViewData(data: GenericObject, totals: GenericObject) {
+    if (!data) {
+      return {};
+    }
     return Object.assign({}, data, {
       disaggregation: Object.assign({}, data.disaggregation, totals)
     });
