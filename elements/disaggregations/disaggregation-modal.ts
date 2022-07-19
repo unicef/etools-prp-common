@@ -77,15 +77,7 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement
   updatePending = false;
 
   _save() {
-    const tableSlot = this.shadowRoot!.querySelectorAll('.table')[0] as HTMLSlotElement;
-    let tableElem: DisaggregationTableEl | null = null;
-    if (tableSlot && tableSlot.assignedElements) {
-      tableSlot.assignedElements().forEach((el: any) => {
-        if (!tableElem && String(el.tagName).toUpperCase() === 'DISAGGREGATION-TABLE') {
-          tableElem = el;
-        }
-      });
-    }
+    const tableElem = this.querySelector('disaggregation-table');
     if (tableElem) {
       this.set('updatePending', true);
 
