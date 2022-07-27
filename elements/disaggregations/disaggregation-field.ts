@@ -89,7 +89,7 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
 
     fireEvent(this, 'field-value-changed', {
       key: this.coords,
-      value: isNaN(parseInt(change[this.key])) ? null : this._toNumericValues(change)
+      value: this._toNumericValues(change)
     });
   }
 }
