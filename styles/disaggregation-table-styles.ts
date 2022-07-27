@@ -79,6 +79,10 @@ export const disaggregationTableStyles = html` ${printStyles}
       hyphens: auto;
       flex: 1;
       @apply --layout-center;
+      align-self: stretch;
+      align-items: center;
+      justify-content: center;
+      display: flex;
     }
 
     .cellValue {
