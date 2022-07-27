@@ -78,7 +78,10 @@ export const disaggregationTableStyles = html` ${printStyles}
       word-wrap: break-word;
       hyphens: auto;
       flex: 1;
-      @apply --layout-center;
+      align-self: stretch;
+      align-items: center;
+      justify-content: center;
+      display: flex;
     }
 
     .cellValue {
@@ -97,5 +100,14 @@ export const disaggregationTableStyles = html` ${printStyles}
     .cellTitle,
     .cellTotal {
       background-color: var(--paper-grey-100);
+    }
+
+    disaggregation-table-cell-ratio {
+      display: flex;
+      flex: 1;
+    }
+
+    disaggregation-table-cell {
+      width: 100%;
     }
   </style>`;
