@@ -85,7 +85,6 @@ export const disaggregationTableStyles = html` ${printStyles}
     }
 
     .cellValue {
-      display: inline-block;
       line-height: 25px;
     }
 
@@ -102,7 +101,9 @@ export const disaggregationTableStyles = html` ${printStyles}
       background-color: var(--paper-grey-100);
     }
 
-    disaggregation-table-cell-ratio {
+    disaggregation-table-cell-ratio,
+    disaggregation-table-cell-number,
+    disaggregation-table-cell-percentage {
       display: flex;
       flex: 1;
     }
