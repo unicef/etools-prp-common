@@ -78,8 +78,8 @@ export const disaggregationTableStyles = html` ${printStyles}
       word-wrap: break-word;
       hyphens: auto;
       flex: 1;
-      @apply --layout-center;
       align-self: stretch;
+      align-items: center;
       justify-content: center;
       display: flex;
     }
