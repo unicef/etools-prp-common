@@ -43,6 +43,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
         .item {
           padding: 0;
           border-bottom: 1px solid white;
+          white-space: nowrap;
         }
 
         .item:not(:first-child) {
