@@ -181,12 +181,6 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
 
     this._addEventListeners();
     const nullData = this._clone(this.data);
-    if (nullData !== undefined && nullData.v === 0) {
-      nullData.v = null;
-    }
-    if (nullData !== undefined && nullData.d === 0) {
-      nullData.d = null;
-    }
     this.set('data', nullData);
   }
 
