@@ -92,7 +92,7 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(NotificationsMixin(Re
         .catch((_err: GenericObject) => {
           console.log(_err);
           this.set('updatePending', false);
-          this._notifyErrorMessage(this.localize('error_verify_entered_data'));
+          this._notifyErrorMessage({text: this.localize('error_verify_entered_data')});
         });
     }
   }
