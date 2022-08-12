@@ -91,9 +91,6 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
   }
 
   _inputValueChanged(e: CustomEvent) {
-    if (!this.componentLoaded) {
-      return;
-    }
     const change: GenericObject = {};
     change[this.key] = (e.target as any).value;
 
