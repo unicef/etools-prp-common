@@ -52,7 +52,7 @@ export const tableStyles = html`
     }
 
     etools-data-table-footer {
-      --list-icon-color: var(--paper-grey-500);
+      --list-disabled-icon-color: var(--paper-grey-500);
     }
 
     .row-details-expanded-wrapper {
