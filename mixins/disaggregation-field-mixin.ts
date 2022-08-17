@@ -8,11 +8,16 @@ import {Constructor, GenericObject} from '../typings/globals.types';
 function DisaggregationFieldMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class DisaggregationFieldClass extends baseClass {
     _toNumericValues(obj: GenericObject) {
-      return Object.keys(obj).reduce((prev: GenericObject, curr: string) => {
-        prev[curr] = Number(obj[curr]);
+      const parsedObj = {};
+      // To be noted: Number(null) == 0
+      Object.keys(obj).forEach((key) => {
+        parsedObj[key] = Number(obj[key]);
 
-        return prev;
-      }, {});
+        if (obj[key] == null || obj[key] == undefined) {
+          console.warn('null converted to 0');
+        }
+      });
+      return parsedObj;
     }
   }
 

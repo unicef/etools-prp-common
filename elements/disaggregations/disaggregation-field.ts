@@ -42,7 +42,6 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
         validator="[[validator]]"
         min="[[min]]"
         on-value-changed="_inputValueChanged"
-        on-focus="_onInputFocus"
         no-label-float
         required
       >
@@ -63,13 +62,10 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
   min!: number;
 
   @property({type: Number, notify: true})
-  value!: number;
+  value = 0;
 
   @property({type: Boolean, notify: true})
   invalid!: boolean;
-
-  @property({type: Boolean})
-  componentLoaded = false;
 
   connectedCallback() {
     super.connectedCallback();
@@ -86,14 +82,7 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
     return this.$.field;
   }
 
-  _onInputFocus(_e: CustomEvent) {
-    this.componentLoaded = true;
-  }
-
   _inputValueChanged(e: CustomEvent) {
-    if (!this.componentLoaded) {
-      return;
-    }
     const change: GenericObject = {};
     change[this.key] = (e.target as any).value;
 
