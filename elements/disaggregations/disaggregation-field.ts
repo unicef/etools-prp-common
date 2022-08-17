@@ -42,6 +42,7 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
         validator="[[validator]]"
         min="[[min]]"
         on-value-changed="_inputValueChanged"
+        on-keydown="_preventInvalidInput"
         no-label-float
         required
       >
@@ -90,6 +91,14 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
       key: this.coords,
       value: this._toNumericValues(change)
     });
+  }
+
+  _preventInvalidInput(e: KeyboardEvent) {
+    if (e.key == '.') {
+      if ((e.target as PaperInputElement).value!.indexOf('.') > -1) {
+        e.preventDefault();
+      }
+    }
   }
 }
 
