@@ -116,6 +116,8 @@ class ReportStatus extends LocalizeMixin(ReduxConnectedElement) {
         return localize('no_status');
       case 'Sen':
         return localize('sent_back');
+      case 'Not':
+        return localize('not_due_yet');
       case 'Acc':
         return app === 'ip-reporting' && reportType !== 'HR' ? localize('accepted') : localize('received');
     }
