@@ -13,7 +13,7 @@ function getCurrentPDId(state: RootState) {
 function getCurrentPD(pds: any[], currentPdId: string) {
   return (
     pds.filter(function (pd: GenericObject) {
-      return pd.id === currentPdId;
+      return String(pd.id) === String(currentPdId);
     })[0] || {}
   );
 }
