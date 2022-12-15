@@ -16,7 +16,7 @@ import '../confirm-box';
 import './disaggregation-table';
 import {DisaggregationTableEl} from './disaggregation-table';
 import {ConfirmBoxEl} from '../confirm-box';
-import NotificationsMixin from '../../mixins/notifications-mixin';
+import {fireEvent} from '../../utils/fire-custom-event';
 
 /**
  * @polymer
@@ -24,7 +24,7 @@ import NotificationsMixin from '../../mixins/notifications-mixin';
  * @appliesMixin ModalMixin
  * @appliesMixin LocalizeMixin
  */
-class DisaggregationModal extends ModalMixin(LocalizeMixin(NotificationsMixin(ReduxConnectedElement))) {
+class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement)) {
   public static get template() {
     // language=HTML
     return html`
@@ -92,7 +92,10 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(NotificationsMixin(Re
         .catch((_err: GenericObject) => {
           console.log(_err);
           this.set('updatePending', false);
-          this._notifyErrorMessage({text: this.localize('error_verify_entered_data')});
+          fireEvent(this, 'toast', {
+            text: this.localize('error_verify_entered_data'),
+            showCloseBtn: true
+          });
         });
     }
   }
