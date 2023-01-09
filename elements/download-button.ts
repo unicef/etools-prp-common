@@ -19,8 +19,8 @@ class DownloadButton extends MatomoMixin(PolymerElement) {
         }
       </style>
 
-      <a href="[[url]]" tabindex="-1" target="_blank" tracker$="[[tracker]]" on-tap="trackAnalytics">
-        <paper-button class="btn-primary">
+      <a href="[[url]]" tabindex="-1" target="_blank" tracker$="[[tracker]]" on-click="trackAnalytics">
+        <paper-button class="btn-primary" on-focusin="clickedComplete">
           <iron-icon icon="icons:file-download"></iron-icon>
           <slot></slot>
         </paper-button>
@@ -33,6 +33,10 @@ class DownloadButton extends MatomoMixin(PolymerElement) {
 
   @property({type: String})
   tracker!: string;
+
+  clickedComplete(e: any){
+    e.target.blur();
+  }
 }
 
 window.customElements.define('download-button', DownloadButton);
