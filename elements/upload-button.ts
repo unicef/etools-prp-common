@@ -13,7 +13,7 @@ import '@polymer/polymer/lib/elements/dom-if';
 import '@unicef-polymer/etools-file/etools-file';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
-import NotificationsMixin from '../mixins/notifications-mixin';
+import LocalizeMixin from '../mixins/localize-mixin';
 import './etools-prp-ajax';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 import './error-box';
@@ -29,9 +29,8 @@ import {PaperDialogElement} from '@polymer/paper-dialog/paper-dialog';
  * @mixinFunction
  * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
- * @appliesMixin NotificationsMixin
  */
-class UploadButton extends ModalMixin(UtilsMixin(NotificationsMixin(ReduxConnectedElement))) {
+class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(ReduxConnectedElement))) {
   public static get template() {
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -128,7 +127,10 @@ class UploadButton extends ModalMixin(UtilsMixin(NotificationsMixin(ReduxConnect
       .then(() => {
         this.set('pending', false);
         this.close();
-        this._notifyFileUploaded();
+        fireEvent(this, 'toast', {
+          text: this.localize('file_uploaded'),
+          showCloseBtn: true
+        });
         fireEvent(this, 'file-uploaded');
       })
       .catch((res: any) => {

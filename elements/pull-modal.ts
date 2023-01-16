@@ -18,7 +18,6 @@ import '@polymer/app-layout/app-grid/app-grid-style';
 import {GenericObject} from '../typings/globals.types';
 import ModalMixin from '../mixins/modal-mixin';
 import UtilsMixin from '../mixins/utils-mixin';
-import NotificationsMixin from '../mixins/notifications-mixin';
 import './etools-prp-permissions';
 import './confirm-box';
 import './project-status';
@@ -37,10 +36,9 @@ import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
  * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin NotificationsMixin
  * @appliesMixin ModalMixin
  */
-class PullModal extends NotificationsMixin(ModalMixin(UtilsMixin(ReduxConnectedElement))) {
+class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
   static get template() {
     return html`
       ${tableStyles} ${buttonsStyles} ${modalStyles}
@@ -189,7 +187,10 @@ class PullModal extends NotificationsMixin(ModalMixin(UtilsMixin(ReduxConnectedE
         fireEvent(this, 'locations-updated');
       })
       .catch((err: any) => {
-        this._notifyErrorMessage({text: err.data.non_field_errors[0]});
+        fireEvent(this, 'toast', {
+          text: err.data.non_field_errors[0],
+          showCloseBtn: true
+        });
       });
   }
 
@@ -208,7 +209,10 @@ class PullModal extends NotificationsMixin(ModalMixin(UtilsMixin(ReduxConnectedE
         this.set('opened', true);
       })
       .catch((err: any) => {
-        this._notifyErrorMessage({text: err.data.non_field_errors[0]});
+        fireEvent(this, 'toast', {
+          text: err.data.non_field_errors[0],
+          showCloseBtn: true
+        });
       });
   }
 }
