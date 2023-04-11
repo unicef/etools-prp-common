@@ -17,6 +17,12 @@ const Endpoints = {
   },
   reportProgressReset() {
     return this._buildUrl('/indicator/report-refresh/');
+  },
+  changeWorkspace() {
+    return this._buildUrl('/account/changeworkspace/');
+  },
+  changeOrganization() {
+    return this._buildUrl('/account/changepartner/');
   }
 };
 
