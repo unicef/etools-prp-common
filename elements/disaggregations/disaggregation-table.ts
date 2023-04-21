@@ -15,7 +15,7 @@ import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixi
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {GenericObject} from '../../typings/globals.types';
 import Endpoints from '../../endpoints';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {disaggregationsUpdateForLocation} from '../../../redux/actions/disaggregations';
 import {EtoolsPrpAjaxEl} from '../etools-prp-ajax';
 

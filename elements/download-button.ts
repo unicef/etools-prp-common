@@ -34,7 +34,7 @@ class DownloadButton extends MatomoMixin(PolymerElement) {
   @property({type: String})
   tracker!: string;
 
-  clickedComplete(e: any){
+  clickedComplete(e: any) {
     e.target.blur();
   }
 }

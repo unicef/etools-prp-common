@@ -16,7 +16,7 @@ import '../confirm-box';
 import './disaggregation-table';
 import {DisaggregationTableEl} from './disaggregation-table';
 import {ConfirmBoxEl} from '../confirm-box';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @polymer

@@ -1,7 +1,7 @@
 import {Constructor, GenericObject} from '../typings/globals.types';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setL11NResources} from '../../redux/actions';
 import IntlMessageFormat from 'intl-messageformat';
 

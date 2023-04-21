@@ -23,7 +23,6 @@ class StatusBadge extends PolymerElement {
         :host iron-icon {
           line-height: 1;
         }
-      
       </style>
 
       <iron-icon icon="[[icon]]" style="color: [[color]];"> </iron-icon>`;
