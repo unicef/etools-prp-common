@@ -33,7 +33,8 @@ class AppRedirect extends RoutingMixin(ReduxConnectedElement) {
     if (app === undefined || workspace === undefined || !profile) {
       return;
     }
-    if (!profile.access || !profile.access.length || profile.access.indexOf(app) === -1) {
+    // redirect to `unauthorized` only if we have a selected partner, otherwise let the option to select one
+    if (profile.partner && (!profile.access || !profile.access.length || profile.access.indexOf(app) === -1)) {
       location.href = '/unauthorized';
     }
   }

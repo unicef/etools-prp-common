@@ -9,6 +9,8 @@ import RoutingMixin from '../mixins/routing-mixin';
 import {setWorkspace} from '../../redux/actions';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {GenericObject} from '../typings/globals.types';
+import Endpoints from '../endpoints';
+import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 
 /**
  * @polymer
@@ -72,6 +74,15 @@ class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
         }
       </style>
 
+      <etools-prp-ajax
+        id="changeworkspace"
+        method="post"
+        url="[[changeworkspaceUrl]]"
+        body="[[workspaceData]]"
+        content-type="application/json"
+      >
+      </etools-prp-ajax>
+
       <paper-dropdown-menu label="[[workspace.name]]" noink no-label-float>
         <paper-listbox
           slot="dropdown-content"
@@ -102,6 +113,12 @@ class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
   @property({type: Array, computed: 'getReduxStateArray(rootState.workspaces.all)'})
   data!: any[];
 
+  @property({type: String})
+  changeworkspaceUrl = Endpoints.changeWorkspace();
+
+  @property({type: Object})
+  workspaceData!: GenericObject;
+
   private prevWorkspace!: string;
 
   _currentWorkspaceChanged() {
@@ -115,12 +132,21 @@ class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
   }
 
   _workspaceSelected(e: CustomEvent) {
-    const newCode = (this.$.repeat as DomRepeat).itemForElement(e.detail.item).code;
-    if (newCode === this.current) {
+    const workspace = (this.$.repeat as DomRepeat).itemForElement(e.detail.item);
+    const newCode = workspace.code;
+    if (!newCode || newCode === this.current) {
       return;
     }
 
-    this.reduxStore.dispatch(setWorkspace(newCode));
+    this.set('workspaceData', {workspace: workspace.id});
+    const thunk = (this.$.changeworkspace as EtoolsPrpAjaxEl).thunk();
+    thunk()
+      .then(() => {
+        this.reduxStore.dispatch(setWorkspace(newCode));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   _computeWorkspace(data: any[], code: string) {
