@@ -8,7 +8,7 @@ export const getDomainByEnv = () => {
 
 export const BASE_PATH = getBasePath().replace(window.location.origin, '').slice(1, -1);
 
-export function getCorrespondingPMPEnvironment() {
+export function getCorrespondingEtoolsEnvironment() {
   const host = window.location.host;
   switch (host) {
     case 'prp.localhost:8081':
