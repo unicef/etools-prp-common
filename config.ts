@@ -7,3 +7,21 @@ export const getDomainByEnv = () => {
 };
 
 export const BASE_PATH = getBasePath().replace(window.location.origin, '').slice(1, -1);
+
+export function getCorrespondingEtoolsEnvironment() {
+  const host = window.location.host;
+  switch (host) {
+    case 'prp.localhost:8081':
+      return 'http://etools.localhost:8082';
+    case 'dev.partnerreportingportal.org':
+      return 'https://etools-dev.unicef.org';
+    case 'staging.partnerreportingportal.org':
+      return 'https://etools-staging.unicef.org';
+    case 'demo.partnerreportingportal.org':
+      return 'https://etools-demo.unicef.org';
+    case 'partnerreportingportal.org':
+      return 'https://etools.unicef.org';
+    default:
+      return 'https://etools-dev.unicef.org';
+  }
+}
