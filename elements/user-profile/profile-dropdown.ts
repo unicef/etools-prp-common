@@ -9,7 +9,7 @@ import {property} from '@polymer/decorators';
 import UtilsMixin from '../../mixins/utils-mixin';
 import LocalizeMixin from '../../mixins/localize-mixin';
 import {GenericObject} from '../../typings/globals.types';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import './user-profile-dialog';
 import {UserProfileDialogEl} from './user-profile-dialog';
 

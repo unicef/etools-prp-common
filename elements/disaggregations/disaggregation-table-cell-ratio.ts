@@ -8,7 +8,7 @@ import {DisaggregationFieldEl} from './disaggregation-field';
 import './disaggregation-table-cell';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {GenericObject} from '../../typings/globals.types';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import '@polymer/iron-meta/iron-meta';
 import {IronMeta} from '@polymer/iron-meta/iron-meta';
 import {PaperInputElement} from '@polymer/paper-input/paper-input';

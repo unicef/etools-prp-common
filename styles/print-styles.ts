@@ -5,7 +5,7 @@ export const printStyles = html`
     :host {
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
-    } 
+    }
 
     @media print {
       :host {

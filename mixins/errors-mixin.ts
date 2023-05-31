@@ -1,6 +1,6 @@
 import {Constructor} from '../typings/globals.types';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @polymer

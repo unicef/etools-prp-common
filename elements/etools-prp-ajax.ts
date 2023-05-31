@@ -4,7 +4,7 @@ import '@polymer/iron-ajax/iron-ajax';
 import {IronAjaxElement} from '@polymer/iron-ajax/iron-ajax';
 import UtilsMixin from '../mixins/utils-mixin';
 import {GenericObject} from '../typings/globals.types';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {setToken, resetToken} from '../../redux/actions';
 import LocalizeMixin from '../mixins/localize-mixin';

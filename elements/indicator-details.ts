@@ -28,7 +28,7 @@ import './pull-modal';
 import {PullModalEl} from './pull-modal';
 import UtilsMixin from '../mixins/utils-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../typings/globals.types';
 import Endpoints from '../endpoints';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';

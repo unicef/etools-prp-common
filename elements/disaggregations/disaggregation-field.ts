@@ -4,7 +4,7 @@ import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/paper-input/paper-input';
 import {PaperInputElement} from '@polymer/paper-input/paper-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../typings/globals.types';
 
 /**

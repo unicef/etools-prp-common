@@ -42,7 +42,7 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
 
     // @ts-ignore
     this.printWindow!.document.head.appendChild(style);
-    
+
     toPrint.forEach((node) => {
       this.printWindow.document.body.appendChild(this._cloneNode(node));
     }, this);

@@ -10,7 +10,7 @@ import LocalizeMixin from '../../mixins/localize-mixin';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import '../message-box';
 import {GenericObject} from '../../typings/globals.types';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
 
