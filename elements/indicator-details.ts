@@ -15,7 +15,6 @@ import '@polymer/paper-item/paper-item';
 import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/polymer/lib/elements/dom-repeat';
 
-import '../utils/fire-custom-event';
 import './etools-prp-ajax';
 import '../elements/etools-prp-number';
 import './status-badge';
