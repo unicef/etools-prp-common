@@ -27,7 +27,7 @@ function OverlayHelperMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       }
 
       // in order to see correctly the profile dialog, must set zIndex to 100 (as in app-header elements)
-      const paths = event.path || [{id: ''}];
+      const paths = event.composedPath() || [{id: ''}];
       const zIndex = paths[0].id === 'userProfileDialog' ? '100' : (dialogOverlays[0] as any).style.zIndex;
       this._closeOverlays(dialogOverlays);
 
@@ -44,7 +44,7 @@ function OverlayHelperMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     _dialogClosing(event: CustomEvent & any) {
       this._closeOverlays(document.querySelectorAll('iron-overlay-backdrop[opened]'));
 
-      const paths = event.path || [];
+      const paths = event.composedPath() || [];
       if (paths.length) {
         if (
           paths[0].tagName.toLowerCase().indexOf('dropdown') > -1 ||
