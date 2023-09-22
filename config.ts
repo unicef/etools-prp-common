@@ -19,9 +19,10 @@ export function getCorrespondingEtoolsEnvironment() {
       return 'https://etools-staging.unicef.org';
     case 'demo.partnerreportingportal.org':
       return 'https://etools-demo.unicef.org';
-    case 'partnerreportingportal.org':
+    case 'www.partnerreportingportal.org':
       return 'https://etools.unicef.org';
     default:
-      return 'https://etools-dev.unicef.org';
+      // It defaults to prod just in case www is not considered in all browser
+      return 'https://etools.unicef.org';
   }
 }
