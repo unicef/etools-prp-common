@@ -4,7 +4,6 @@ import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../../mixins/utils-mixin';
 import '../../elements/etools-prp-number';
 import './disaggregation-field';
-import './disaggregation-table-cell';
 import {DisaggregationFieldEl} from './disaggregation-field';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {GenericObject} from '../../typings/globals.types';
@@ -12,6 +11,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import '@polymer/iron-meta/iron-meta';
 import {IronMeta} from '@polymer/iron-meta/iron-meta';
 import {PaperInputElement} from '@polymer/paper-input/paper-input';
+import '@polymer/polymer/lib/elements/dom-if';
 
 /**
  * @polymer
@@ -55,10 +55,15 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
 
           color: var(--theme-secondary-text-color);
         }
+
+        .app-grid,
+        .cellValue {
+          width: 100%;
+        }
       </style>
 
-      <disaggregation-table-cell data="[[data]]" editable="[[editable]]">
-        <div slot="editable" class="app-grid">
+      <template is="dom-if" if="[[editable]]" restamp="true">
+        <div class="app-grid">
           <div class="item">
             <disaggregation-field id="v" key="v" min="0" value="[[data.v]]" coords="[[coords]]"> </disaggregation-field>
           </div>
@@ -66,9 +71,12 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
             <disaggregation-field id="d" key="d" min="0" value="[[data.d]]" coords="[[coords]]" validator="[[vName]]">
             </disaggregation-field>
           </div>
-          <div class="computed-value">[[_toPercentage(localData.c)]]</div>
+          <div class="computed-value">[[_toPercentage(data.c)]]</div>
         </div>
-        <div slot="non-editable" class="app-grid">
+      </template>
+
+      <template is="dom-if" if="[[isNotEditableAndValue(editable, data)]]" restamp="true">
+        <div class="app-grid">
           <div class="item">
             <etools-prp-number value="[[data.v]]"></etools-prp-number>
           </div>
@@ -77,7 +85,11 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
           </div>
           <div class="computed-value">[[_toPercentage(data.c)]]</div>
         </div>
-      </disaggregation-table-cell>
+      </template>
+
+      <template is="dom-if" if="[[isNotEditableAndNoValue(editable, data)]]" restamp="true">
+        <div class="cellValue">0</div>
+      </template>
     `;
   }
 
@@ -96,6 +108,18 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
   @property({type: String, observer: '_bindValidation'})
   coords!: string;
 
+  noValue(data: GenericObject) {
+    return data ? !data.c && !data.d && !data.v : true;
+  }
+
+  isNotEditableAndNoValue(editable, data) {
+    return !editable && this.noValue(data);
+  }
+
+  isNotEditableAndValue(editable, data) {
+    return !editable && !this.noValue(data);
+  }
+
   _handleInput(e: CustomEvent) {
     const key = e.detail.key;
     const value = e.detail.value;
@@ -109,6 +133,10 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
 
     const v = this.shadowRoot!.querySelector('#v') as DisaggregationFieldEl;
     const d = this.shadowRoot!.querySelector('#d') as DisaggregationFieldEl;
+
+    if (!v || !d) {
+      return;
+    }
 
     const change = Object.assign({}, this.get('localData'), value);
 
