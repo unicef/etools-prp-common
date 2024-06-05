@@ -1,20 +1,20 @@
-import { LitElement } from 'lit';
-import { property, state } from 'lit/decorators.js';
-import { Constructor, GenericObject } from '../typings/globals.types';
+import {LitElement} from 'lit';
+import {property, state} from 'lit/decorators.js';
+import {Constructor, GenericObject} from '../typings/globals.types';
 import Settings from '../settings';
 
 /**
  * @mixinFunction
  */
-function ResponsiveMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function ResponsiveMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class ResponsiveClass extends baseClass {
-    @property({ type: String })
+    @property({type: String})
     desktopLayoutQuery: string = Settings.layout.threshold;
 
-    @property({ type: Boolean })
+    @property({type: Boolean})
     isDesktop: boolean = false;
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated( changedProperties: Map<string | number | symbol, unknown> ) {
       super.updated(changedProperties);
       if (changedProperties.has('isDesktop')) {
         this._isDesktopChanged();
@@ -25,6 +25,7 @@ function ResponsiveMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.requestUpdate();
     }
   }
+
   return ResponsiveClass;
 }
 

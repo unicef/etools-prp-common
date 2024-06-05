@@ -1,13 +1,13 @@
-import { LitElement } from 'lit';
-import { Constructor } from '../typings/globals.types';
-import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {LitElement} from 'lit';
+import {Constructor} from '../typings/globals.types';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @mixinFunction
  */
-function NotificationsMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function NotificationsMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class NotificationsClass extends baseClass {
-    _notify(type: any, options?: any) {
+    _notify( type: any, options?: any ) {
       fireEvent(
         this,
         'notify',
@@ -20,30 +20,31 @@ function NotificationsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       );
     }
 
-    _notifyChangesSaved(options?: any) {
+    _notifyChangesSaved( options?: any ) {
       this._notify('changes-saved', options);
     }
 
-    _notifyServerError(options?: any) {
+    _notifyServerError( options?: any ) {
       this._notify('server-error', options);
     }
 
-    _notifyFileUploaded(options?: any) {
+    _notifyFileUploaded( options?: any ) {
       this._notify('file-uploaded', options);
     }
 
-    _notifyFileDeleted(options?: any) {
+    _notifyFileDeleted( options?: any ) {
       this._notify('file-deleted', options);
     }
 
-    _notifyMessageSent(options?: any) {
+    _notifyMessageSent( options?: any ) {
       this._notify('message-sent', options);
     }
 
-    _notifyErrorMessage(options?: any) {
+    _notifyErrorMessage( options?: any ) {
       this._notify('error-message', options);
     }
   }
+
   return NotificationsClass;
 }
 

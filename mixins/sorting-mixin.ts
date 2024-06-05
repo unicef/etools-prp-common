@@ -1,21 +1,21 @@
-import { LitElement } from 'lit';
-import { Constructor } from '../typings/globals.types';
-import { debounce } from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {LitElement} from 'lit';
+import {Constructor} from '../typings/globals.types';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 /**
  * @mixinFunction
  */
-function SortingMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function SortingMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class SortingClass extends baseClass {
     private _sortOrderDebouncer: ReturnType<typeof debounce> | null = null;
 
-    _sortOrderChanged(e: CustomEvent) {
+    _sortOrderChanged( e: CustomEvent ) {
       const data = e.detail;
       this._sortOrderDebouncer = debounce(() => {
         const newParams = {
           // @ts-ignore
           ...this.queryParams,
-          sort: `${data.field}.${data.direction}`,
+          sort: `${data.field}.${data.direction}`
         };
 
         e.stopPropagation();
@@ -42,6 +42,7 @@ function SortingMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
   }
+
   return SortingClass;
 }
 

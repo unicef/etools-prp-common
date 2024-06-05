@@ -1,7 +1,7 @@
-import { LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
-import { Constructor, GenericObject } from '../typings/globals.types';
-import { debounce } from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators.js';
+import {Constructor, GenericObject} from '../typings/globals.types';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import Settings from '../settings';
 import dayjs from 'dayjs';
 
@@ -15,15 +15,15 @@ const pdListStatuses: GenericObject = {
   All: 'all'
 };
 
-const buildQuery = (chunks: any[]): string => {
+const buildQuery = ( chunks: any[] ): string => {
   return chunks
-    .map((chunk) => {
+    .map(( chunk ) => {
       switch (typeof chunk) {
         case 'string':
           return chunk;
         case 'object':
           return buildQuery(
-            Object.keys(chunk).map((key) => {
+            Object.keys(chunk).map(( key ) => {
               return [encodeURIComponent(key), encodeURIComponent(chunk[key])].join('=');
             })
           );
@@ -37,17 +37,17 @@ const buildQuery = (chunks: any[]): string => {
 /**
  * @mixinFunction
  */
-function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function UtilsMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class UtilsClass extends baseClass {
-    _equals(a: any, b: any) {
+    _equals( a: any, b: any ) {
       return a === b;
     }
 
-    _forEach(selector: string, fn: (el: Element) => void) {
+    _forEach( selector: string, fn: ( el: Element ) => void ) {
       this.shadowRoot?.querySelectorAll(selector).forEach(fn);
     }
 
-    _toLowerCaseLocalized(text: string, localize: (text: string) => string) {
+    _toLowerCaseLocalized( text: string, localize: ( text: string ) => string ) {
       const localizedText = localize(text);
       if (localizedText) {
         return localizedText.toLowerCase();
@@ -55,15 +55,15 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return text;
     }
 
-    _localizeLowerCased(text: string, localize: (x: string) => string) {
+    _localizeLowerCased( text: string, localize: ( x: string ) => string ) {
       return text ? localize(text.split(' ').join('_').toLowerCase()) : '';
     }
 
-    _singularLocalized(text: string, localize: (x: string) => string) {
+    _singularLocalized( text: string, localize: ( x: string ) => string ) {
       return localize(text).substring(0, text.length - 1);
     }
 
-    _withDefault(value: any, defaultValue: any = '...', localize?: (x: string) => string) {
+    _withDefault( value: any, defaultValue: any = '...', localize?: ( x: string ) => string ) {
       if (pdListStatuses[value] !== undefined && localize) {
         return localize(pdListStatuses[value]);
       }
@@ -71,23 +71,23 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return value == null ? defaultValue : value;
     }
 
-    _withDefaultFrom(obj: GenericObject, key: string, defaultValue: any = '...') {
+    _withDefaultFrom( obj: GenericObject, key: string, defaultValue: any = '...' ) {
       return obj[key] || defaultValue;
     }
 
-    _debug(val: any) {
+    _debug( val: any ) {
       return JSON.stringify(val, null, 2);
     }
 
-    _log(val: any) {
+    _log( val: any ) {
       console.log('_log', val);
     }
 
-    _toNumber(val: string) {
+    _toNumber( val: string ) {
       return Number(val);
     }
 
-    _capitalizeFirstLetter(text: string, localize?: (x: string) => string) {
+    _capitalizeFirstLetter( text: string, localize?: ( x: string ) => string ) {
       if (localize) {
         return localize(text);
       }
@@ -101,7 +101,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       window.location.href = '/not-found';
     }
 
-    _clone(val: any) {
+    _clone( val: any ) {
       if (val) {
         return JSON.parse(JSON.stringify(val));
       }
@@ -110,18 +110,18 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _deferred() {
       const defer: GenericObject = {};
-      defer.promise = new Promise(function (resolve, reject) {
+      defer.promise = new Promise(function( resolve, reject ) {
         defer.resolve = resolve;
         defer.reject = reject;
       });
       return defer;
     }
 
-    _toPercentage(value: any) {
+    _toPercentage( value: any ) {
       return value == null ? value : Math.floor(value * 100) + '%';
     }
 
-    _formatIndicatorValue(indicatorType: string, value: any, percentize: any) {
+    _formatIndicatorValue( indicatorType: string, value: any, percentize: any ) {
       if (value == null) {
         return value;
       }
@@ -141,27 +141,27 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _displayClusterHeader(subpage: string, needsHeaderList: string[]) {
+    _displayClusterHeader( subpage: string, needsHeaderList: string[] ) {
       return needsHeaderList.includes(subpage);
     }
 
-    _commaSeparated(items: any[]) {
+    _commaSeparated( items: any[] ) {
       if (!items) {
         return '';
       }
       return items.join(', ');
     }
 
-    _commaSeparatedDictValues(items: any[], key: string) {
+    _commaSeparatedDictValues( items: any[], key: string ) {
       const newList = (items || []).map(item => item[key]);
       return this._commaSeparated(newList);
     }
 
-    _commaSeparatedValues(list: any[]) {
+    _commaSeparatedValues( list: any[] ) {
       return (list || []).join(', ');
     }
 
-    _formatAddress(street: string, city: string, zip: string) {
+    _formatAddress( street: string, city: string, zip: string ) {
       if (!(street || city || zip)) {
         return undefined;
       } else if (!street) {
@@ -187,7 +187,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return valid;
     }
 
-    _dateRangeValid(start: string, end: string) {
+    _dateRangeValid( start: string, end: string ) {
       const startField = this.shadowRoot!.querySelector(start) as HTMLInputElement;
       const endField = this.shadowRoot!.querySelector(end) as HTMLInputElement;
       if (!startField || !endField) {
@@ -221,11 +221,11 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return true;
     }
 
-    _withDefaultParams(queryParams: GenericObject) {
-      return { ...queryParams, page: 1, page_size: 10 };
+    _withDefaultParams( queryParams: GenericObject ) {
+      return {...queryParams, page: 1, page_size: 10};
     }
 
-    _appendQuery(url: string, ...theRestOfArgs: any[]) {
+    _appendQuery( url: string, ...theRestOfArgs: any[] ) {
       if (url === undefined) {
         return;
       }
@@ -233,23 +233,24 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return url + '?' + buildQuery(theRestOfArgs);
     }
 
-    _cloneNode(node: HTMLElement) {
+    _cloneNode( node: HTMLElement ) {
       const newNode = node.shadowRoot ? this.deepClone(node) : node.cloneNode(true);
 
       for (const prop in node) {
         if (Object.prototype.hasOwnProperty.call(node, prop)) {
           try {
             newNode[prop] = node[prop];
-          } catch (err) {}
+          } catch (err) {
+          }
         }
       }
 
       return newNode;
     }
 
-    deepClone(host: HTMLElement) {
-      const cloneNode = (node: HTMLElement, parent: HTMLElement | DocumentFragment) => {
-        const walkTree = (nextn: ChildNode | null, nextp: HTMLElement | DocumentFragment) => {
+    deepClone( host: HTMLElement ) {
+      const cloneNode = ( node: HTMLElement, parent: HTMLElement | DocumentFragment ) => {
+        const walkTree = ( nextn: ChildNode | null, nextp: HTMLElement | DocumentFragment ) => {
           while (nextn) {
             cloneNode(nextn as HTMLElement, nextp);
             nextn = nextn.nextSibling;
@@ -259,7 +260,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         const clone = node.cloneNode() as HTMLElement;
         parent.appendChild(clone);
         if ((node as any).shadowRoot) {
-          walkTree((node as any).shadowRoot.firstChild, clone.attachShadow({ mode: 'open' }));
+          walkTree((node as any).shadowRoot.firstChild, clone.attachShadow({mode: 'open'}));
         }
 
         walkTree(node.firstChild, clone);
@@ -270,15 +271,15 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return fragment;
     }
 
-    _identity(arg: any) {
+    _identity( arg: any ) {
       return arg;
     }
 
-    _truncate(str: string, len: number) {
+    _truncate( str: string, len: number ) {
       return str.slice(0, len) + (str.length > len ? '…' : '');
     }
 
-    _cancelDebouncers(debouncers: Array<ReturnType<typeof debounce>>) {
+    _cancelDebouncers( debouncers: Array<ReturnType<typeof debounce>> ) {
       debouncers.forEach(debouncer => {
         if (debouncer) {
           clearTimeout(debouncer);
@@ -286,20 +287,20 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       });
     }
 
-    _prop(obj: GenericObject, key: string) {
+    _prop( obj: GenericObject, key: string ) {
       return obj[key];
     }
 
-    _omit(src: GenericObject, keys: string[]) {
+    _omit( src: GenericObject, keys: string[] ) {
       return Object.keys(src)
         .filter(key => !keys.includes(key))
-        .reduce((acc, key) => {
+        .reduce(( acc, key ) => {
           acc[key] = src[key];
           return acc;
         }, {} as GenericObject);
     }
 
-    _normalizeDate(date: any) {
+    _normalizeDate( date: any ) {
       const formattedDate = dayjs(date, Settings.dateFormat, true);
       if (formattedDate.isValid()) {
         return formattedDate.startOf('day').toDate();
@@ -308,6 +309,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return dayjs(date, Settings.datepickerFormat).startOf('day').toDate();
     }
   }
+
   return UtilsClass;
 }
 

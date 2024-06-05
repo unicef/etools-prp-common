@@ -1,32 +1,32 @@
-import { property, state } from 'lit/decorators.js';
-import { LitElement } from 'lit';
-import { Constructor, GenericObject } from '../typings/globals.types';
+import {property, state} from 'lit/decorators.js';
+import {LitElement} from 'lit';
+import {Constructor, GenericObject} from '../typings/globals.types';
 
-function FilterDependenciesMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function FilterDependenciesMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class FilterDependenciesClass extends baseClass {
-    @property({ type: String })
+    @property({type: String})
     lastParams = '';
 
-    @property({ type: Object })
+    @property({type: Object})
     params!: GenericObject;
 
-    @property({ type: String })
+    @property({type: String})
     dependencies = '';
 
-    @property({ type: Object })
+    @property({type: Object})
     defaultParams: GenericObject = {};
 
     @state()
     queryParams: GenericObject = {};
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated( changedProperties: Map<string | number | symbol, unknown> ) {
       super.updated(changedProperties);
       if (changedProperties.has('dependencies') || changedProperties.has('queryParams')) {
         this._computeParams(this.dependencies, this.queryParams);
       }
     }
 
-    _computeParams(dependencies: string, queryParams: GenericObject) {
+    _computeParams( dependencies: string, queryParams: GenericObject ) {
       if (!queryParams) {
         return;
       }
@@ -34,12 +34,12 @@ function FilterDependenciesMixin<T extends Constructor<LitElement>>(baseClass: T
       const newParams = dependencies
         .split(',')
         .filter(Boolean)
-        .reduce((acc, key) => {
+        .reduce(( acc, key ) => {
           if (typeof queryParams[key] !== 'undefined') {
             acc[key] = queryParams[key];
           }
           return acc;
-        }, { ...this.defaultParams });
+        }, {...this.defaultParams});
 
       const serialized = this._serializeParams(newParams);
 
@@ -49,7 +49,7 @@ function FilterDependenciesMixin<T extends Constructor<LitElement>>(baseClass: T
       }
     }
 
-    _serializeParams(params: GenericObject) {
+    _serializeParams( params: GenericObject ) {
       return JSON.stringify(params);
     }
   }

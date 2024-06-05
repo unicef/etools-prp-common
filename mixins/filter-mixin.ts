@@ -1,28 +1,25 @@
-import { LitElement, property, state } from 'lit';
-import { Constructor } from '../typings/globals.types';
-import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {LitElement, property, state} from 'lit';
+import {Constructor} from '../typings/globals.types';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
-function FilterMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function FilterMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class FilterClass extends baseClass {
-    @property({ type: String })
+    static _debounceDelay = 400;
+    @property({type: String})
     label!: string;
-
-    @property({ type: String })
+    @property({type: String})
     name!: string;
-
     @state()
     lastValue!: string;
 
-    static _debounceDelay = 400;
-
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated( changedProperties: Map<string | number | symbol, unknown> ) {
       super.updated(changedProperties);
       if (changedProperties.has('value')) {
         this.lastValue = this._computeLastValue(this.value);
       }
     }
 
-    _computeLastValue(value: any) {
+    _computeLastValue( value: any ) {
       return value;
     }
 

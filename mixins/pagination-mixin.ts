@@ -1,14 +1,14 @@
-import { LitElement } from 'lit';
-import { property, state } from 'lit/decorators.js';
-import { Constructor, GenericObject } from '../typings/globals.types';
-import { debounce } from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {LitElement} from 'lit';
+import {property, state} from 'lit/decorators.js';
+import {Constructor, GenericObject} from '../typings/globals.types';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 /**
  * @mixinFunction
  */
-function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function PaginationMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class PaginationClass extends baseClass {
-    @property({ type: Object })
+    @property({type: Object})
     queryParams!: GenericObject;
 
     @state()
@@ -19,7 +19,7 @@ function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     private _tableContentDebouncer: ReturnType<typeof debounce> | null = null;
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated( changedProperties: Map<string | number | symbol, unknown> ) {
       super.updated(changedProperties);
       if (changedProperties.has('queryParams')) {
         this.pageSize = this._computePageSize(this.queryParams);
@@ -30,26 +30,26 @@ function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _computePageSize(queryParams: GenericObject) {
+    _computePageSize( queryParams: GenericObject ) {
       return Number(queryParams.page_size || 10);
     }
 
-    _computePageNumber(queryParams: GenericObject) {
+    _computePageNumber( queryParams: GenericObject ) {
       return Number(queryParams.page || 1);
     }
 
-    _updateQueryParams(pageSize: number, pageNumber: number) {
+    _updateQueryParams( pageSize: number, pageNumber: number ) {
       const newParams = {
         ...this.queryParams,
         page_size: pageSize,
-        page: pageNumber,
+        page: pageNumber
       };
       setTimeout(() => {
         this.queryParams = newParams;
       });
     }
 
-    _detailsChange(event: CustomEvent) {
+    _detailsChange( event: CustomEvent ) {
       // @ts-ignore
       if (!this.openedDetails) {
         return;
@@ -76,6 +76,7 @@ function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
   }
+
   return PaginationClass;
 }
 

@@ -1,22 +1,22 @@
-import { LitElement } from 'lit';
-import { Constructor, GenericObject } from '../typings/globals.types';
+import {LitElement} from 'lit';
+import {Constructor, GenericObject} from '../typings/globals.types';
 
-function DisaggregationMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function DisaggregationMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class DisaggregationClass extends baseClass {
     // Used to display rows for two and three disaggregations.
     // It will NOT work for one and zero disaggregations.
-    _determineRows(self: any, rows: GenericObject[], columns: GenericObject[]) {
+    _determineRows( self: any, rows: GenericObject[], columns: GenericObject[] ) {
       const rowsForDisplay: GenericObject[] = [];
 
-      rows.forEach((x) => {
+      rows.forEach(( x ) => {
         let formatted = '';
 
-        const rowData = columns.map((z: GenericObject) => {
+        const rowData = columns.map(( z: GenericObject ) => {
           formatted = self._formatDisaggregationIds([x.id, z.id]);
 
           return {
             key: formatted,
-            data: self.data.disaggregation[formatted],
+            data: self.data.disaggregation[formatted]
           };
         });
 
@@ -28,8 +28,8 @@ function DisaggregationMixin<T extends Constructor<LitElement>>(baseClass: T) {
           id: x.id,
           total: {
             key: formatted,
-            data: self.data.disaggregation[formatted],
-          },
+            data: self.data.disaggregation[formatted]
+          }
         });
       });
 
@@ -38,9 +38,9 @@ function DisaggregationMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     // Accepts a list of disaggregation IDs, sorts them, and
     // structures them in "()" format for lookup.
-    _formatDisaggregationIds(unsortedIds: any[]) {
+    _formatDisaggregationIds( unsortedIds: any[] ) {
       // IDs must be in ascending order.
-      const ids = unsortedIds.sort((a, b) => a - b);
+      const ids = unsortedIds.sort(( a, b ) => a - b);
       let sortedString = '';
 
       if (ids.length === 1) {
@@ -52,6 +52,7 @@ function DisaggregationMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return `(${sortedString})`;
     }
   }
+
   return DisaggregationClass;
 }
 

@@ -1,18 +1,16 @@
-import { LitElement, property } from 'lit';
-import { Constructor } from '../typings/globals.types';
+import {LitElement, property} from 'lit';
+import {Constructor} from '../typings/globals.types';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import EtoolsDialog from '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
-import { query } from 'lit/decorators.js';
+import {query} from 'lit/decorators.js';
 
-function ModalMixin<T extends Constructor<LitElement>>(baseClass: T) {
+function ModalMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class ModalClass extends baseClass {
-    @property({ type: Boolean, reflect: true })
+    @property({type: Boolean, reflect: true})
     opened!: boolean;
-
-    private _adjustPositionDebouncer: ReturnType<typeof debounce> | null = null;
-
     @query('#dialog')
     dialog!: EtoolsDialog;
+    private _adjustPositionDebouncer: ReturnType<typeof debounce> | null = null;
 
     close() {
       this.opened = false;
@@ -22,7 +20,7 @@ function ModalMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.opened = true;
     }
 
-    adjustPosition(e: CustomEvent) {
+    adjustPosition( e: CustomEvent ) {
       if (!e) {
         return;
       }
