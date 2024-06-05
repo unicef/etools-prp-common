@@ -1,27 +1,33 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor, GenericObject} from '../typings/globals.types';
-import {property} from '@polymer/decorators';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
+import { LitElement } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { Constructor, GenericObject } from '../typings/globals.types';
+import { debounce } from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 /**
- * @polymer
  * @mixinFunction
  */
-function PaginationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class PaginationClass extends baseClass {
-    @property({type: Object})
+    @property({ type: Object })
     queryParams!: GenericObject;
 
-    @property({type: Number, computed: '_computePageSize(queryParams)'})
+    @state()
     pageSize!: number;
 
-    @property({type: Number, computed: '_computePageNumber(queryParams)'})
+    @state()
     pageNumber!: number;
 
-    _tableContentDebouncer!: Debouncer | null;
+    private _tableContentDebouncer: ReturnType<typeof debounce> | null = null;
 
-    static get observers() {
-      return ['_updateQueryParams(pageSize, pageNumber)'];
+    updated(changedProperties: Map<string | number | symbol, unknown>) {
+      super.updated(changedProperties);
+      if (changedProperties.has('queryParams')) {
+        this.pageSize = this._computePageSize(this.queryParams);
+        this.pageNumber = this._computePageNumber(this.queryParams);
+      }
+      if (changedProperties.has('pageSize') || changedProperties.has('pageNumber')) {
+        this._updateQueryParams(this.pageSize, this.pageNumber);
+      }
     }
 
     _computePageSize(queryParams: GenericObject) {
@@ -33,12 +39,13 @@ function PaginationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _updateQueryParams(pageSize: number, pageNumber: number) {
-      const newParams = Object.assign({}, this.queryParams, {
+      const newParams = {
+        ...this.queryParams,
         page_size: pageSize,
-        page: pageNumber
-      });
+        page: pageNumber,
+      };
       setTimeout(() => {
-        this.set('queryParams', newParams);
+        this.queryParams = newParams;
       });
     }
 
@@ -49,31 +56,23 @@ function PaginationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
       const element = event.detail.row;
       if (event.detail.detailsOpened) {
-        this.push('openedDetails', element);
+        // @ts-ignore
+        this.openedDetails.push(element);
       } else {
         // @ts-ignore
         const index = this.openedDetails.indexOf(element);
         if (index !== -1) {
-          this.splice('openedDetails', index, 1);
+          // @ts-ignore
+          this.openedDetails.splice(index, 1);
         }
       }
-    }
-
-    _tableContentChanged() {
-      // (dci) to be removed, this logic moved to _pageNumberChanged
-      // this._tableContentDebouncer = Debouncer.debounce(this._tableContentDebouncer,
-      //   timeOut.after(100),
-      //   () => {
-      //     const tempList = this.openedDetails.slice();
-      //     tempList.forEach((detail: any) => detail.detailsOpened = false);
-      //   });
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
 
-      if (this._tableContentDebouncer && this._tableContentDebouncer.isActive()) {
-        this._tableContentDebouncer.cancel();
+      if (this._tableContentDebouncer) {
+        clearTimeout(this._tableContentDebouncer);
       }
     }
   }

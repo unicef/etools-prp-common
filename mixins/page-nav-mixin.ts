@@ -1,20 +1,28 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor} from '../typings/globals.types';
+import { LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
+import { Constructor } from '../typings/globals.types';
 
 /**
- * @polymer
  * @mixinFunction
  */
-function PageNavMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function PageNavMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class PageNavClass extends baseClass {
-    static get observers() {
-      return ['_selectedChanged(selected)'];
+    @property({ type: Boolean })
+    subMenuOpened = false;
+
+    @property({ type: Number })
+    selected = 0;
+
+    updated(changedProperties: Map<string | number | symbol, unknown>) {
+      super.updated(changedProperties);
+      if (changedProperties.has('selected')) {
+        this._selectedChanged();
+      }
     }
 
-    public _selectedChanged() {
+    _selectedChanged() {
       setTimeout(() => {
-        const normalMenuItemOpened = this.shadowRoot!.querySelectorAll('.nav-menu-item.iron-selected').length > 0;
-        // @ts-ignore
+        const normalMenuItemOpened = this.shadowRoot!.querySelectorAll('.nav-menu-item.selected').length > 0;
         this.subMenuOpened = !normalMenuItemOpened;
       }, 200);
     }

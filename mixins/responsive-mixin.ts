@@ -1,28 +1,28 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor, GenericObject} from '../typings/globals.types';
-import {property} from '@polymer/decorators';
+import { LitElement } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { Constructor, GenericObject } from '../typings/globals.types';
 import Settings from '../settings';
 
 /**
- * @polymer
  * @mixinFunction
  */
-function ResponsiveMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function ResponsiveMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class ResponsiveClass extends baseClass {
-    @property({type: String, readOnly: true})
+    @property({ type: String })
     desktopLayoutQuery: string = Settings.layout.threshold;
 
-    @property({type: Object})
-    isDesktop: GenericObject = {
-      type: Boolean
-    };
+    @property({ type: Boolean })
+    isDesktop: boolean = false;
 
-    static get observers() {
-      return ['_isDesktopChanged(isDesktop)'];
+    updated(changedProperties: Map<string | number | symbol, unknown>) {
+      super.updated(changedProperties);
+      if (changedProperties.has('isDesktop')) {
+        this._isDesktopChanged();
+      }
     }
 
     _isDesktopChanged() {
-      this.updateStyles();
+      this.requestUpdate();
     }
   }
   return ResponsiveClass;

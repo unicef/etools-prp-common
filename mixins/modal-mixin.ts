@@ -1,27 +1,25 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor} from '../typings/globals.types';
-import {property} from '@polymer/decorators';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
-import {PaperDialogElement} from '@polymer/paper-dialog';
+import { LitElement, property } from 'lit';
+import { Constructor } from '../typings/globals.types';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import EtoolsDialog from '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
+import { query } from 'lit/decorators.js';
 
-/**
- * @polymer
- * @mixinFunction
- */
-function ModalMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function ModalMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class ModalClass extends baseClass {
-    @property({type: Boolean, notify: true})
+    @property({ type: Boolean, reflect: true })
     opened!: boolean;
 
-    _adjustPositionDebouncer!: Debouncer | null;
+    private _adjustPositionDebouncer: ReturnType<typeof debounce> | null = null;
+
+    @query('#dialog')
+    dialog!: EtoolsDialog;
 
     close() {
-      this.set('opened', false);
+      this.opened = false;
     }
 
     open() {
-      this.set('opened', true);
+      this.opened = true;
     }
 
     adjustPosition(e: CustomEvent) {
@@ -32,9 +30,11 @@ function ModalMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         e.stopPropagation();
       }
 
-      this._adjustPositionDebouncer = Debouncer.debounce(this._adjustPositionDebouncer, timeOut.after(100), () => {
-        (this.$.dialog as PaperDialogElement).refit();
-      });
+      this._adjustPositionDebouncer = debounce(() => {
+        if (this.dialog) {
+          this.dialog.refit();
+        }
+      }, 100);
     }
 
     disconnectedCallback() {

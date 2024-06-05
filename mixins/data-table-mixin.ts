@@ -1,30 +1,27 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import { LitElement, property } from 'lit';
+import { Constructor, GenericObject } from '../typings/globals.types';
 
-/**
- * @polymer
- * @mixinFunction
- */
-function DataTableMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
+    @property({ type: Object }) queryParams = {};
+    @property({ type: Boolean }) _pageNumberInitialized = false;
+    @property({ type: Array }) openedDetails = [];
+
     _pageSizeChanged(e: CustomEvent) {
       const change: GenericObject = {
         page_size: e.detail.value
       };
 
-      // @ts-ignore
       if (this._pageNumberInitialized) {
         change.page = 1;
       }
 
-      // @ts-ignore
-      this.set('queryParams', Object.assign({}, this.queryParams, change));
+      this.queryParams = { ...this.queryParams, ...change };
     }
 
     _colapseExpandedDetails() {
       setTimeout(() => {
-        // @ts-ignore
-        const openedDetails = (this.openedDetails as any[]) || [];
+        const openedDetails = this.openedDetails || [];
         if (openedDetails.length > 0) {
           const tempList = openedDetails.slice();
           tempList.forEach((detail: any) => (detail.detailsOpened = false));
@@ -35,11 +32,10 @@ function DataTableMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     _pageNumberChanged(e: CustomEvent) {
       this._colapseExpandedDetails();
 
-      // @ts-ignore
-      this.set('queryParams', Object.assign({}, this.queryParams, {page: e.detail.value}));
+      this.queryParams = { ...this.queryParams, page: e.detail.value };
 
       setTimeout(() => {
-        this.set('_pageNumberInitialized', true);
+        this._pageNumberInitialized = true;
       });
     }
   }

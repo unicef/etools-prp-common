@@ -1,12 +1,11 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor} from '../typings/globals.types';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import { LitElement } from 'lit';
+import { Constructor } from '../typings/globals.types';
+import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
- * @polymer
  * @mixinFunction
  */
-function NotificationsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function NotificationsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class NotificationsClass extends baseClass {
     _notify(type: any, options?: any) {
       fireEvent(
