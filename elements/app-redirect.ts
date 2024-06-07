@@ -1,31 +1,52 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {property} from '@polymer/decorators';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {connect} from 'pwa-helpers';
+import '../ReduxConnectedElement';
 import RoutingMixin from '../mixins/routing-mixin';
-import {GenericObject} from '../typings/globals.types';
+import {RootState} from '../../typings/redux.types';
+import {store} from '../../redux/store';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin RoutingMixin
- */
-class AppRedirect extends RoutingMixin(ReduxConnectedElement) {
-  @property({type: String, computed: 'getReduxStateValue(rootState.app.current)'})
-  app!: string;
+@customElement('app-redirect')
+export class AppRedirect extends RoutingMixin(connect(store)(LitElement)) {
+  @property({type: String})
+  app?: string;
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.workspaces.current)'})
-  workspace!: string;
+  @property({type: String})
+  workspace?: string;
 
-  @property({type: Array, computed: 'getReduxStateArray(rootState.workspaces.all)'})
-  workspaces!: any[];
+  @property({type: Array})
+  workspaces?: any[];
 
-  @property({type: Object, computed: 'getReduxStateObject(rootState.userProfile.profile)'})
-  profile!: GenericObject;
+  @property({type: Object})
+  profile?;
 
-  public static get observers() {
-    return ['_redirectIfNeeded(app, workspaces, workspace, profile)'];
+  updated(changedProperties) {
+    if (
+      changedProperties.has('app') ||
+      changedProperties.has('workspaces') ||
+      changedProperties.has('workspace') ||
+      changedProperties.has('profile')
+    ) {
+      this._redirectIfNeeded(this.app, this.workspaces, this.workspace, this.profile);
+    }
   }
 
-  _redirectIfNeeded(app: string, workspaces: any[], workspace: string, profile: GenericObject) {
+  stateChanged(rootState: RootState) {
+    if (rootState.app?.current) {
+      this.app = rootState.app?.current;
+    }
+    if (rootState.workspaces?.current) {
+      this.workspace = rootState.workspaces?.current;
+    }
+    if (rootState.workspaces?.all) {
+      this.workspaces = rootState.workspaces.all;
+    }
+    if (rootState.userProfile?.profile) {
+      this.profile = rootState.userProfile.profile;
+    }
+  }
+
+  _redirectIfNeeded(app, workspaces, workspace, profile) {
     if (workspaces && !workspaces.length) {
       // user has no workspaces
       location.href = '/unauthorized';
@@ -38,8 +59,8 @@ class AppRedirect extends RoutingMixin(ReduxConnectedElement) {
       location.href = '/unauthorized';
     }
   }
+
+  render() {
+    return html``;
+  }
 }
-
-window.customElements.define('app-redirect', AppRedirect);
-
-export {AppRedirect as AppRedirectEl};

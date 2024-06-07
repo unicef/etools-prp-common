@@ -25,7 +25,7 @@ function LocalizeMixin<T extends Constructor<ReduxConnectedElement>>(baseClass: 
     useKeyIfMissing = false;
 
     // @state()
-    localize!: (x: string) => string;
+    localize: (x: string) => string = this.__computeLocalize(this.language, this.resources, this.formats);
 
     // // @property({type: Boolean})
     bubbleEvent = false;
