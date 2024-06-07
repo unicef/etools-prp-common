@@ -5,38 +5,34 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setL11NResources} from '../../redux/actions';
 import IntlMessageFormat from 'intl-messageformat';
 
-function LocalizeMixin<T extends Constructor<ReduxConnectedElement>>( baseClass: T ) {
+function LocalizeMixin<T extends Constructor<ReduxConnectedElement>>(baseClass: T) {
   class LocalizeClass extends baseClass {
     __localizationCache = {
       messages: {} /* Unique localized strings. Invalidated when the language,
                       formats or resources change. */
     };
 
-    @property({type: String})
+    // // @property({type: String})
     language!: string;
 
-    @property({type: Object})
+    // // @property({type: Object})
     resources!: GenericObject;
 
-    @property({type: Object})
+    // // @property({type: Object})
     formats = {};
 
-    @property({type: Boolean})
+    // // @property({type: Boolean})
     useKeyIfMissing = false;
 
-    @state()
-    localize!: ( x: string ) => string;
+    // @state()
+    localize!: (x: string) => string;
 
-    @property({type: Boolean})
+    // // @property({type: Boolean})
     bubbleEvent = false;
 
-    updated( changedProperties: Map<string | number | symbol, unknown> ) {
+    updated(changedProperties: Map<string | number | symbol, unknown>) {
       super.updated(changedProperties);
-      if (
-        changedProperties.has('language') ||
-        changedProperties.has('resources') ||
-        changedProperties.has('formats')
-      ) {
+      if (changedProperties.has('language') || changedProperties.has('resources') || changedProperties.has('formats')) {
         this.localize = this.__computeLocalize(this.language, this.resources, this.formats);
       }
     }
@@ -44,7 +40,7 @@ function LocalizeMixin<T extends Constructor<ReduxConnectedElement>>( baseClass:
     /**
      Returns a computed `localize` method, based on the current `language`.
      */
-    __computeLocalize( language?: string, resources?: GenericObject, formats?: any ) {
+    __computeLocalize(language?: string, resources?: GenericObject, formats?: any) {
       const proto = this.constructor.prototype;
 
       // Everytime any of the parameters change, invalidate the strings cache.
@@ -53,7 +49,7 @@ function LocalizeMixin<T extends Constructor<ReduxConnectedElement>>( baseClass:
       }
       proto.__localizationCache.messages = {};
 
-      return ( ...args: any[] ) => {
+      return (...args: any[]) => {
         const key = args[0];
         if (!key || !resources || !language || !resources[language]) {
           return;
@@ -84,7 +80,7 @@ function LocalizeMixin<T extends Constructor<ReduxConnectedElement>>( baseClass:
       };
     }
 
-    dispatchResources( locales: GenericObject ) {
+    dispatchResources(locales: GenericObject) {
       this.reduxStore.dispatch(setL11NResources(locales));
       fireEvent(this, 'app-localize-resources-loaded');
     }

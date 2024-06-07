@@ -1,10 +1,11 @@
-import {LitElement, property, customElement} from 'lit';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators';
 import {Constructor, GenericObject} from '../typings/globals.types';
 import Constants from '../constants';
 
 declare const numeral: any;
 
-function AnalysisChartMixin<T extends Constructor<LitElement>>( baseClass: T ) {
+function AnalysisChartMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class AnalysisChartClass extends baseClass {
     tooltipStyles = `
       .google-visualization-tooltip {
@@ -48,7 +49,7 @@ function AnalysisChartMixin<T extends Constructor<LitElement>>( baseClass: T ) {
       }
     `;
 
-    @property({type: Object})
+    // @property({type: Object})
     _baseOptions = {
       bar: {
         groupWidth: 20
@@ -63,15 +64,15 @@ function AnalysisChartMixin<T extends Constructor<LitElement>>( baseClass: T ) {
       }
     };
 
-    @property({type: Array})
+    // @property({type: Array})
     rows: GenericObject[] = [];
 
-    @property({type: Object})
+    // @property({type: Object})
     get options(): GenericObject {
       return this._computeOptions(this.rows);
     }
 
-    _buildTooltipContent( title: string, data: any ) {
+    _buildTooltipContent(title: string, data: any) {
       return `
         <div class="tooltip-content">
           <div>${title}</div>
@@ -83,20 +84,20 @@ function AnalysisChartMixin<T extends Constructor<LitElement>>( baseClass: T ) {
       `;
     }
 
-    _joinWithComma( items: any ) {
+    _joinWithComma(items: any) {
       if (!items) {
         return '';
       }
       return items.join(', ');
     }
 
-    _computeRows( data: GenericObject[] ) {
-      return Object.keys(data).map(( key: any ) => {
+    _computeRows(data: GenericObject[]) {
+      return Object.keys(data).map((key: any) => {
         return [key, data[key].length, this._buildTooltipContent(key, data[key])];
       });
     }
 
-    _fromJSON( obj?: GenericObject ) {
+    _fromJSON(obj?: GenericObject) {
       return obj ? obj.v / obj.d : 0;
     }
 

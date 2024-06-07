@@ -2,9 +2,9 @@ import {Constructor} from '../typings/globals.types';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
-function ErrorHandlerMixin<T extends Constructor<ReduxConnectedElement>>( baseClass: T ) {
+function ErrorHandlerMixin<T extends Constructor<ReduxConnectedElement>>(baseClass: T) {
   class ErrorHandlerClass extends baseClass {
-    _handleError( e: CustomEvent ) {
+    _handleError(e: CustomEvent) {
       let xhr;
       try {
         xhr = e.detail.request.xhr;

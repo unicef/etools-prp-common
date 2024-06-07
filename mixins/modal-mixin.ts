@@ -1,16 +1,16 @@
-import {LitElement, property} from 'lit';
+import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
-import EtoolsDialog from '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
-import {query} from 'lit/decorators.js';
+import {property} from 'lit/decorators.js';
 
-function ModalMixin<T extends Constructor<LitElement>>( baseClass: T ) {
+function ModalMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class ModalClass extends baseClass {
-    @property({type: Boolean, reflect: true})
+    // @property({type: Boolean, reflect: true})
     opened!: boolean;
-    @query('#dialog')
-    dialog!: EtoolsDialog;
-    private _adjustPositionDebouncer: ReturnType<typeof debounce> | null = null;
+
+    // @query('#dialog')
+    // dialog!: any;
+
+    // private _adjustPositionDebouncer: ReturnType<typeof debounce> | null = null;
 
     close() {
       this.opened = false;
@@ -20,7 +20,7 @@ function ModalMixin<T extends Constructor<LitElement>>( baseClass: T ) {
       this.opened = true;
     }
 
-    adjustPosition( e: CustomEvent ) {
+    adjustPosition(e: CustomEvent) {
       if (!e) {
         return;
       }
@@ -28,19 +28,21 @@ function ModalMixin<T extends Constructor<LitElement>>( baseClass: T ) {
         e.stopPropagation();
       }
 
-      this._adjustPositionDebouncer = debounce(() => {
-        if (this.dialog) {
-          this.dialog.refit();
-        }
-      }, 100);
+      // TODO
+      // this._adjustPositionDebouncer = debounce(() => {
+      //   if (this.dialog) {
+      //     this.dialog.refit();
+      //   }
+      // }, 100);
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
 
-      if (this._adjustPositionDebouncer && this._adjustPositionDebouncer.isActive()) {
-        this._adjustPositionDebouncer.cancel();
-      }
+      // TODO
+      // if (this._adjustPositionDebouncer && this._adjustPositionDebouncer.isActive()) {
+      //   this._adjustPositionDebouncer.cancel();
+      // }
     }
   }
 

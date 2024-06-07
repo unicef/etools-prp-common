@@ -14,7 +14,7 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
   }
 
   @property({type: String})
-  selector!: string;
+  selector!: any;
 
   @property({type: Object})
   printWindow!: Window;

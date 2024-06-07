@@ -7,11 +7,9 @@ import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
  */
 function SortingMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class SortingClass extends baseClass {
-    private _sortOrderDebouncer: ReturnType<typeof debounce> | null = null;
-
-    _sortOrderChanged( e: CustomEvent ) {
+    _sortOrderChanged(e: CustomEvent) {
       const data = e.detail;
-      this._sortOrderDebouncer = debounce(() => {
+      debounce(() => {
         const newParams = {
           // @ts-ignore
           ...this.queryParams,
@@ -22,8 +20,6 @@ function SortingMixin<T extends Constructor<LitElement>>( baseClass: T ) {
         // @ts-ignore
         this.queryParams = newParams;
       }, 100);
-
-      this._sortOrderDebouncer();
     }
 
     connectedCallback() {

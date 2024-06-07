@@ -7,13 +7,13 @@ import {Constructor} from '../typings/globals.types';
  */
 function PageNavMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class PageNavClass extends baseClass {
-    @property({type: Boolean})
+    // // @property({type: Boolean})
     subMenuOpened = false;
 
-    @property({type: Number})
+    // // @property({type: Number})
     selected = 0;
 
-    updated( changedProperties: Map<string | number | symbol, unknown> ) {
+    updated(changedProperties: Map<string | number | symbol, unknown>) {
       super.updated(changedProperties);
       if (changedProperties.has('selected')) {
         this._selectedChanged();
