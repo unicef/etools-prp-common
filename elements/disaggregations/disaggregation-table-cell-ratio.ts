@@ -1,108 +1,101 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/app-layout/app-grid/app-grid-style';
+import { html, css, LitElement } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import UtilsMixin from '../../mixins/utils-mixin';
-import '../../elements/etools-prp-number';
-import './disaggregation-field';
-import {DisaggregationFieldEl} from './disaggregation-field';
 import './disaggregation-table-cell';
-import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import {GenericObject} from '../../typings/globals.types';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import '@polymer/iron-meta/iron-meta';
-import {IronMeta} from '@polymer/iron-meta/iron-meta';
-import {PaperInputElement} from '@polymer/paper-input/paper-input';
+import './disaggregation-field';
+import '../../elements/etools-prp-number';
+import { disaggregationTableStyles } from '../../styles/disaggregation-table-styles';
+import { GenericObject } from '../../typings/globals.types';
+import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import { IronMeta } from '@polymer/iron-meta/iron-meta'; // TODO remove
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin UtilsMixin
- */
-class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
-  public static get template() {
-    // language=HTML
+@customElement('disaggregation-table-cell-ratio')
+class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
+  @property({ type: String })
+  vName!: string;
+
+  @property({ type: Number })
+  editable!: number;
+
+  @property({ type: Object })
+  localData!: GenericObject;
+
+  @property({ type: Object })
+  data!: GenericObject;
+
+  @property({ type: String })
+  coords!: string;
+
+  static styles = [
+    disaggregationTableStyles,
+    css`
+      :host {
+        display: block;
+      }
+
+      .item,
+      .computed-value {
+        box-sizing: border-box;
+        min-height: 25px;
+        line-height: 25px;
+      }
+
+      .item {
+        padding: 0;
+        border-bottom: 1px solid white;
+        white-space: nowrap;
+      }
+
+      .item:not(:first-child) {
+        border-left: 1px solid white;
+      }
+
+      .computed-value {
+        grid-column: span 2;
+        color: var(--theme-secondary-text-color);
+      }
+    `
+  ];
+
+  render() {
     return html`
-      ${disaggregationTableStyles}
-      <style include="app-grid-style">
-        :host {
-          display: block;
-
-          --app-grid-columns: 2;
-          --app-grid-gutter: 0px;
-          --app-grid-item-height: auto;
-          --app-grid-expandible-item-columns: 2;
-        }
-
-        .item,
-        .computed-value {
-          box-sizing: border-box;
-          min-height: 25px;
-          line-height: 25px;
-        }
-
-        .item {
-          padding: 0;
-          border-bottom: 1px solid white;
-          white-space: nowrap;
-        }
-
-        .item:not(:first-child) {
-          border-left: 1px solid white;
-        }
-
-        .computed-value {
-          @apply --app-grid-expandible-item;
-
-          color: var(--theme-secondary-text-color);
-        }
-      </style>
-
-      <disaggregation-table-cell data="[[data]]" editable="[[editable]]">
+      <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         <div slot="editable" class="app-grid">
           <div class="item">
-            <disaggregation-field id="v" key="v" min="0" value="[[data.v]]" coords="[[coords]]"> </disaggregation-field>
+            <disaggregation-field id="v" key="v" min="0" .value="${this.data.v}" .coords="${this.coords}"></disaggregation-field>
           </div>
           <div class="item">
-            <disaggregation-field id="d" key="d" min="0" value="[[data.d]]" coords="[[coords]]" validator="[[vName]]">
-            </disaggregation-field>
+            <disaggregation-field id="d" key="d" min="0" .value="${this.data.d}" .coords="${this.coords}" .validator="${this.vName}"></disaggregation-field>
           </div>
           <div class="computed-value">
-            <etools-prp-number value="[[localData.v]]"></etools-prp-number>
-            /
-            <etools-prp-number value="[[localData.d]]"></etools-prp-number>
+            <etools-prp-number .value="${this.localData.v}"></etools-prp-number> / <etools-prp-number .value="${this.localData.d}"></etools-prp-number>
           </div>
         </div>
         <div slot="non-editable" class="app-grid">
           <div class="item">
-            <etools-prp-number value="[[data.v]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.v}"></etools-prp-number>
           </div>
           <div class="item">
-            <etools-prp-number value="[[data.d]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.d}"></etools-prp-number>
           </div>
           <div class="computed-value">
-            <etools-prp-number value="[[data.v]]"></etools-prp-number>
-            /
-            <etools-prp-number value="[[data.d]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.v}"></etools-prp-number> / <etools-prp-number .value="${this.data.d}"></etools-prp-number>
           </div>
         </div>
       </disaggregation-table-cell>
     `;
   }
 
-  @property({type: String})
-  vName!: string;
-
-  @property({type: Number})
-  editable!: number;
-
-  @property({type: Object})
-  localData!: GenericObject;
-
-  @property({type: Object, observer: '_cloneData'})
-  data!: GenericObject;
-
-  @property({type: String, observer: '_bindValidation'})
-  coords!: string;
+  updated(changedProperties: Map<string | number | symbol, unknown>) {
+    super.updated(changedProperties);
+    if (changedProperties.has('data')) {
+      this._cloneData(this.data);
+    }
+    if (changedProperties.has('coords')) {
+      this._bindValidation(this.coords);
+    }
+  }
 
   _handleInput(e: CustomEvent) {
     const key = e.detail.key;
@@ -115,10 +108,10 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
 
     e.stopPropagation();
 
-    const v = this.shadowRoot!.querySelector('#v') as DisaggregationFieldEl;
-    const d = this.shadowRoot!.querySelector('#d') as DisaggregationFieldEl;
+    const v = this.shadowRoot!.querySelector('#v') as EtoolsInput;
+    const d = this.shadowRoot!.querySelector('#d') as EtoolsInput;
 
-    const change = Object.assign({}, this.get('localData'), value);
+    const change = { ...this.localData, ...value };
 
     if (!v.validate() || !d.validate()) {
       change.c = null;
@@ -132,13 +125,13 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
       });
     }
 
-    ['v', 'd'].forEach(function (key) {
+    ['v', 'd'].forEach((key) => {
       if (isNaN(change[key])) {
         delete change[key];
       }
     });
 
-    this.set('localData', change);
+    this.localData = change;
   }
 
   _bindValidation(coords: string) {
@@ -150,7 +143,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
         return (
           Number(value) !== 0 ||
           Number(
-            ((this!.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as PaperInputElement).value
+            (this.shadowRoot!.querySelector('#v') as EtoolsInput).value
           ) === 0
         );
       }
@@ -162,13 +155,25 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
       value: validator
     });
 
-    this.set('vName', vName);
+    this.vName = vName;
   }
 
   _cloneData(data: GenericObject) {
     if (!this.localData) {
-      this.set('localData', this._clone(data));
+      this.localData = { ...data };
     }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._addEventListeners();
+    const nullData = this._clone(this.data);
+    this.data = nullData;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._removeEventListeners();
   }
 
   _addEventListeners() {
@@ -176,23 +181,9 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
     this.addEventListener('field-value-changed', this._handleInput as any);
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-
-    this._addEventListeners();
-    const nullData = this._clone(this.data);
-    this.set('data', nullData);
-  }
-
   _removeEventListeners() {
     this.removeEventListener('field-value-changed', this._handleInput as any);
   }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-
-    this._removeEventListeners();
-  }
 }
 
-window.customElements.define('disaggregation-table-cell-ratio', DisaggregationTableCellRatio);
+export { DisaggregationTableCellRatio as DisaggregationTableCellRatioEl };

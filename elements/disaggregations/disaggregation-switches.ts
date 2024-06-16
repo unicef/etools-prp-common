@@ -1,100 +1,107 @@
-import {ReduxConnectedElement} from '../../ReduxConnectedElement';
-import {property} from '@polymer/decorators/lib/decorators';
-import {html} from '@polymer/polymer';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '@polymer/paper-checkbox/paper-checkbox';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import { html, css, LitElement } from 'lit';
+import { property, customElement, state } from 'lit/decorators.js';
+import '@polymer/paper-checkbox/paper-checkbox'; //TODO remove
 import UtilsMixin from '../../mixins/utils-mixin';
 import LocalizeMixin from '../../mixins/localize-mixin';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import '../message-box';
-import {GenericObject} from '../../typings/globals.types';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
+import { GenericObject } from '../../typings/globals.types';
+import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import { debounce } from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
- * @appliesMixin DisaggregationMixin
- */
-class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixin(ReduxConnectedElement))) {
-  public static get template() {
+@customElement('disaggregation-switches')
+class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixin(LitElement))) {
+  @property({ type: Object })
+  mapping!: GenericObject;
+
+  @property({ type: Number })
+  editable!: number;
+
+  @property({ type: Boolean })
+  warning = true;
+
+  @property({ type: Array })
+  reportedOn: number[] = [];
+
+  @property({ type: Object, reflect: true })
+  formattedData!: GenericObject;
+
+  @property({ type: Object })
+  data!: GenericObject;
+
+  @property({ type: Boolean })
+  editableBool!: boolean;
+
+  @state()
+  fieldValueChanged: any = null;
+
+  static styles = css`
+    :host {
+      display: block;
+    }
+
+    .container {
+      padding: 10px 24px;
+      margin: 0 -24px;
+      background: var(--paper-grey-100);
+    }
+
+    .container h4 {
+      margin: 0 0 10px;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    paper-checkbox:not(:first-of-type) {
+      margin-left: 24px;
+    }
+
+    message-box {
+      margin-top: 10px;
+    }
+  `;
+
+  render() {
     return html`
-      <style>
-        :host {
-          display: block;
-        }
+      ${this.editableBool
+      ? html`
+            <div class="container">
+              <h4>${this.localize('enter_data_by_disaggregation')}</h4>
+              ${this.mapping.map((field) => html`
+                <paper-checkbox
+                  id="${field.id}"
+                  .checked="${this._computeChecked(field.id)}"
+                  @change="${this._fieldValueChanged}"
+                >
+                  ${this._formatFieldName(field.name)}
+                </paper-checkbox>
+              `)}
 
-        .container {
-          padding: 10px 24px;
-          margin: 0 -24px;
-          background: var(--paper-grey-100);
-        }
-
-        .container h4 {
-          margin: 0 0 10px;
-          font-size: 12px;
-          line-height: 1;
-        }
-
-        paper-checkbox:not(:first-of-type) {
-          margin-left: 24px;
-        }
-
-        message-box {
-          margin-top: 10px;
-        }
-      </style>
-
-      <template is="dom-if" if="[[editableBool]]" restamp>
-        <div class="container">
-          <h4>[[localize('enter_data_by_disaggregation')]]</h4>
-          <template is="dom-repeat" items="[[mapping]]" as="field">
-            <paper-checkbox id="[[field.id]]" checked="[[_computeChecked(field.id)]]" on-change="_fieldValueChanged">
-              [[_formatFieldName(field.name)]]
-            </paper-checkbox>
-          </template>
-
-          <template is="dom-if" if="[[warning]]" restamp="true">
-            <message-box type="warning">
-              If one or more disaggregation box is unchecked, the reporting table will be simplified however the report
-              will not be in line with the disaggregation agreed in the PD/SSFA.
-            </message-box>
-          </template>
-        </div>
-      </template>
+              ${this.warning
+        ? html`
+                    <message-box type="warning">
+                      If one or more disaggregation box is unchecked, the reporting table will be simplified however the
+                      report will not be in line with the disaggregation agreed in the PD/SSFA.
+                    </message-box>
+                  `
+        : ''}
+            </div>
+          `
+      : ''}
     `;
   }
 
-  @property({type: Object})
-  mapping!: GenericObject;
-
-  @property({type: Number})
-  editable!: number;
-
-  @property({type: Boolean})
-  warning = true;
-
-  @property({type: Array})
-  reportedOn: number[] = [];
-
-  @property({type: Object, notify: true})
-  formattedData!: GenericObject;
-
-  @property({type: Object, observer: '_cloneData'})
-  data!: GenericObject;
-
-  @property({type: Boolean, computed: '_computeEditableBool(editable)'})
-  editableBool!: boolean;
-
-  fieldValueChanged!: Debouncer | null;
-
-  static get observers() {
-    return ['_computeWarning(data.num_disaggregation, reportedOn.length)'];
+  updated(changedProperties: Map<string | number | symbol, unknown>) {
+    super.updated(changedProperties);
+    if (changedProperties.has('editable')) {
+      this.editableBool = this._computeEditableBool(this.editable);
+    }
+    if (changedProperties.has('data')) {
+      this._cloneData(this.data);
+    }
+    if (changedProperties.has('data.num_disaggregation') || changedProperties.has('reportedOn.length')) {
+      this._computeWarning(this.data.num_disaggregation, this.reportedOn.length);
+    }
   }
 
   _computeEditableBool(editable: number) {
@@ -102,7 +109,7 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
   }
 
   _cloneData(data: GenericObject) {
-    this.set('formattedData', this._clone(data));
+    this.formattedData = { ...data };
   }
 
   _computeChecked(id: string) {
@@ -115,39 +122,31 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
     return this._capitalizeFirstLetter(name);
   }
 
-  _fieldValueChanged(e: CustomEvent) {
-    const field = <GenericObject>e.target;
-
-    this.fieldValueChanged = Debouncer.debounce(this.fieldValueChanged, timeOut.after(100), () => {
+  _fieldValueChanged(e: Event) {
+    const field = e.target as GenericObject;
+    this.fieldValueChanged = debounce(this.fieldValueChanged, 100, () => {
       this._recordField(field);
-
       this._confirmIntent(field)
-        .then(this._commit.bind(this))
-        .catch((_err: GenericObject) => {
-          this._revert.bind(this);
-        });
+        .then(() => this._commit())
+        .catch(() => this._revert(field));
     });
   }
 
   _confirmIntent(field: GenericObject) {
-    const deferred = this._deferred();
-
-    fireEvent(this, 'disaggregation-modal-confirm', deferred);
-
-    return deferred.promise.catch(function () {
-      return Promise.reject(field);
+    return new Promise((resolve, reject) => {
+      const deferred = this._deferred();
+      fireEvent(this, 'disaggregation-modal-confirm', deferred);
+      deferred.promise.then(resolve).catch(() => reject(field));
     });
   }
 
   _commit() {
-    this.set(
-      'formattedData',
-      Object.assign({}, this.formattedData, {
-        disaggregation: {},
-        level_reported: this.reportedOn.length,
-        disaggregation_reported_on: this.reportedOn
-      })
-    );
+    this.formattedData = {
+      ...this.formattedData,
+      disaggregation: {},
+      level_reported: this.reportedOn.length,
+      disaggregation_reported_on: this.reportedOn
+    };
   }
 
   _revert(field: GenericObject) {
@@ -156,7 +155,7 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
   }
 
   _computeWarning(numDisagg: number, reportedOnLength: number) {
-    this.set('warning', !!numDisagg && reportedOnLength < numDisagg);
+    this.warning = !!numDisagg && reportedOnLength < numDisagg;
   }
 
   _recordField(field: GenericObject) {
@@ -166,15 +165,15 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
   _updateReportedOn(ctrlId: string, checked: boolean) {
     const id = Number(ctrlId);
     if (checked) {
-      this.push('reportedOn', id);
+      this.reportedOn = [...this.reportedOn, id];
     } else if (this.reportedOn.indexOf(id) !== -1) {
-      this.splice('reportedOn', this.reportedOn.indexOf(id), 1);
+      this.reportedOn = this.reportedOn.filter((reportedId) => reportedId !== id);
     }
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.set('reportedOn', []);
+    this.reportedOn = [];
   }
 
   disconnectedCallback() {
@@ -185,4 +184,4 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
   }
 }
 
-window.customElements.define('disaggregation-switches', DisaggregationSwitches);
+export { DisaggregationSwitches as DisaggregationSwitchesEl };
