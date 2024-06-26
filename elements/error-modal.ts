@@ -1,10 +1,9 @@
-import {html} from '@polymer/polymer';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 import UtilsMixin from '../mixins/utils-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../typings/globals.types';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {buttonsStyles} from '../styles/buttons-styles';
 
 /**
@@ -14,8 +13,8 @@ import {buttonsStyles} from '../styles/buttons-styles';
  * @appliesMixin UtilsMixin
  * @appliesMixin LocalizeMixin
  */
-class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
-  public static get template() {
+class ErrorModal extends LocalizeMixin(UtilsMixin(LitElement)) {
+  render() {
     return html`
       ${buttonsStyles}
       <style include="iron-flex iron-flex-reverse iron-flex-alignment">
@@ -28,12 +27,10 @@ class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
         }
       </style>
 
-      <paper-dialog modal opened="{{opened}}">
+      <paper-dialog modal .opened="${this.opened}">
         <div>
           <ul>
-            <template is="dom-repeat" items="[[localizedErrors]]" as="localizedError">
-              <li>[[localizedError]]</li>
-            </template>
+           ${this.localizeedErrors.map((localizedError: any) => html`<li>${localizedError}</li>`)}
           </ul>
           <div class="layout horizontal-reverse">
             <paper-button class="btn-primary" dialog-dismiss> Close </paper-button>
@@ -44,10 +41,10 @@ class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
   }
 
   @property({type: Array})
-  errors!: GenericObject[];
+  errors!: string[];
 
-  @property({type: Array, computed: '_localizeErrors(errors, localize)'})
-  localizedErrors!: string[];
+  @property({type: Array})
+  localizedErrors!: any[];
 
   @property({type: Boolean})
   opened = false;
@@ -55,29 +52,36 @@ class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
   @property({type: Object})
   _result!: GenericObject;
 
-  open(errors: GenericObject[]) {
+  
+updated(changedProperties: PropertyValues): void {
+	super.updated(changedProperties);
+
+	if (changedProperties.has('errors') || changedProperties.has('localize')) {
+	  this.localizedErrors = this._localizeErrors(this.errors, this.localize);
+	}
+}
+
+  open(errors: string[]) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
-    this.set('errors', errors);
-    this.set('opened', true);
+    this.errors = errors;
+    this.opened = true;
 
-    this.set(
-      '_result',
+    this._result = 
       new Promise((resolve) => {
         self.addEventListener('opened-changed', function onOpenedChanged() {
           self.removeEventListener('opened-changed', onOpenedChanged);
           resolve(true);
         });
-      })
-    );
+      });
 
     return this._result;
   }
 
   _localizeErrors(errors: string[], localize: any) {
     if (!errors || errors.length === 0) {
-      return;
+      return [];
     }
 
     const localizedErrors = errors.map(function (error) {
@@ -98,12 +102,12 @@ class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
       }
     });
 
-    return localizedErrors;
+    return localizedErrors; 
   }
 
   close() {
-    this.set('errors', []);
-    this.set('opened', false);
+    this.errors = [];
+    this.opened = false;
   }
 }
 

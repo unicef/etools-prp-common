@@ -1,12 +1,11 @@
 // @ts-nocheck
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import { LitElement, html } from 'lit';
+import {property} from 'lit/decorators.js';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {GenericObject} from '../typings/globals.types';
 
-class ListPlaceholder extends LocalizeMixin(ReduxConnectedElement) {
-  public static get template() {
+class ListPlaceholder extends LocalizeMixin(LitElement) {
+  render() {
     return html`
       <style>
         .msg {
@@ -15,7 +14,7 @@ class ListPlaceholder extends LocalizeMixin(ReduxConnectedElement) {
         }
       </style>
 
-      <div class="msg">[[getMessageToDisplay(localize)]]</div>
+      <div class="msg">${this.getMessageToDisplay(localize)}</div>
     `;
   }
 
@@ -28,11 +27,22 @@ class ListPlaceholder extends LocalizeMixin(ReduxConnectedElement) {
   @property({type: String})
   message!: string;
 
-  @property({type: Boolean, reflectToAttribute: true, computed: '_computeHidden(data, loading)'})
+  @property({type: Boolean, reflect: true})
   hidden!: boolean;
 
-  @property({type: Boolean, reflectToAttribute: true, computed: '_computeAriaHidden(hidden)'})
+  @property({type: Boolean, reflect: true})
   ariaHidden!: boolean;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('data') || changedProperties.has('loading')) {
+      this.hidden = this._computeHidden(this.data, this.loading);
+    }
+    if (changedProperties.has('hidden')) {
+      this.ariaHidden = this._computeAriaHidden(this.hidden);
+    }
+  }
 
   _computeHidden(data: GenericObject[], loading: boolean) {
     return loading || (data && !!data.length);

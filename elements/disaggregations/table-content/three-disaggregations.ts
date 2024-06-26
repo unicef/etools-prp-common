@@ -1,12 +1,11 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
-import {property} from '@polymer/decorators/lib/decorators';
-import {GenericObject} from '../../../typings/globals.types';
 import '../disaggregation-table-row';
+import { GenericObject } from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @polymer
@@ -14,8 +13,8 @@ import '../disaggregation-table-row';
  * @appliesMixin DisaggregationMixin
  * @appliesMixin UtilsMixin
  */
-class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(PolymerElement)) {
-  public static get template() {
+class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
+  render() {
     // language=HTML
     return html`
       ${disaggregationTableStyles}
@@ -24,62 +23,51 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(PolymerElement
       <!-- Column names -->
       <tr class="horizontal layout headerRow">
         <th></th>
-        <template is="dom-repeat" items="[[columns]]" as="column">
-          <th>[[_capitalizeFirstLetter(column.value)]]</th>
-        </template>
+          ${this.columns.map((column: any) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
         <th>Total</th>
       </tr>
 
       <!-- Data rows: outer and middle. -->
-      <template is="dom-repeat" items="[[outerRowsForDisplay]]" as="outerRow">
-        <disaggregation-table-row
-          data="[[outerRow]]"
-          level-reported="[[data.level_reported]]"
-          indicator-type="[[data.display_type]]"
+       ${(this.outerRowsForDisplay || []).map((outerRow: any) =>
+        html` <disaggregation-table-row
+          .data="${outerRow}"
+          .level-reported="${this.data.level_reported}"
+          .indicator-type="${this.data.display_type}"
           row-type="outerRow"
         >
         </disaggregation-table-row>
 
-        <template
-          is="dom-repeat"
-          items="[[_determineMiddleRows(outerRow.id, columns, middleRows, data)]]"
-          as="middleRow"
-        >
-          <disaggregation-table-row
-            data="[[middleRow]]"
-            level-reported="[[data.level_reported]]"
-            indicator-type="[[data.display_type]]"
+        ${(this._determineMiddleRows(outerRow.id, this.columns, this.middleRows, this.data) || []).map((middleRow: any) =>
+        html`<disaggregation-table-row
+            .data="${middleRow}"
+            .level-reported="${this.data.level_reported}"
+            .indicator-type="${this.data.display_type}"
             row-type="middleRow"
-            editable="[[editable]]"
+            .editable="${this.editable}"
           >
-          </disaggregation-table-row>
-        </template>
-      </template>
+          </disaggregation-table-row>`)}
 
+       `)}
+                  
       <!-- Totals row -->
       <disaggregation-table-row
-        data="[[columnTotalRow]]"
-        level-reported="[[data.level_reported]]"
-        indicator-type="[[data.display_type]]"
+        .data="${this.columnTotalRow}"
+        .level-reported="${this.data.level_reported}"
+        .indicator-type="${this.data.display_type}"
         row-type="totalsRow"
       >
       </disaggregation-table-row>
 
       <!-- Bottom table -->
-      <template is="dom-repeat" items="[[bottomRows]]" as="bottomRow">
-        <disaggregation-table-row
-          data="[[bottomRow]]"
-          level-reported="[[data.level_reported]]"
-          indicator-type="[[data.display_type]]"
+       ${(this.bottomRows || []).map((bottomRow: any) =>
+       html`<disaggregation-table-row
+          .data="${bottomRow}"
+          .level-reported="${this.data.level_reported}"
+          .indicator-type="${this.data.display_type}"
           row-type="bottomRow"
         >
-        </disaggregation-table-row>
-      </template>
+        </disaggregation-table-row>`)}
     `;
-  }
-
-  static get observers() {
-    return ['_determineTotals(columns, middleRows, data)'];
   }
 
   @property({type: Number})
@@ -94,17 +82,34 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(PolymerElement
   @property({type: Object})
   columnTotalRow!: GenericObject;
 
-  @property({type: Array, computed: '_getColumns(mapping)'})
+  @property({type: Array})
   columns!: any[];
 
-  @property({type: Array, computed: '_getRows(mapping)'})
+  @property({type: Array})
   rows!: any[];
 
-  @property({type: Array, computed: '_getMiddleRows(mapping)'})
+  @property({type: Array})
   middleRows!: any[];
 
-  @property({type: Array, computed: '_determineOuterRows(columns, rows, data)'})
+  @property({type: Array})
   outerRowsForDisplay!: any[];
+
+  
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('mapping')) {
+      this.columns = this._getColumns(this.mapping);
+      this.rows = this._getRows(this.mapping);
+      this.middleRows = this._getMiddleRows(this.mapping);
+    }
+    if (changedProperties.has('columns') || changedProperties.has('rows')) {
+      this.outerRowsForDisplay = this._determineOuterRows(this.columns, this.rows);
+    }
+    if (changedProperties.has('columns') || changedProperties.has('middleRows') || changedProperties.has('data')) {
+      this._determineTotals(this.columns, this.middleRows, this.data)
+    }    
+  }
 
   _getColumns(mapping: any[]) {
     return (mapping[0] || []).choices;
@@ -171,8 +176,8 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(PolymerElement
       }
     };
 
-    this.set('columnTotalRow', columnTotalRow);
-    this.set('bottomRows', this._determineRows(this, middleRows, columns));
+    this.columnTotalRow = columnTotalRow;
+    this.bottomRows = this._determineRows(this, middleRows, columns);
   }
 }
 

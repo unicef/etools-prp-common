@@ -1,8 +1,8 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icon/iron-icon';
 import UtilsMixin from '../mixins/utils-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../typings/globals.types';
 import './error-box-errors';
 
@@ -12,8 +12,8 @@ import './error-box-errors';
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class ErrorBox extends UtilsMixin(PolymerElement) {
-  public static get template() {
+class ErrorBox extends UtilsMixin(LitElement) {
+  render() {
     return html`
       <style include="iron-flex iron-flex-alignment iron-flex-reverse">
         #box {
@@ -31,25 +31,36 @@ class ErrorBox extends UtilsMixin(PolymerElement) {
         }
       </style>
 
-      <div id="box" hidden$="[[_hidden]]">
+      <div id="box" ?hidden="${this._hidden}">
         <div class="header layout horizontal center">
           <iron-icon icon="icons:error"></iron-icon>
           <span>Error(s) occurred. Please check the list to save the form.</span>
         </div>
 
-        <error-box-errors errors="[[mappedErrors]]"> </error-box-errors>
+        <error-box-errors errors="${this.mappedErrors}"> </error-box-errors>
       </div>
     `;
   }
 
-  @property({type: Object, observer: '_scrollToBox'})
+  @property({type: Object}) //@@ observer: '_scrollToBox'
   errors: GenericObject = {};
 
-  @property({type: Array, computed: '_computeMappedErrors(errors)'})
+  @property({type: Array})
   mappedErrors: GenericObject[] = [];
 
-  @property({type: Boolean, computed: '_computeHidden(mappedErrors)'})
+  @property({type: Boolean})
   _hidden = true;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errors')) {
+      this.mappedErrors = this._computeMappedErrors(this.errors);
+    }
+    if (changedProperties.has('mappedErrors')) {
+      this._hidden = this._computeHidden(this.mappedErrors);
+    }
+  }
 
   _computeMappedErrors(errors: GenericObject[]) {
     return this.errorMapper(errors);

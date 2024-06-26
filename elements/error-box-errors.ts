@@ -1,15 +1,13 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import {GenericObject} from '../typings/globals.types';
 
 /**
  * @polymer
  * @customElement
  */
-class ErrorBoxErrors extends PolymerElement {
-  public static get template() {
+class ErrorBoxErrors extends LitElement {
+  render() {
     return html`
       <style>
         :host {
@@ -24,21 +22,13 @@ class ErrorBoxErrors extends PolymerElement {
       </style>
 
       <ul>
-        <template is="dom-repeat" items="[[errors]]" as="error">
+        ${(this.errors || [].map((error: any) => html`        
           <li>
-            <template is="dom-if" if="[[error.field]]" restamp="true">
-              <span>[[error.field]]:</span>
-            </template>
-
-            <template is="dom-if" if="[[error.value]]" restamp="true">
-              <span>[[error.value]]</span>
-            </template>
-
-            <template is="dom-if" if="[[error.details]]" restamp="true">
-              <error-box-errors errors="[[error.details]]"> </error-box-errors>
-            </template>
+            ${error.field ? html`<span>${error.field}:</span>` : ``}
+            ${error.value ? html`<span>${error.value}:</span>` : ``}
+            ${error.details ? html`<error-box-errors .errors="${error.details}"> </error-box-errors>` : ``}
           </li>
-        </template>
+        `))}
       </ul>
     `;
   }

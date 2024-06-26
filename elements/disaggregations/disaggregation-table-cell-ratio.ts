@@ -1,5 +1,5 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../../mixins/utils-mixin';
 import '../../elements/etools-prp-number';
@@ -18,8 +18,8 @@ import {PaperInputElement} from '@polymer/paper-input/paper-input';
  * @customElement
  * @appliesMixin UtilsMixin
  */
-class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
-  public static get template() {
+class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
+   render() {
     // language=HTML
     return html`
       ${disaggregationTableStyles}
@@ -57,32 +57,32 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
         }
       </style>
 
-      <disaggregation-table-cell data="[[data]]" editable="[[editable]]">
+      <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         <div slot="editable" class="app-grid">
           <div class="item">
-            <disaggregation-field id="v" key="v" min="0" value="[[data.v]]" coords="[[coords]]"> </disaggregation-field>
+            <disaggregation-field id="v" key="v" min="0" .value="${this.data.v}" .coords="${this.coords}"> </disaggregation-field>
           </div>
           <div class="item">
-            <disaggregation-field id="d" key="d" min="0" value="[[data.d]]" coords="[[coords]]" validator="[[vName]]">
+            <disaggregation-field id="d" key="d" min="0" .value="${this.data.d}" .coords="${this.coords}" .validator="${this.vName}">
             </disaggregation-field>
           </div>
           <div class="computed-value">
-            <etools-prp-number value="[[localData.v]]"></etools-prp-number>
+            <etools-prp-number .value="${this.localData.v}"></etools-prp-number>
             /
-            <etools-prp-number value="[[localData.d]]"></etools-prp-number>
+            <etools-prp-number .value="${this.localData.d}"></etools-prp-number>
           </div>
         </div>
         <div slot="non-editable" class="app-grid">
           <div class="item">
-            <etools-prp-number value="[[data.v]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.v}"></etools-prp-number>
           </div>
           <div class="item">
-            <etools-prp-number value="[[data.d]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.d}"></etools-prp-number>
           </div>
           <div class="computed-value">
-            <etools-prp-number value="[[data.v]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.v}"></etools-prp-number>
             /
-            <etools-prp-number value="[[data.d]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.d}"></etools-prp-number>
           </div>
         </div>
       </disaggregation-table-cell>
@@ -98,11 +98,22 @@ class DisaggregationTableCellRatio extends UtilsMixin(PolymerElement) {
   @property({type: Object})
   localData!: GenericObject;
 
-  @property({type: Object, observer: '_cloneData'})
+  @property({type: Object})
   data!: GenericObject;
 
-  @property({type: String, observer: '_bindValidation'})
+  @property({type: String})
   coords!: string;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('data')) {
+      this._cloneData(this.data);
+    }
+    if (changedProperties.has('coords')) {
+      this._bindValidation(this.coords);
+    }
+  }
 
   _handleInput(e: CustomEvent) {
     const key = e.detail.key;

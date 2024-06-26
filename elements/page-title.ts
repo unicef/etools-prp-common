@@ -1,11 +1,11 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
 
 /**
  * @polymer
  * @customElement
  */
-class PageTitle extends PolymerElement {
+class PageTitle extends LitElement {
   @property({type: String})
   baseTitle = 'PRP';
 
@@ -15,8 +15,12 @@ class PageTitle extends PolymerElement {
   @property({type: String})
   title!: string;
 
-  static get observers() {
-    return ['_setDocumentTitle(title, divider, baseTitle)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('title') || changedProperties.has('divider') || changedProperties.has('baseTitle')) {
+      this._setDocumentTitle(this.title, this.divider, this.baseTitle);
+    }
   }
 
   _setDocumentTitle(...args: any[]) {

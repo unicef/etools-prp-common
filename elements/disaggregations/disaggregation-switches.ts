@@ -1,6 +1,5 @@
-import {ReduxConnectedElement} from '../../ReduxConnectedElement';
-import {property} from '@polymer/decorators/lib/decorators';
-import {html} from '@polymer/polymer';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/polymer/lib/elements/dom-repeat';
 import '@polymer/paper-checkbox/paper-checkbox';
 import '@polymer/polymer/lib/elements/dom-if';
@@ -21,8 +20,8 @@ import {timeOut} from '@polymer/polymer/lib/utils/async';
  * @appliesMixin LocalizeMixin
  * @appliesMixin DisaggregationMixin
  */
-class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixin(ReduxConnectedElement))) {
-  public static get template() {
+class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixin(LitElement))) {
+  render() {
     return html`
       <style>
         :host {
@@ -50,23 +49,19 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
         }
       </style>
 
-      <template is="dom-if" if="[[editableBool]]" restamp>
-        <div class="container">
-          <h4>[[localize('enter_data_by_disaggregation')]]</h4>
-          <template is="dom-repeat" items="[[mapping]]" as="field">
-            <paper-checkbox id="[[field.id]]" checked="[[_computeChecked(field.id)]]" on-change="_fieldValueChanged">
-              [[_formatFieldName(field.name)]]
-            </paper-checkbox>
-          </template>
+      ${this.editableBool ? 
+        html`<div class="container">
+          <h4>${this.localize('enter_data_by_disaggregation')}</h4>
+        ${(this.mapping || []).map((field) => 
+        html`<paper-checkbox id="${field.id}" ?checked="${this._computeChecked(field.id)}" on-change="${this._fieldValueChanged}">
+              ${this._formatFieldName(field.name)}
+            </paper-checkbox>`)}
 
-          <template is="dom-if" if="[[warning]]" restamp="true">
-            <message-box type="warning">
+      ${this.warning ? html`<message-box type="warning">
               If one or more disaggregation box is unchecked, the reporting table will be simplified however the report
               will not be in line with the disaggregation agreed in the PD/SSFA.
-            </message-box>
-          </template>
-        </div>
-      </template>
+            </message-box>` : ``}}
+        </div>`: ``}
     `;
   }
 
@@ -82,19 +77,29 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
   @property({type: Array})
   reportedOn: number[] = [];
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   formattedData!: GenericObject;
 
-  @property({type: Object, observer: '_cloneData'})
+  @property({type: Object})
   data!: GenericObject;
 
-  @property({type: Boolean, computed: '_computeEditableBool(editable)'})
+  @property({type: Boolean})
   editableBool!: boolean;
 
   fieldValueChanged!: Debouncer | null;
 
-  static get observers() {
-    return ['_computeWarning(data.num_disaggregation, reportedOn.length)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('data')) {
+      this._cloneData(this.data);
+    }
+    if (changedProperties.has('editable')) {
+      this.editableBool = this._computeEditableBool(this.editable);
+    }
+    if (changedProperties.has('data') || changedProperties.has('reportedOn')) {
+      this._computeWarning(this.data.num_disaggregation, this.reportedOn.length);
+    }
   }
 
   _computeEditableBool(editable: number) {
@@ -102,7 +107,7 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
   }
 
   _cloneData(data: GenericObject) {
-    this.set('formattedData', this._clone(data));
+    this.formattedData = this._clone(data);
   }
 
   _computeChecked(id: string) {
@@ -140,15 +145,12 @@ class DisaggregationSwitches extends UtilsMixin(LocalizeMixin(DisaggregationMixi
   }
 
   _commit() {
-    this.set(
-      'formattedData',
-      Object.assign({}, this.formattedData, {
+    this.formattedData =  Object.assign({}, this.formattedData, {
         disaggregation: {},
         level_reported: this.reportedOn.length,
         disaggregation_reported_on: this.reportedOn
       })
-    );
-  }
+   }
 
   _revert(field: GenericObject) {
     field.checked = !field.checked;

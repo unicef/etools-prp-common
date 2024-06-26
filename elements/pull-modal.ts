@@ -1,6 +1,6 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/paper-button/paper-button';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
@@ -31,6 +31,8 @@ import {tableStyles} from '../styles/table-styles';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
+import { store } from '../../redux/store';
+import { RootState } from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -38,8 +40,8 @@ import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
  * @appliesMixin UtilsMixin
  * @appliesMixin ModalMixin
  */
-class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
-  static get template() {
+class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
+  render() {
     return html`
       ${tableStyles} ${buttonsStyles} ${modalStyles}
       <style include="data-table-styles iron-flex iron-flex iron-flex-alignment iron-flex-reverse">
@@ -77,26 +79,26 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
         }
       </style>
 
-      <etools-prp-permissions permissions="{{permissions}}"> </etools-prp-permissions>
+      <etools-prp-permissions .permissions="${this.permissions}"> </etools-prp-permissions>
 
-      <etools-prp-ajax id="reports" url="[[pullUrl]]"> </etools-prp-ajax>
+      <etools-prp-ajax id="reports" .url="${this.pullUrl}"> </etools-prp-ajax>
 
-      <etools-prp-ajax id="pull" url="[[pullUrl]]" method="post" body="[[postBody]]" content-type="application/json">
+      <etools-prp-ajax id="pull" .url="${this.pullUrl}" method="post" .body="${this.postBody}" content-type="application/json">
       </etools-prp-ajax>
 
-      <paper-dialog id="dialog" modal opened="{{opened}}">
+      <paper-dialog id="dialog" modal ?opened="${this.opened}">
         <div class="header layout horizontal justified">
           <h2>Pull data</h2>
           <div class="layout horizontal">
-            <p>Reporting period: [[reportingPeriod]]</p>
+            <p>Reporting period: ${this.reportingPeriod}</p>
 
-            <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
+            <etools-icon-button class="self-center" @click="${this.close}" name="icons:close"> </etools-icon-button>
           </div>
         </div>
 
         <paper-dialog-scrollable>
           <div class="qpr-header">
-            <h3>[[indicatorName]]</h3>
+            <h3>${this.indicatorName}</h3>
             <h4>For this high frequency indicator data will be pulled from reports matching this time period:</h4>
           </div>
           <etools-data-table-header no-collapse>
@@ -114,19 +116,19 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
             </etools-data-table-column>
           </etools-data-table-header>
 
-          <template id="list" is="dom-repeat" items="[[data.reports]]" as="report">
+          ${(this.data.reports || []).amp((report: any) => html`
             <etools-data-table-row no-collapse>
               <div slot="row-data">
-                <div class="table-cell table-cell--text">[[report.report_name]]</div>
-                <div class="table-cell table-cell--text">[[report.due_date]]</div>
-                <div class="table-cell table-cell--text">[[report.start_date]] - [[report.end_date]]</div>
-                <div class="table-cell table-cell--text">[[report.report_location_total.v]]</div>
+                <div class="table-cell table-cell--text">${report.report_name}</div>
+                <div class="table-cell table-cell--text">${report.due_date}</div>
+                <div class="table-cell table-cell--text">${report.start_date} - ${report.end_date}</div>
+                <div class="table-cell table-cell--text">${report.report_location_total.v}</div>
               </div>
             </etools-data-table-row>
-          </template>
+          `)};
 
           <div class="layout horizontal justified overwrite-notification">
-            <iron-icon icon="icons:info"></iron-icon>
+            <etools-icon name="icons:info"></etools-icon>
             <p>
               In order to keep data intact, aggregated data will be shown as a total progress. Any data provided
               manually will be overwritten.
@@ -135,12 +137,12 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_save" raised> OK </paper-button>
+          <etools-button variant="primary" @click="${this._save}"> OK </etools-button>
         </div>
 
         <confirm-box id="confirm"></confirm-box>
 
-        <etools-loading active="[[updatePending]]"></etools-loading>
+        <etools-loading ?active="${this.updatePending}"></etools-loading>
       </paper-dialog>
     `;
   }
@@ -160,7 +162,7 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
   @property({type: Object})
   postBody: GenericObject = {};
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.location.id)'})
+  @property({type: String})
   workspaceId!: string;
 
   @property({type: String})
@@ -169,7 +171,7 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
   @property({type: String})
   reportId!: string;
 
-  @property({type: String, computed: '_computePullUrl(workspaceId, reportId, indicatorId)'})
+  @property({type: String})
   pullUrl!: string;
 
   @property({type: Object})
@@ -177,6 +179,20 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
 
   _computePullUrl(workspaceId: string, reportId: string, indicatorId: string) {
     return Endpoints.indicatorPullData(workspaceId, reportId, indicatorId);
+  }
+
+  stateChanged(state: RootState) {
+    if(state?.location?.id && state?.location?.id !== this.workspaceId) {
+      this.workspaceId = state.location.id;
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('workspaceId') || changedProperties.has('reportId') || changedProperties.has('indicatorId')) {
+      this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
+    }
   }
 
   _save() {
@@ -195,8 +211,8 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
   }
 
   close() {
-    this.set('opened', false);
-    this.set('data', {reports: []});
+    this.opened = false;
+    this.data = {reports: []};
   }
 
   open() {
@@ -205,8 +221,8 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
     const thunk = (this.$.reports as EtoolsPrpAjaxEl).thunk();
     thunk()
       .then((res: GenericObject) => {
-        this.set('data', {reports: res.data});
-        this.set('opened', true);
+        this.data = {reports: res.data};
+        this.opened = true;
       })
       .catch((err: any) => {
         fireEvent(this, 'toast', {

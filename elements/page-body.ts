@@ -1,11 +1,11 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
 
 /**
  * @polymer
  * @customElement
  */
-class PageBody extends PolymerElement {
-  public static get template() {
+class PageBody extends LitElement {
+  render() {
     return html`
       <style>
         :host {

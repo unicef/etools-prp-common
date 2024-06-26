@@ -1,15 +1,14 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/iron-icons/image-icons';
+
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
 /**
  * @polymer
  * @customElement
  */
-class StatusBadge extends PolymerElement {
-  public static get template() {
+class StatusBadge extends LitElement {
+   render() {
     return html` <style>
         :host {
           display: inline-block;
@@ -25,7 +24,7 @@ class StatusBadge extends PolymerElement {
         }
       </style>
 
-      <iron-icon icon="[[icon]]" style="color: [[color]];"> </iron-icon>`;
+      <etools-icon name="${this.icon}" style="color: ${this.color};"> </etools-icon>`;
   }
 
   @property({type: String})
@@ -34,11 +33,21 @@ class StatusBadge extends PolymerElement {
   @property({type: Boolean})
   hideIcon!: boolean;
 
-  @property({type: String, computed: '_computeIcon(type)'})
+  @property({type: String})
   icon!: string;
 
-  @property({type: String, computed: '_computeColor(type)'})
+  @property({type: String})
   color!: string;
+
+  
+updated(changedProperties: PropertyValues): void {
+	super.updated(changedProperties);
+
+	if (changedProperties.has('type')) {
+	  this.icon = this._computeIcon(this.type);
+    this.color = this._computeColor(this.type);
+	}
+}
 
   _computeIcon(type: string) {
     if (!this.hideIcon) {

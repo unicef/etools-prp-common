@@ -1,5 +1,5 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
@@ -8,8 +8,8 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
  * @polymer
  * @customElement
  */
-class MessageBox extends PolymerElement {
-  public static get template() {
+class MessageBox extends LitElement {
+   render() {
     return html` <style include="iron-flex iron-flex-alignment">
         :host {
           display: block;
@@ -43,7 +43,7 @@ class MessageBox extends PolymerElement {
           height: 20px;
         }
       </style>
-      <div class$="message-box message-box--[[type]] layout horizontal">
+      <div class="message-box message-box--${this.type} layout horizontal">
         <div class="icon-wrapper self-center">
           <iron-icon icon="icons:info"></iron-icon>
         </div>

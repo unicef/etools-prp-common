@@ -1,6 +1,5 @@
-import {ReduxConnectedElement} from '../../ReduxConnectedElement';
-import {property} from '@polymer/decorators/lib/decorators';
-import {html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
@@ -24,8 +23,8 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
  * @appliesMixin ModalMixin
  * @appliesMixin LocalizeMixin
  */
-class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement)) {
-  public static get template() {
+class DisaggregationModal extends ModalMixin(LocalizeMixin(LitElement)) {
+  render() {
     // language=HTML
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -42,12 +41,12 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement
         }
       </style>
 
-      <paper-dialog id="dialog" modal opened="{{opened}}">
+      <paper-dialog id="dialog" modal ?opened="${this.opened}">
         <div class="header layout horizontal justified">
-          <h2>[[localize('enter_data')]]</h2>
+          <h2>${this.localize('enter_data')}</h2>
 
           <div class="layout horizontal">
-            <p>[[localize('reporting_period')]]: [[reportingPeriod]]</p>
+            <p>${this.localize('reporting_period')}: ${this.reportingPeriod}</p>
 
             <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
           </div>
@@ -59,14 +58,14 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_save" raised> [[localize('save')]] </paper-button>
+          <paper-button class="btn-primary" on-tap="${this._save}" raised> ${this.localize('save')} </paper-button>
 
-          <paper-button class="btn-cancel" on-tap="close"> [[localize('cancel')]] </paper-button>
+          <paper-button class="btn-cancel" on-tap="${this.close}"> ${this.localize('cancel')} </paper-button>
         </div>
 
         <confirm-box id="confirm"></confirm-box>
 
-        <etools-loading active="[[updatePending]]"></etools-loading>
+        <etools-loading ?active="${this.updatePending}"></etools-loading>
       </paper-dialog>
     `;
   }
@@ -80,18 +79,18 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement
   _save() {
     const tableElem = this.querySelector('disaggregation-table');
     if (tableElem) {
-      this.set('updatePending', true);
+      this.updatePending = true;
 
       (tableElem as DisaggregationTableEl)
         .save()
         .then(() => {
-          this.set('updatePending', false);
+          this.updatePending = false;
           this.close();
         })
         // @ts-ignore
         .catch((_err: GenericObject) => {
           console.log(_err);
-          this.set('updatePending', false);
+          this.updatePending = false;
           fireEvent(this, 'toast', {
             text: this.localize('error_verify_entered_data'),
             showCloseBtn: true

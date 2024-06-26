@@ -1,13 +1,15 @@
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/iron-ajax/iron-ajax';
 import {IronAjaxElement} from '@polymer/iron-ajax/iron-ajax';
 import UtilsMixin from '../mixins/utils-mixin';
 import {GenericObject} from '../typings/globals.types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {setToken, resetToken} from '../../redux/actions';
 import LocalizeMixin from '../mixins/localize-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import { store } from '../../redux/store';
+import { RootState } from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -15,30 +17,30 @@ import LocalizeMixin from '../mixins/localize-mixin';
  * @appliesMixin UtilsMixin
  * @appliesMixin LocalizeMixin
  */
-class EtoolsPrpAjax extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
-  static get template() {
+class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
+  render() {
     return html`
       <iron-ajax
         id="ajax"
         bubbles
-        auto$="[[auto]]"
-        method="[[formattedMethod]]"
-        content-type="[[contentType]]"
-        url="[[url]]"
-        body="[[body]]"
-        params="[[params]]"
-        headers="[[customHeaders]]"
-        timeout="[[timeout]]"
-        handle-as="[[handleAs]]"
-        json-prefix="[[jsonPrefix]]"
-        sync="[[sync]]"
-        withCredentials="[[withCredentials]]"
-        loading="{{loading}}"
-        active-requests="{{activeRequests}}"
-        debounce-duration="{{debounceDuration}}"
-        last-error="{{lastError}}"
-        last-request="{{lastRequest}}"
-        last-response="{{lastResponse}}"
+        ?auto="${this.auto}"
+        .method="${this.formattedMethod}"
+        .content-type="${this.contentType}"
+        .url="${this.url}"
+        .body="${this.body}"
+        .params="${this.params}"
+        .headers="${this.customHeaders}"
+        .timeout="${this.timeout}"
+        .handle-as="${this.handleAs}"
+        .json-prefix="${this.jsonPrefix}"
+        .sync="${this.sync}"
+        ?withCredentials="${this.withCredentials}"
+        ?loading="${this.loading}"
+        .active-requests="${this.activeRequests}"
+        .debounce-duration="${this.debounceDuration}"
+        .last-error="${this.lastError}"
+        .last-request="${this.lastRequest}"
+        .last-response="${this.lastResponse}"
       >
       </iron-ajax>
     `;
@@ -59,35 +61,52 @@ class EtoolsPrpAjax extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
   @property({type: Object})
   params!: GenericObject;
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.auth.token)'})
+  @property({type: String})
   token!: string;
 
   @property({type: Object})
   headers: GenericObject = {};
 
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   loading!: boolean;
 
-  @property({type: Object, computed: '_computeHeaders(headers, token)'})
+  @property({type: Object})
   customHeaders!: GenericObject;
 
-  @property({type: String, computed: '_computeFormattedMethod(method)'})
+  @property({type: String})
   formattedMethod = 'GET';
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   lastRequest!: GenericObject;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   lastResponse!: GenericObject;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   lastError!: GenericObject;
 
-  @property({type: Object, notify: true, readOnly: true})
+  @property({type: Object})
   lastProgress!: GenericObject;
 
-  @property({type: Array, notify: true})
+  @property({type: Array})
   activeRequests!: GenericObject[];
+
+  stateChanged(state: RootState) {
+    if(state?.auth?.token && this.token !== state.auth.token) {
+      this.token = state.auth.token;
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('headers') || changedProperties.has('token')) {
+      this.customHeaders = this._computeHeaders(this.headers, this.token);
+    }
+    if (changedProperties.has('method')) {
+      this.formattedMethod = this._computeFormattedMethod(this.method);
+    }
+  }
 
   _computeHeaders(headers: GenericObject, token: string) {
     return Object.assign(

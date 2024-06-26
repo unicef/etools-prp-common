@@ -1,10 +1,9 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../typings/globals.types';
 import '../disaggregation-table-row';
 
@@ -14,8 +13,8 @@ import '../disaggregation-table-row';
  * @appliesMixin DisaggregationMixin
  * @appliesMixin UtilsMixin
  */
-class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(PolymerElement)) {
-  public static get template() {
+class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(LitElement)) {
+   render() {
     // language=HTML
     return html`
       ${disaggregationTableStyles}
@@ -24,28 +23,24 @@ class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(PolymerElement))
       <tr class="horizontal layout headerRow">
         <th></th>
 
-        <template is="dom-repeat" items="[[columns]]" as="column">
-          <th>[[_capitalizeFirstLetter(column.value)]]</th>
-        </template>
-
+        ${(this.columns || []).map((column: any) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
         <th>Total</th>
       </tr>
 
-      <template is="dom-repeat" items="[[rowsForDisplay]]" as="row">
-        <disaggregation-table-row
-          data="[[row]]"
-          level-reported="[[data.level_reported]]"
-          indicator-type="[[data.display_type]]"
+        ${(this.rowsForDisplay || []).map((row: any) => html`
+          <disaggregation-table-row
+          .data="${row}"
+          .level-reported="${this.data.level_reported}"
+          .indicator-type="${this.data.display_type}"
           row-type="middleRow"
-          editable="[[editable]]"
+          .editable="${this.editable}"
         >
-        </disaggregation-table-row>
-      </template>
+        </disaggregation-table-row>`)}
 
       <disaggregation-table-row
-        data="[[totalsForDisplay]]"
-        level-reported="[[data.level_reported]]"
-        indicator-type="[[data.display_type]]"
+        .data="${this.totalsForDisplay}"
+        .level-reported="${this.data.level_reported}"
+        .indicator-type="${this.data.display_type}"
         row-type="totalsRow"
       >
       </disaggregation-table-row>
@@ -61,17 +56,33 @@ class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(PolymerElement))
   @property({type: Array})
   mapping!: any[];
 
-  @property({type: Array, computed: '_getColumns(mapping)'})
+  @property({type: Array})
   columns!: any[];
 
-  @property({type: Array, computed: '_getRows(mapping)'})
+  @property({type: Array})
   rows!: any[];
 
-  @property({type: Object, computed: '_determineTotals(columns, data)'})
+  @property({type: Object})
   totalsForDisplay!: GenericObject;
 
-  @property({type: Object, computed: '_determineRowsForDisplay(columns, rows, data)'})
+  @property({type: Object})
   rowsForDisplay!: GenericObject;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('mapping')) {
+      this.columns = this._getColumns(this.mapping);
+      this.rows = this._getRows(this.mapping);
+    }
+    if (changedProperties.has('columns') || changedProperties.has('data')) {
+      this.totalsForDisplay = this._determineTotals(this.columns, this.data);
+    }
+    if (changedProperties.has('columns') || changedProperties.has('rows') || changedProperties.has('data')) {
+      this.rowsForDisplay = this._determineRowsForDisplay(this.columns, this.rows);
+    }
+  }
+  
 
   _getColumns(mapping: any[]) {
     return (mapping[0] || []).choices;

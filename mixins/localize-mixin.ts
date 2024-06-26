@@ -1,11 +1,11 @@
 import {property, state} from 'lit/decorators.js';
 import {Constructor, GenericObject} from '../typings/globals.types';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setL11NResources} from '../../redux/actions';
 import IntlMessageFormat from 'intl-messageformat';
+import { LitElement } from 'lit';
 
-function LocalizeMixin<T extends Constructor<ReduxConnectedElement>>(baseClass: T) {
+function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class LocalizeClass extends baseClass {
     __localizationCache = {
       messages: {} /* Unique localized strings. Invalidated when the language,

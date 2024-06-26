@@ -1,9 +1,11 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import { LitElement, PropertyValues, html } from 'lit';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import LocalizeMixin from '../mixins/localize-mixin';
 import '@polymer/polymer/lib/elements/dom-if';
+import { store } from '../../redux/store';
+import { RootState } from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -11,8 +13,8 @@ import '@polymer/polymer/lib/elements/dom-if';
  * @mixinFunction
  * @appliesMixin LocalizeMixin
  */
-class ReportStatus extends LocalizeMixin(ReduxConnectedElement) {
-  public static get template() {
+class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
+   render() {
     return html` <style>
         :host {
           display: inline-block;
@@ -31,8 +33,9 @@ class ReportStatus extends LocalizeMixin(ReduxConnectedElement) {
         }
       </style>
 
-      <status-badge type="[[type]]"></status-badge>
-      <template is="dom-if" if="[[!noLabel]]"> [[label]] </template>`;
+      <status-badge type="${this.type}"></status-badge>
+      ${this.noLabel ? html`` : html`${this.label}`}
+    `;      
   }
 
   @property({type: String})
@@ -41,20 +44,38 @@ class ReportStatus extends LocalizeMixin(ReduxConnectedElement) {
   @property({type: Boolean})
   noLabel = false;
 
-  @property({type: String, computed: '_computeType(status)'})
+  @property({type: String})
   type!: string;
 
-  @property({type: String, computed: '_computeLabel(status, final, app, reportType, localize)'})
+  @property({type: String})
   label!: string;
 
   @property({type: Boolean})
   final = false;
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.app.current)'})
+  @property({type: String})
   app!: string;
 
   @property({type: String})
   reportType = '';
+
+  stateChanged(state: RootState) {
+    if(state?.app?.current) {
+     this.app = state.app.current;
+    }
+   }
+
+   updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('status')) {
+      this.type = this._computeType(this.status);
+    }
+    if (changedProperties.has('status') || changedProperties.has('final') ||
+    changedProperties.has('app') || changedProperties.has('reportType') || changedProperties.has('localize')) {
+      this.label = this._computeLabel(this.status, this.final, this.app, this.reportType, this.localize);
+    }
+  }
 
   _computeType(status: string) {
     switch (status) {

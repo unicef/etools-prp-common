@@ -1,6 +1,6 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../typings/globals.types';
 import '../disaggregation-table-row';
 
@@ -8,19 +8,19 @@ import '../disaggregation-table-row';
  * @polymer
  * @customElement
  */
-class ZeroDisaggregations extends PolymerElement {
-  public static get template() {
+class ZeroDisaggregations extends LitElement {
+  render() {
     // language=HTML
     return html`
       ${disaggregationTableStyles}
       <style></style>
 
       <disaggregation-table-row
-        data="[[totalRow]]"
-        level-reported="[[data.level_reported]]"
-        indicator-type="[[data.display_type]]"
+        .data="${this.totalRow}"
+        .level-reported="${this.data.level_reported}"
+        .indicator-type="${this.data.display_type}"
         row-type="totalsRow"
-        editable="[[editable]]"
+        .editable="${this.editable}"
       >
       </disaggregation-table-row>
     `;
@@ -32,10 +32,18 @@ class ZeroDisaggregations extends PolymerElement {
   @property({type: Object})
   data!: GenericObject;
 
-  @property({type: Array, computed: '_determineTotalRow(mapping, data)'})
-  totalRow!: any[];
+  @property({type: Object})
+  totalRow!: GenericObject;
 
-  _determineTotalRow(_: any, data: GenericObject) {
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('config')) {
+      this.totalRow = this._determineTotalRow(this.data);
+    }
+  }
+  
+  _determineTotalRow(data: GenericObject) {
     return {
       title: 'total',
       total: {

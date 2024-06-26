@@ -1,16 +1,16 @@
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import {DomRepeat} from '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import '@polymer/paper-dropdown-menu/paper-dropdown-menu';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
 import RoutingMixin from '../mixins/routing-mixin';
 import {setWorkspace} from '../../redux/actions';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {GenericObject} from '../typings/globals.types';
 import Endpoints from '../endpoints';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
+import { store } from '../../redux/store';
+import { RootState } from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -18,8 +18,8 @@ import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
  * @mixinFunction
  * @appliesMixin RoutingMixin
  */
-class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
-  public static get template() {
+class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
+   render() {
     return html` <style>
         :host {
           display: block;
@@ -77,40 +77,34 @@ class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
       <etools-prp-ajax
         id="changeworkspace"
         method="post"
-        url="[[changeworkspaceUrl]]"
-        body="[[workspaceData]]"
+        .url="${this.changeworkspaceUrl}"
+        .body="${this.workspaceData}"
         content-type="application/json"
       >
       </etools-prp-ajax>
 
-      <paper-dropdown-menu label="[[workspace.name]]" noink no-label-float>
+      <paper-dropdown-menu label="${this.workspace.name}" noink no-label-float>
         <paper-listbox
           slot="dropdown-content"
           class="dropdown-content"
-          on-iron-select="_workspaceSelected"
-          selected="[[selected]]"
+          on-iron-select="${this._workspaceSelected}"
+          selected="${this.selected}"
         >
-          <template id="repeat" is="dom-repeat" items="[[data]]">
-            <paper-item>[[item.name]]</paper-item>
-          </template>
+          ${(this.data || []).map((item: any) => html`<paper-item>${item.name}</paper-item>`)}
         </paper-listbox>
       </paper-dropdown-menu>`;
   }
 
-  @property({type: Object, computed: '_computeWorkspace(data, current)'})
+  @property({type: Object})
   workspace!: GenericObject;
 
-  @property({type: Number, computed: '_computeSelected(data, current)'})
+  @property({type: Number})
   selected = 0;
 
-  @property({
-    type: String,
-    computed: 'getReduxStateValue(rootState.workspaces.current)',
-    observer: '_currentWorkspaceChanged'
-  })
+  @property({type: String})
   current!: string;
 
-  @property({type: Array, computed: 'getReduxStateArray(rootState.workspaces.all)'})
+  @property({type: Array})
   data!: any[];
 
   @property({type: String})
@@ -120,6 +114,25 @@ class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
   workspaceData!: GenericObject;
 
   private prevWorkspace!: string;
+
+  stateChanged(state: RootState) {
+   if(state?.workspaces?.current && this.current !== state.workspaces.current) {
+    this.current = state.workspaces.current;
+    this._currentWorkspaceChanged();
+   }
+   if(state?.workspaces?.all && this.data !== state.workspaces.all) {
+    this.data = state.workspaces.all;
+   }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('data') || changedProperties.has('current')) {
+      this.workspace = this._computeWorkspace(this.data, this.current);
+      this.selected = this._computeSelected(this.data, this.current);
+    }
+  }
 
   _currentWorkspaceChanged() {
     if (this.current) {
@@ -132,13 +145,14 @@ class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
   }
 
   _workspaceSelected(e: CustomEvent) {
-    const workspace = (this.$.repeat as DomRepeat).itemForElement(e.detail.item);
+    //@dci  (this.$.repeat as DomRepeat).itemForElement(e.detail.item);
+    const workspace = e.detail.item;
     const newCode = workspace.code;
     if (!newCode || newCode === this.current) {
       return;
     }
 
-    this.set('workspaceData', {workspace: workspace.id});
+    this.workspaceData = {workspace: workspace.id};
     const thunk = (this.$.changeworkspace as EtoolsPrpAjaxEl).thunk();
     thunk()
       .then(() => {
@@ -159,7 +173,7 @@ class WorkspaceDropdown extends RoutingMixin(ReduxConnectedElement) {
 
   _computeSelected(data: any[], workspace: string) {
     if (!data) {
-      return;
+      return -1;
     }
     return data.findIndex((x) => x.code === workspace);
   }

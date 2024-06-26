@@ -1,5 +1,4 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-button/paper-button';
@@ -14,8 +13,8 @@ import {tableStyles} from '../styles/table-styles';
  * @customElement
  * @appliesMixin LocalizeMixin
  */
-class CalculationMethodsInfoBar extends LocalizeMixin(ReduxConnectedElement) {
-  static get template() {
+class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
+  render() {
     return html`
       ${buttonsStyles} ${tableStyles}
       <style include="data-table-styles iron-flex iron-flex-alignment iron-flex-reverse">
@@ -45,15 +44,15 @@ class CalculationMethodsInfoBar extends LocalizeMixin(ReduxConnectedElement) {
       <div class="layout horizontal justified center-aligned">
         <div class="layout horizontal center-center">
           <iron-icon icon="icons:info"></iron-icon>
-          <span>[[localize('to_help_you_decide')]]:</span>
+          <span>${this.localize('to_help_you_decide')}:</span>
         </div>
         <div>
           <paper-button id="locations" on-tap="_openLocationsModal" class="btn-primary">
-            [[localize('across_locations')]]
+            ${this.localize('across_locations')}
           </paper-button>
 
           <paper-button id="periods" on-tap="_openPeriodsModal" class="btn-primary">
-            [[localize('across_reporting_periods')]]
+             ${this.localize('across_reporting_periods')}
           </paper-button>
         </div>
       </div>

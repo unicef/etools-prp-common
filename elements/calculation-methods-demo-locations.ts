@@ -1,5 +1,5 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import '@polymer/polymer/lib/elements/dom-repeat';
@@ -12,8 +12,8 @@ import {modalStyles} from '../styles/modal-styles';
  * @polymer
  * @customElement
  */
-class CalculationMethodsDemoLocations extends PolymerElement {
-  static get template() {
+class CalculationMethodsDemoLocations extends LitElement {
+  render() {
     return html`
       ${buttonsStyles} ${modalStyles}
       <style include="iron-flex-alignment iron-flex-reverse">
@@ -26,10 +26,6 @@ class CalculationMethodsDemoLocations extends PolymerElement {
 
           --paper-dialog: {
             width: 750px;
-
-            & > * {
-              margin: 0;
-            }
           }
         }
 
@@ -61,17 +57,18 @@ class CalculationMethodsDemoLocations extends PolymerElement {
       </style>
 
       <ul class="app-grid">
-        <template is="dom-repeat" items="[[totals]]">
+       ${(this.totals || [])
+                  .map((item: any) =>
+        html`
           <li>
             <div class="content-box">
-              <div class="bold-text">Location [[item.id]]</div>
+              <div class="bold-text">Location ${item.id}</div>
               <div class="layout horizontal justified">
                 <div>Reporting period</div>
-                <etools-prp-number class="bold-text" value="{{item.value}}"></etools-prp-number>
+                <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
               </div>
             </div>
-          </li>
-        </template>
+          </li>`)}
       </ul>
     `;
   }

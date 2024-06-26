@@ -1,6 +1,5 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import '@polymer/polymer/lib/elements/dom-if';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import Constants from '../constants';
 import '../elements/numeral-js';
 
@@ -8,13 +7,10 @@ import '../elements/numeral-js';
  * @polymer
  * @customElement
  */
-class EtoolsPrpNumber extends PolymerElement {
-  static get template() {
+class EtoolsPrpNumber extends LitElement {
+  render() {
     return html`
-      <template is="dom-if" if="[[!_noValue(value)]]" restamp="true">
-        <numeral-js number="[[value]]" format="[[_finalFormat]]" print></numeral-js>
-      </template>
-      <template is="dom-if" if="[[_noValue(value)]]" restamp="true"> 0 </template>
+      ${this._noValue(this.value) ? html`0` : html`<numeral-js number="${this.value}" format="${this._finalFormat}" print></numeral-js>`}
     `;
   }
 
@@ -27,8 +23,16 @@ class EtoolsPrpNumber extends PolymerElement {
   @property({type: String})
   _defaultFormat: string = Constants.FORMAT_NUMBER_DEFAULT;
 
-  @property({type: String, computed: '_computeFinalFormat(_defaultFormat, overrideFormat)'})
+  @property({type: String})
   _finalFormat!: string;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('_defaultFormat') || changedProperties.has('overrideFormat')) {
+      this._finalFormat = this._computeFinalFormat(this._defaultFormat, this.overrideFormat);
+    }
+  }
 
   _noValue(value: any) {
     return value == null;

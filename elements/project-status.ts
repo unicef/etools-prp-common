@@ -1,9 +1,8 @@
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import { LitElement, PropertyValues, html } from 'lit';
+import {property} from 'lit/decorators.js';
 import './status-badge';
 import UtilsMixin from '../mixins/utils-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 
 /**
  * @polymer
@@ -12,8 +11,8 @@ import {ReduxConnectedElement} from '../ReduxConnectedElement';
  * @appliesMixin UtilsMixin
  * @appliesMixin LocalizeMixin
  */
-class ProjectStatus extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
-  public static get template() {
+class ProjectStatus extends LocalizeMixin(UtilsMixin(LitElement)) {
+  render() {
     return html`
       <style>
         :host {
@@ -25,18 +24,27 @@ class ProjectStatus extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
           top: -2px;
         }
       </style>
-      <status-badge type="[[type]]" hide-icon></status-badge> [[_localizeLowerCased(label, localize)]]
+      <status-badge .type="${this.type}" hide-icon></status-badge> ${this._localizeLowerCased(this.label, this.localize)}
     `;
   }
 
   @property({type: String})
   status!: string;
 
-  @property({type: String, computed: '_computeType(status)'})
-  type!: string;
+  @property({type: String})
+  type!: string | undefined;
 
-  @property({type: String, computed: '_computeLabel(status)'})
+  @property({type: String})
   label!: string;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('status')) {
+      this.type = this._computeType(this.status);
+      this.label = this._computeLabel(this.status);
+    }
+  }
 
   _computeType(status: string) {
     switch (status) {
@@ -59,7 +67,7 @@ class ProjectStatus extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
       case 'Com':
         return 'Completed';
     }
-    return;
+    return '';
   }
 }
 

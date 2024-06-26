@@ -1,16 +1,12 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/paper-button/paper-button';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/paper-styles/typography';
 import '@polymer/iron-location/iron-location';
-import '@polymer/paper-input/paper-input';
 import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/polymer/lib/elements/dom-if';
 import {GenericObject} from '../typings/globals.types';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
@@ -31,8 +27,8 @@ import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
  * @appliesMixin RoutingMixin
  * @appliesMixin LocalizeMixin
  */
-class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixin(ReduxConnectedElement)))) {
-  static get template() {
+class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixin(LitElement)))) {
+  render() {
     return html`
       ${buttonsStyles} ${modalStyles}
       <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
@@ -44,40 +40,35 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
         }
       </style>
 
-      <iron-location path="{{path}}"> </iron-location>
+      <iron-location .path="${this.path}"> </iron-location>
 
       <etools-prp-ajax
         id="refreshReport"
-        url="[[refreshUrl]]"
-        body="[[data]]"
+        .url="${this.refreshUrl}"
+        .body="${this.data}"
         method="post"
         content-type="application/json"
       >
       </etools-prp-ajax>
 
-      <paper-dialog modal opened="[[opened]]">
+      <paper-dialog modal ?opened="${this.opened}">
         <div class="header layout horizontal justified">
-          <h2>[[localize('are_you_sure')]]?</h2>
+          <h2>${this.localize('are_you_sure')}?</h2>
 
-          <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
+          <etools-icon-button class="self-center" @click="${this.close}" name="icons:close"> </etools-icon-button>
         </div>
         <paper-dialog-scrollable>
           <h3>
-            <template is="dom-if" if="[[_equals(data.report_type, 'PR')]]" restamp="true">
-              [[localize('you_are_about_to_delete')]]
-            </template>
-
-            <template is="dom-if" if="[[_equals(data.report_type, 'IR')]]" restamp="true">
-              [[localize('you_are_about_to_location')]]
-            </template>
+          ${this._equals(this.data.report_type, 'PR') ? html`${this.localize('you_are_about_to_delete')}`: ``}
+          ${this._equals(this.data.report_type, 'IR') ? html`${this.localize('you_are_about_to_location')}`: ``}
           </h3>
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_refresh" raised disabled="[[busy]]">
-            [[localize('refresh')]]
-          </paper-button>
-          <paper-button class="btn-primary" on-tap="_cancel" disabled="[[busy]]"> [[localize('cancel')]] </paper-button>
+          <etools-button variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
+            ${this.localize('refresh')}
+          </etools-button>
+          <etools-button variant="primary" @click="${this._cancel}" ?disabled="${this.busy}"> ${this.localize('cancel')} </etools-button>
         </div>
       </paper-dialog>
       <error-modal id="error"></error-modal>
@@ -91,7 +82,7 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
   busy = false;
 
   _refresh() {
-    this.set('busy', true);
+    this.busy = true;
 
     const refreshThunk = (this.$.refreshReport as EtoolsPrpAjaxEl).thunk();
     refreshThunk()
@@ -100,7 +91,7 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
       })
       .catch((res: any) => {
         console.log(res);
-        this.set('busy', false);
+        this.busy = false;
       });
   }
 

@@ -1,16 +1,16 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/paper-button/paper-button';
-import {property} from '@polymer/decorators/lib/decorators';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 
 /**
  * @polymer
  * @customElement
  */
-class DownloadButton extends MatomoMixin(PolymerElement) {
-  public static get template() {
+class DownloadButton extends MatomoMixin(LitElement) {
+  render() {
     return html`
       <style>
         a {
@@ -19,8 +19,8 @@ class DownloadButton extends MatomoMixin(PolymerElement) {
         }
       </style>
 
-      <a href="[[url]]" tabindex="-1" target="_blank" tracker$="[[tracker]]" on-click="trackAnalytics">
-        <paper-button class="btn-primary" on-focusin="clickedComplete">
+      <a href="${this.url}" tabindex="-1" target="_blank" tracker="${this.tracker}" @click="${this.trackAnalytics}">
+        <paper-button class="btn-primary" @focusin="${this.clickedComplete}">
           <iron-icon icon="icons:file-download"></iron-icon>
           <slot></slot>
         </paper-button>

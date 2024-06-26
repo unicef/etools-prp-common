@@ -1,5 +1,5 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/paper-button/paper-button';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icons/iron-icons';
@@ -15,8 +15,8 @@ import {buttonsStyles} from '../styles/buttons-styles';
  * @mixinFunction
  * @appliesMixin LocalizeMixin
  */
-class ConfirmBox extends PolymerElement {
-  public static get template() {
+class ConfirmBox extends LitElement {
+    render() {
     return html`
       ${buttonsStyles}
       <style include="iron-flex iron-flex-reverse iron-flex-alignment">
@@ -56,28 +56,27 @@ class ConfirmBox extends PolymerElement {
         }
       </style>
 
-      <template is="dom-if" if="[[active]]">
-        <div class="overlay layout horizontal center-center" style="position: [[position]];">
-          <div class="prompt" style="max-width: [[config.maxWidth]];">
+      ${this.active ? html`
+        <div class="overlay layout horizontal center-center" style="position: ${this.position};">
+          <div class="prompt" style="max-width: ${this.config.maxWidth};">
             <div class="info-wrapper">
               <iron-icon class="info-icon" icon="info-outline"></iron-icon>
-              <p>[[config.body]]</p>
+              <p>${this.config.body}</p>
             </div>
             <div class="layout horizontal-reverse">
-              <paper-button class="btn-primary" on-tap="_ok"> [[config.okLabel]] </paper-button>
+              <paper-button class="btn-primary" on-tap="_ok"> ${this.config.okLabel} </paper-button>
 
-              <paper-button on-tap="_cancel"> [[config.cancelLabel]] </paper-button>
+              <paper-button on-tap="_cancel"> ${this.config.cancelLabel} </paper-button>
             </div>
           </div>
-        </div>
-      </template>
+        </div>`: ``}
     `;
   }
 
   @property({type: Boolean})
   active = false;
 
-  @property({type: String, computed: '_computePosition(config)'})
+  @property({type: String})
   position!: string;
 
   @property({type: Object})
@@ -86,8 +85,22 @@ class ConfirmBox extends PolymerElement {
     cancelLabel: 'Cancel',
     maxWidth: '100%',
     mode: Constants.CONFIRM_INLINE,
-    result: <GenericObject>{}
+    result: <GenericObject>{},
+    body: ''
   };
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.position = this._computePosition(this.config);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('config')) {
+      this.position = this._computePosition(this.config);
+    }
+  }
 
   _computePosition(config: GenericObject) {
     switch (config.mode) {
@@ -125,15 +138,15 @@ class ConfirmBox extends PolymerElement {
   }
 
   _open() {
-    this.set('active', true);
+    this.active = true;
   }
 
   _close() {
-    this.set('active', false);
+    this.active = false;
   }
 
   run(config: GenericObject) {
-    this.set('config', Object.assign({}, this.config, config));
+    this.config = Object.assign({}, this.config, config);
     this._open();
   }
 }

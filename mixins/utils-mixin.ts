@@ -119,7 +119,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return value == null ? value : Math.floor(value * 100) + '%';
     }
 
-    _formatIndicatorValue(indicatorType: string, value: any, percentize: any) {
+    _formatIndicatorValue(indicatorType: string, value: any, percentize?: any) {
       if (value == null) {
         return value;
       }

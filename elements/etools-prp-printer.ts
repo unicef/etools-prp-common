@@ -1,6 +1,6 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 
 /**
  * @polymer
@@ -8,8 +8,8 @@ import {property} from '@polymer/decorators/lib/decorators';
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
-  public static get template() {
+class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
+  render() {
     return html` <slot></slot> `;
   }
 
@@ -17,14 +17,14 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
   selector!: any;
 
   @property({type: Object})
-  printWindow!: Window;
+  printWindow!: Window | null;
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('tap', this._onTap.bind(this));
+    this.addEventListener('click', this._onClick.bind(this));
   }
 
-  _onTap(e: any) {
+  _onClick(e: any) {
     if (!(e.target! as HTMLElement).classList.contains('print-btn')) {
       return;
     }
@@ -38,7 +38,7 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
       return this.printWindow.focus();
     }
 
-    this.set('printWindow', window.open('', '', ['width=640', 'height=480', 'left=0', 'top=0'].join()));
+    this.printWindow = window.open('', '', ['width=640', 'height=480', 'left=0', 'top=0'].join());
 
     // @ts-ignore
     this.printWindow!.document.head.appendChild(style);
@@ -46,16 +46,18 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
     toPrint.forEach((node) => {
       try {
         const clonedNode = this._cloneNode(node);
-        this.printWindow.document.body.appendChild(clonedNode);
+        this.printWindow!.document.body.appendChild(clonedNode);
       } catch (error) {
         console.log(error);
       }
     }, this);
 
     setTimeout(() => {
-      this.printWindow.print();
-      this.printWindow.close();
-      this.set('printWindow', null);
+      if (this.printWindow) {
+        this.printWindow.print();
+        this.printWindow.close();
+        this.printWindow = null;
+      }
     }, 100);
   }
 }

@@ -1,15 +1,18 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/paper-menu-button/paper-menu-button.js';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icons/image-icons.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../typings/globals.types';
 import '@polymer/paper-styles/typography';
 import RoutingMixin from '../mixins/routing-mixin';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import { store } from '../../redux/store';
+import { RootState } from '../../typings/redux.types';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+
 
 /**
  * @polymer
@@ -17,8 +20,8 @@ import '@polymer/polymer/lib/elements/dom-repeat';
  * @mixinFunction
  * @appliesMixin RoutingMixin
  */
-class AppSwitcher extends RoutingMixin(ReduxConnectedElement) {
-  public static get template() {
+class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
+   render() {
     return html`
       <style include="iron-flex">
         :host {
@@ -88,31 +91,43 @@ class AppSwitcher extends RoutingMixin(ReduxConnectedElement) {
         <aside slot="dropdown-content">
           <h3>Select an application</h3>
           <ul class="apps layout horizontal">
-            <template is="dom-repeat" items="[[profile.access]]">
-              <li>
+          ${this.profile?.access?.map((item: any) => html`
+               <li>
                 <a
-                  class$="app app--[[item]] [[_getSelectedClassName(item, app)]]"
-                  href="[[buildBaseUrl(workspace, item)]]"
+                  class="app app--item ${this._getSelectedClassName(item, this.app)}"
+                  href="${this.buildBaseUrl(this.workspace, item)}"
                   on-tap="_navigate"
                 >
-                  [[_getAppLabel(item)]]
+                  ${this._getAppLabel(item)}
                 </a>
               </li>
-            </template>
+            `)}
           </ul>
         </aside>
       </paper-menu-button>
     `;
   }
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.app.current)'})
+  @property({type: String})
   app!: string;
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.workspaces.current)'})
+  @property({type: String})
   workspace!: string;
 
-  @property({type: Object, computed: 'getReduxStateObject(rootState.userProfile.profile)'})
+  @property({type: Object})
   profile!: GenericObject;
+
+  stateChanged(state: RootState) {
+    if(state?.app?.current) {
+      this.app = state.app.current;
+    }
+    if(state?.workspaces?.current) {
+      this.workspace = state.workspaces.current;
+    }
+    if(state?.userProfile?.profile) {
+      this.profile = cloneDeep(state.userProfile.profile);
+    }
+  }
 
   public _getAppLabel(app: string) {
     switch (app.toLowerCase()) {

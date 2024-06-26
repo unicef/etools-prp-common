@@ -1,7 +1,7 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/paper-progress/paper-progress';
 import UtilsMixin from '../mixins/utils-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 import {progressBarStyles} from '../styles/progress-bar-styles';
 
 /**
@@ -10,8 +10,8 @@ import {progressBarStyles} from '../styles/progress-bar-styles';
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class EtoolsPrpProgressBar extends UtilsMixin(PolymerElement) {
-  public static get template() {
+class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
+  render() {
     return html`
       ${progressBarStyles}
       <style>
@@ -31,8 +31,16 @@ class EtoolsPrpProgressBar extends UtilsMixin(PolymerElement) {
   @property({type: String})
   number = '0';
 
-  @property({type: Number, computed: '_computePercentage(number)'})
-  percentage!: number;
+  @property({type: Number})
+  percentage!: number | string;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('number')) {
+      this.percentage = this._computePercentage(this.number);
+    }
+  }
 
   _computePercentage(num: string) {
     if (num === 'N/A') {

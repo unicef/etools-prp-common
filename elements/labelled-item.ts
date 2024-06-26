@@ -1,13 +1,14 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import {sharedStyles} from '../styles/shared-styles';
 
 /**
  * @polymer
  * @customElement
  */
-class LabelledItem extends PolymerElement {
-  public static get template() {
+class LabelledItem extends LitElement {
+   render() {
     return html`
       ${sharedStyles}
       <style>
@@ -42,7 +43,7 @@ class LabelledItem extends PolymerElement {
       </style>
 
       <dl class="labelled-item">
-        <dt class$="labelled-item__label [[labelClassName]]">[[label]]</dt>
+        <dt class$="labelled-item__label ${this.labelClassName}">${this.label}</dt>
         <dd class="labelled-item__content">
           <slot></slot>
         </dd>
@@ -56,8 +57,16 @@ class LabelledItem extends PolymerElement {
   @property({type: Boolean})
   invalid = false;
 
-  @property({type: String, computed: '_computeLabelClassName(invalid)'})
+  @property({type: String})
   labelClassName!: string;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('invalid')) {
+      this.labelClassName = this._computeLabelClassName(this.invalid);
+    }
+  }
 
   _computeLabelClassName(invalid: boolean) {
     return invalid ? 'error' : '';

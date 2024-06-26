@@ -1,5 +1,5 @@
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/iron-location/iron-location';
 import '@polymer/iron-location/iron-query-params';
 import '@polymer/paper-button/paper-button';
@@ -8,14 +8,13 @@ import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/polymer/lib/elements/dom-if';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {GenericObject} from '../typings/globals.types';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 
 /**
  * @polymer
  * @customElement
  */
-class FilterList extends LocalizeMixin(ReduxConnectedElement) {
-  static get template() {
+class FilterList extends LocalizeMixin(LitElement) {
+    render() {
     return html`
       <style include="iron-flex">
         :host {
@@ -35,19 +34,16 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
         }
       </style>
 
-      <iron-location query="{{query}}"> </iron-location>
+      <iron-location .query="${this.query}"> </iron-location>
 
-      <iron-query-params params-string="{{query}}" params-object="{{queryParams}}"> </iron-query-params>
+      <iron-query-params .params-string="${this.query}" .params-object="${this.queryParams}"> </iron-query-params>
 
       <slot></slot>
 
-      <template is="dom-if" if="[[!hideClear]]" restamp="true">
-        <div id="action">
-          <paper-button on-tap="_clearFilters">[[localize('clear')]]</paper-button>
-        </div>
-      </template>
-
-      <etools-loading active="[[loading]]"></etools-loading>
+      ${this.hideClear ? `` : html`<div id="action">
+          <paper-button on-tap="${this._clearFilters}">${this.localize('clear')}</paper-button></div>`}
+                    
+      <etools-loading ?active="${this.loading}"></etools-loading>
     `;
   }
 
@@ -63,7 +59,7 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
   @property({type: String})
   ignore = '';
 
-  @property({type: Array, computed: '_computeIgnoredFilters(ignore)'})
+  @property({type: Array})
   ignoredFilters!: any[];
 
   @property({type: Boolean})
@@ -72,8 +68,15 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
   @property({type: Boolean})
   hideClear = false;
 
-  public static get observers() {
-    return ['_updateLoading(filters.splices, filtersReady.*)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('ignore')) {
+      this.ignoredFilters = this._computeIgnoredFilters(this.ignore);
+    }
+    if (changedProperties.has('filters') || changedProperties.has('filtersReady')) {
+      this._updateLoading();
+    }    
   }
 
   _onFilterChanged(e: CustomEvent) {
@@ -99,7 +102,7 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
         }
       }
 
-      this.set('queryParams', newParams);
+      this.queryParams = newParams;
 
       this._resetPageNumber();
     });
@@ -116,7 +119,7 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
       return;
     }
 
-    this.push('filters', name);
+    this.filters.push(name);
   }
 
   _deregisterFilter(e: CustomEvent) {
@@ -128,7 +131,7 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
       return;
     }
 
-    this.splice('filters', index, 1);
+    this.filters.splice(index, 1);
   }
 
   _filterReady(e: CustomEvent) {
@@ -142,7 +145,8 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
       return;
     }
 
-    this.set(['filtersReady', name], true);
+    this.filtersReady[name] = true;
+    this.requestUpdate();
   }
 
   _clearFilters() {
@@ -155,18 +159,16 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
 
       return prev;
     }, {});
-    this.set('queryParams', clearParams);
-
+    this.queryParams = clearParams;
+    this.requestUpdate();
     this._resetPageNumber();
   }
 
   _resetPageNumber() {
-    this.set(
-      'queryParams',
+    this.queryParams = 
       Object.assign({}, this.queryParams, {
         page: 1
       })
-    );
   }
 
   _computeIgnoredFilters(ignore: string) {
@@ -177,7 +179,7 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
     setTimeout(() => {
       const filtersCount = this.filters.length - this.ignoredFilters.length;
       const readyCount = Object.keys(this.filtersReady).length;
-      this.set('loading', readyCount < filtersCount);
+      this.loading = readyCount < filtersCount;
     });
   }
 
@@ -195,8 +197,8 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    this.set('filters', []);
-    this.set('filtersReady', {});
+    this.filters = [];
+    this.filtersReady = {};
     this._addEventListeners();
   }
 

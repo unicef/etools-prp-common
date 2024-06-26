@@ -1,5 +1,5 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../../mixins/utils-mixin';
 import '../../elements/etools-prp-number';
@@ -10,7 +10,7 @@ import {GenericObject} from '../../typings/globals.types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import '@polymer/iron-meta/iron-meta';
 import {IronMeta} from '@polymer/iron-meta/iron-meta';
-import {PaperInputElement} from '@polymer/paper-input/paper-input';
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@polymer/polymer/lib/elements/dom-if';
 
 /**
@@ -18,8 +18,8 @@ import '@polymer/polymer/lib/elements/dom-if';
  * @customElement
  * @appliesMixin UtilsMixin
  */
-class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
-  public static get template() {
+class DisaggregationTableCellPercentage extends UtilsMixin(LitElement) {
+   render() {
     // language=HTML
     return html`
       ${disaggregationTableStyles}
@@ -62,34 +62,29 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
         }
       </style>
 
-      <template is="dom-if" if="[[editable]]" restamp="true">
-        <div class="app-grid">
+      ${this.editable ? html`<div class="app-grid">
           <div class="item">
-            <disaggregation-field id="v" key="v" min="0" value="[[data.v]]" coords="[[coords]]"> </disaggregation-field>
+            <disaggregation-field id="v" key="v" min="0" .value="${this.data?.v}" .coords="${this.coords}"> </disaggregation-field>
           </div>
           <div class="item">
-            <disaggregation-field id="d" key="d" min="0" value="[[data.d]]" coords="[[coords]]" validator="[[vName]]">
+            <disaggregation-field id="d" key="d" min="0" .value="${this.data?.d}" coords="${this.coords}" .validator="${this.vName}">
             </disaggregation-field>
           </div>
-          <div class="computed-value">[[_toPercentage(data.c)]]</div>
-        </div>
-      </template>
-
-      <template is="dom-if" if="[[isNotEditableAndValue(editable, data)]]" restamp="true">
-        <div class="app-grid">
+          <div class="computed-value">${this._toPercentage(this.data?.c)}</div>
+        </div>` : ``}
+        
+        ${this.isNotEditableAndValue(this.editable, this.data) ? html`<div class="app-grid">
           <div class="item">
-            <etools-prp-number value="[[data.v]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.v}"></etools-prp-number>
           </div>
           <div class="item">
-            <etools-prp-number value="[[data.d]]"></etools-prp-number>
+            <etools-prp-number .value="${this.data.d}"></etools-prp-number>
           </div>
-          <div class="computed-value">[[_toPercentage(data.c)]]</div>
-        </div>
-      </template>
+          <div class="computed-value">${this._toPercentage(this.data.c)}</div>
+        </div>` : ``}
+        
+      ${this.isNotEditableAndNoValue(this.editable, this.data) ? html`<div class="cellValue">0</div>` : ``}
 
-      <template is="dom-if" if="[[isNotEditableAndNoValue(editable, data)]]" restamp="true">
-        <div class="cellValue">0</div>
-      </template>
     `;
   }
 
@@ -102,10 +97,10 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
   @property({type: Object})
   localData!: GenericObject;
 
-  @property({type: Object, observer: '_cloneData'})
+  @property({type: Object})
   data!: GenericObject;
 
-  @property({type: String, observer: '_bindValidation'})
+  @property({type: String})
   coords!: string;
 
   noValue(data: GenericObject) {
@@ -119,6 +114,19 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
   isNotEditableAndValue(editable, data) {
     return !editable && !this.noValue(data);
   }
+
+  
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('data')) {
+      this._cloneData(this.data);
+    }
+    if (changedProperties.has('coords')) {
+      this._bindValidation(this.coords);
+    }
+  }
+
 
   _handleInput(e: CustomEvent) {
     const key = e.detail.key;
@@ -164,7 +172,7 @@ class DisaggregationTableCellPercentage extends UtilsMixin(PolymerElement) {
         return (
           Number(value) !== 0 ||
           Number(
-            ((this!.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as PaperInputElement).value
+            ((this!.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as EtoolsInput).value
           ) === 0
         );
       }

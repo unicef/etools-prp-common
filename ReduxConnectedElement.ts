@@ -1,13 +1,14 @@
-import {PolymerElement} from '@polymer/polymer';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators.js';
 import {store} from '../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
-import {property} from '@polymer/decorators';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState} from '../typings/redux.types';
 import {GenericObject} from './typings/globals.types';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
 
-export class ReduxConnectedElement extends connect(store)(PolymerElement) {
+
+export class ReduxConnectedElement extends connect(store)(LitElement) {
   @property({type: Object})
   rootState!: RootState;
 

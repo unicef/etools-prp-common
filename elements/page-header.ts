@@ -1,7 +1,6 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/polymer/lib/elements/dom-if';
+import { LitElement, PropertyValues, html } from 'lit';
+import {property} from 'lit/decorators.js';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import '@polymer/paper-styles/typography';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
@@ -10,6 +9,8 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import LocalizeMixin from '../mixins/localize-mixin';
 import RoutingMixin from '../mixins/routing-mixin';
 import {sharedStyles} from '../styles/shared-styles';
+import { store } from '../../redux/store';
+import { RootState } from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -18,8 +19,8 @@ import {sharedStyles} from '../styles/shared-styles';
  * @appliesMixin LocalizeMixin
  * @appliesMixin RoutingMixin
  */
-class PageHeader extends LocalizeMixin(RoutingMixin(ReduxConnectedElement)) {
-  public static get template() {
+class PageHeader extends connect(store)(LocalizeMixin(RoutingMixin(LitElement))) {
+  render() {
     return html`
       ${sharedStyles}
       <style include="iron-flex iron-flex-alignment iron-flex-factors">
@@ -67,12 +68,10 @@ class PageHeader extends LocalizeMixin(RoutingMixin(ReduxConnectedElement)) {
             <slot name="above-title"></slot>
           </div>
           <div class="layout horizontal center">
-            <template is="dom-if" if="[[back]]">
-              <a href="[[backUrl]]" class="back-button">
+          ${this.back ? html`<a href="${this.backUrl}" class="back-button">
                 <paper-icon-button icon="chevron-left"></paper-icon-button>
-              </a>
-            </template>
-            <h1>[[title]]<slot name="in-title"></slot></h1>
+              </a>`: ``}            
+            <h1>${this.title}<slot name="in-title"></slot></h1>
           </div>
         </div>
 
@@ -97,11 +96,26 @@ class PageHeader extends LocalizeMixin(RoutingMixin(ReduxConnectedElement)) {
   @property({type: String})
   back!: string;
 
-  @property({type: String, computed: '_computeBackUrl(back, _baseUrl, app)'})
-  backUrl!: string;
+  @property({type: String})
+  backUrl!: string | undefined;
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.app.current)'})
+  @property({type: String})
   app!: string;
+
+  stateChanged(state: RootState) {
+   if(state?.app?.current) {
+    this.app = state.app.current;
+   }
+  }
+
+  
+updated(changedProperties: PropertyValues): void {
+	super.updated(changedProperties);
+
+	if (changedProperties.has('back') || changedProperties.has('_baseUrl') || changedProperties.has('app')) {
+	  this.backUrl = this._computeBackUrl(this.back, this._baseUrl, this.app);
+	}
+}
 
   _computeBackUrl(tail: string, baseUrl: string, app: string) {
     if (tail === undefined) {

@@ -1,5 +1,5 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/paper-button/paper-button';
@@ -22,8 +22,8 @@ import {modalStyles} from '../styles/modal-styles';
  * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  */
-class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement)) {
-  static get template() {
+class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
+  render() {
     return html`
     ${buttonsStyles} ${modalStyles}
     <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
@@ -31,16 +31,7 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
         display: block;
         --paper-dialog: {
           width: 750px;
-
-          &>* {
-            margin: 0;
-          }
-        }
-        ;
-      }
-
-      .flex-2 {
-        @apply --layout-flex-2;
+         }        
       }
 
       .content-box {
@@ -65,9 +56,9 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
       }
     </style>
 
-    <paper-dialog id="calculation-methods-demo-modal-dialog" modal opened="{{opened}}">
+    <paper-dialog id="calculation-methods-demo-modal-dialog" modal ?opened="${this.opened}">
       <div class="header layout horizontal justified">
-        <h2>Calculation method across [[domain]]</h2>
+        <h2>Calculation method across ${this.domain}</h2>
 
         <paper-icon-button class="self-center" on-tap="close"
           icon="icons:close">
@@ -102,29 +93,28 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
         <labelled-item label="Choose calculation method to read description
           and observe the impact on data presented below:">
           <paper-radio-group on-paper-radio-group-changed="_onRadioChange"
-            selected=[[selectedType]]>
+            selected=${this.selectedType}>
             <paper-radio-button name="sum">SUM</paper-radio-button>
             <paper-radio-button name="max">MAX</paper-radio-button>
             <paper-radio-button name="avg">AVG</paper-radio-button>
           </paper-radio-group>
-          <div>[[description]]</div>
+          <div>${this.description}</div>
         </labelled-item>
 
         <br />
-        <template is="dom-if" if="[[_equals(domain, 'locations')]]">
-          <calculation-methods-demo-locations totals=[[locationTotals]]>
-          </calculation-methods-demo-locations>
-        </template>
-        <template is="dom-if" if="[[_equals(domain, 'reporting periods')]]">
-          <calculation-methods-demo-periods totals=[[locationTotals]]>
-            </calculation-methods-demo-locations>
-        </template>
+        ${this._equals(this.domain, 'locations') ? html`
+          <calculation-methods-demo-locations .totals=${this.locationTotals}>
+          </calculation-methods-demo-locations>` : ``}
+
+        ${this._equals(this.domain, 'reporting periods') ? html`
+          <calculation-methods-demo-periods .totals=${this.locationTotals}>
+            </calculation-methods-demo-locations>` : ``}
 
         <div class="content-box layout horizontal justified center-center">
           <div class="flex-2"></div>
           <div class="total-label bold-text">Total progress:</div>
           <div class="total-box bold-text">
-            <etools-prp-number value=[[finalTotal]]></etools-prp-number>
+            <etools-prp-number .value=${this.finalTotal}></etools-prp-number>
           </div>
         </div>
 
@@ -157,11 +147,11 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
     {id: 3, value: 2000}
   ];
 
-  @property({type: Array, computed: '_computeTotals(totals, items)'})
+  @property({type: Array})
   locationTotals!: any[];
 
-  @property({type: Number, computed: '_computeFinalTotal(selectedType, locationTotals)'})
-  finalTotal!: number;
+  @property({type: Number})
+  finalTotal!: number | undefined;
 
   @property({type: Object})
   descriptionsLocations = {
@@ -212,11 +202,23 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
     }
   };
 
-  @property({
-    type: String,
-    computed: '_computeDescription(selectedType, domain, descriptionsLocations, descriptionsReportingPeriods)'
-  })
+  @property({type: String})
   description!: string;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('selectedType') || changedProperties.has('domain')
+      || changedProperties.has('descriptionsLocations') ||  changedProperties.has('descriptionsReportingPeriods') ) {
+      this.description = this._computeDescription(this.selectedType, this.domain, this.descriptionsLocations, this.descriptionsReportingPeriods);
+    }
+    if (changedProperties.has('totals') || changedProperties.has('items')) {
+      this.locationTotals = this._computeTotals(this.totals, this.items);
+    }
+    if (changedProperties.has('totals') || changedProperties.has('items')) {
+      this.finalTotal = this._computeFinalTotal(this.selectedType, this.locationTotals);
+    }
+  }
 
   _computeFinalTotal(selectedType: string, totals: GenericObject[]) {
     if (!totals) {

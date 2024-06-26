@@ -1,6 +1,5 @@
-import {ReduxConnectedElement} from '../../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 import '@polymer/paper-input/paper-input';
 import {PaperInputElement} from '@polymer/paper-input/paper-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
@@ -12,8 +11,8 @@ import {GenericObject} from '../../typings/globals.types';
  * @customElement
  * @appliesMixin DisaggregationFieldMixin
  */
-class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement) {
-  public static get template() {
+class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
+   render() {
     // language=HTML
     return html`
       <style>
@@ -36,13 +35,13 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
 
       <paper-input
         id="field"
-        value="[[value]]"
+        .value="${this.value}"
         allowed-pattern="^\\d*\\.?\\d*$"
-        invalid="{{invalid}}"
-        validator="[[validator]]"
-        min="[[min]]"
-        on-value-changed="_inputValueChanged"
-        on-keydown="_preventInvalidInput"
+        .invalid="${this.invalid}"
+        .validator="${this.validator}"
+        .min="${this.min}"
+        on-value-changed="${this._inputValueChanged}"
+        on-keydown="${this._preventInvalidInput}"
         no-label-float
         required
       >
@@ -62,10 +61,10 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
   @property({type: Number})
   min!: number;
 
-  @property({type: Number, notify: true})
+  @property({type: Number})
   value = 0;
 
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   invalid!: boolean;
 
   connectedCallback() {
