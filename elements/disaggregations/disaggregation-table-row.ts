@@ -1,6 +1,5 @@
-import { html, css, PropertyValues } from 'lit';
+import { LitElement, html, css, PropertyValues } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { ReduxConnectedElement } from '../../ReduxConnectedElement';
 import UtilsMixin from '../../mixins/utils-mixin';
 import LocalizeMixin from '../../mixins/localize-mixin';
 import { disaggregationTableStyles } from '../../styles/disaggregation-table-styles';
@@ -10,7 +9,7 @@ import './disaggregation-table-cell-percentage';
 import './disaggregation-table-cell-ratio';
 
 @customElement('disaggregation-table-row')
-class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(ReduxConnectedElement)) {
+class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
   @property({ type: Object })
   data!: GenericObject;
 

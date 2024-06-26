@@ -1,6 +1,5 @@
-import { html, css, PropertyValues } from 'lit';
+import { LitElement, html, css, PropertyValues } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { ReduxConnectedElement } from '../../ReduxConnectedElement';
 import UtilsMixin from '../../mixins/utils-mixin';
 import LocalizeMixin from '../../mixins/localize-mixin';
 import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixin';
@@ -19,7 +18,7 @@ import './disaggregation-switches';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
 @customElement('disaggregation-table')
-class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(UtilsMixin(ReduxConnectedElement))) {
+class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(UtilsMixin(LitElement))) {
   @property({ type: Object })
   data!: GenericObject;
 

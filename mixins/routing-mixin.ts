@@ -1,11 +1,11 @@
+import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {BASE_PATH} from '../config';
 
 /**
  * @mixinFunction
  */
-function RoutingMixin<T extends Constructor<ReduxConnectedElement>>(baseClass: T) {
+function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class RoutingClass extends baseClass {
     // // @property({type: String})
     _$currentWorkspace!: string;

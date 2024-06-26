@@ -1,7 +1,6 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
-import '../ReduxConnectedElement';
 import RoutingMixin from '../mixins/routing-mixin';
 import {RootState} from '../../typings/redux.types';
 import {store} from '../../redux/store';
