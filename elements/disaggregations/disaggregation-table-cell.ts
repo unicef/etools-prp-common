@@ -1,42 +1,43 @@
-import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import { html, css, LitElement } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
-import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import {GenericObject} from '../../typings/globals.types';
+import { disaggregationTableStyles } from '../../styles/disaggregation-table-styles';
+import { GenericObject } from '../../typings/globals.types';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin UtilsMixin
- */
+@customElement('disaggregation-table-cell')
 class DisaggregationTableCell extends UtilsMixin(LitElement) {
-   render() {
-    return html`
-      ${disaggregationTableStyles}
-      <style>
-        :host {
-          display: block;
-        }
-      </style>
-
-      ${this.editableBool ? html`<slot name="editable"></slot>` : 
-        html` <span class="cellValue">
-          ${this.noValue ? html`0` : html`<slot name="non-editable"></slot>`}          
-        </span>`}
-    `;
-  }
-
-  @property({type: Object})
+  @property({ type: Object })
   data!: GenericObject;
 
-  @property({type: Number})
+  @property({ type: Number })
   editable!: number;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   editableBool!: boolean;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   noValue!: boolean;
+
+  static styles = [
+    disaggregationTableStyles,
+    css`
+      :host {
+        display: block;
+      }
+    `
+  ];
+
+  render() {
+    return html`
+      ${this.editableBool
+      ? html`<slot name="editable"></slot>`
+      : html`
+            <span class="cellValue">
+              ${this.noValue ? html`0` : html`<slot name="non-editable"></slot>`}
+            </span>
+          `}
+    `;
+  }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
@@ -58,4 +59,4 @@ class DisaggregationTableCell extends UtilsMixin(LitElement) {
   }
 }
 
-window.customElements.define('disaggregation-table-cell', DisaggregationTableCell);
+export default DisaggregationTableCell;

@@ -1,85 +1,81 @@
-import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
-import '@polymer/paper-input/paper-input';
-import {PaperInputElement} from '@polymer/paper-input/paper-input';
+import { html, css, LitElement } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {GenericObject} from '../../typings/globals.types';
+import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import { GenericObject } from '../../typings/globals.types';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin DisaggregationFieldMixin
- */
+@customElement('disaggregation-field')
 class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
-   render() {
-    // language=HTML
+  @property({ type: String })
+  key!: string;
+
+  @property({ type: String })
+  coords!: string;
+
+  @property({ type: String })
+  validator!: string;
+
+  @property({ type: Number })
+  min!: number;
+
+  @property({ type: Number })
+  value = 0;
+
+  @property({ type: Boolean })
+  invalid!: boolean;
+
+  static styles = css`
+    :host {
+      display: block;
+    }
+
+    paper-input {
+      --paper-input-container: {
+        padding: 0;
+      }
+
+      --paper-input-container-input: {
+        font-size: 13px;
+      }
+
+      --paper-input-container-input-webkit-spinner: {
+        display: none;
+      }
+    }
+  `;
+
+  render() {
     return html`
-      <style>
-        :host {
-          display: block;
-
-          --paper-input-container: {
-            padding: 0;
-          }
-
-          --paper-input-container-input: {
-            font-size: 13px;
-          }
-
-          --paper-input-container-input-webkit-spinner: {
-            display: none;
-          }
-        }
-      </style>
-
-      <paper-input
+      <etools-input
         id="field"
         .value="${this.value}"
         allowed-pattern="^\\d*\\.?\\d*$"
-        .invalid="${this.invalid}"
+        ?invalid="${this.invalid}"
         .validator="${this.validator}"
         .min="${this.min}"
-        on-value-changed="${this._inputValueChanged}"
-        on-keydown="${this._preventInvalidInput}"
+        @value-changed="${this._inputValueChanged}"
+        @keydown="${this._preventInvalidInput}"
         no-label-float
         required
       >
-      </paper-input>
+      </etools-input>
     `;
   }
 
-  @property({type: String})
-  key!: string;
-
-  @property({type: String})
-  coords!: string;
-
-  @property({type: String})
-  validator!: string;
-
-  @property({type: Number})
-  min!: number;
-
-  @property({type: Number})
-  value = 0;
-
-  @property({type: Boolean})
-  invalid!: boolean;
-
   connectedCallback() {
     super.connectedCallback();
-
-    (this.$.field as PaperInputElement).validate();
+    (this.shadowRoot!.getElementById('field') as EtoolsInput).validate();
     fireEvent(this, 'register-field', this);
   }
 
   validate() {
-    return (this.$.field as PaperInputElement).validate();
+    return (this.shadowRoot!.getElementById('field') as EtoolsInput).validate();
   }
 
   getField() {
-    return this.$.field;
+    return this.shadowRoot!.getElementById('field');
   }
 
   _inputValueChanged(e: CustomEvent) {
@@ -93,14 +89,10 @@ class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   }
 
   _preventInvalidInput(e: KeyboardEvent) {
-    if (e.key == '.') {
-      if ((e.target as PaperInputElement).value!.indexOf('.') > -1) {
-        e.preventDefault();
-      }
+    if (e.key === '.' && (e.target as EtoolsInput).value!.indexOf('.') > -1) {
+      e.preventDefault();
     }
   }
 }
 
-window.customElements.define('disaggregation-field', DisaggregationField);
-
-export {DisaggregationField as DisaggregationFieldEl};
+export { DisaggregationField as DisaggregationFieldEl };

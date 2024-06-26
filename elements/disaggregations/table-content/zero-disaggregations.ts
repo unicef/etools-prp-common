@@ -1,48 +1,48 @@
-import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
-import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
-import {GenericObject} from '../../../typings/globals.types';
+import { LitElement, html, css } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
+import { disaggregationTableStyles } from '../../../styles/disaggregation-table-styles';
+import { GenericObject } from '../../../typings/globals.types';
 import '../disaggregation-table-row';
 
-/**
- * @polymer
- * @customElement
- */
+@customElement('zero-disaggregations')
 class ZeroDisaggregations extends LitElement {
-  render() {
-    // language=HTML
-    return html`
-      ${disaggregationTableStyles}
-      <style></style>
+  @property({ type: Number })
+  editable!: number;
 
+  @property({ type: Object })
+  data!: GenericObject;
+
+  @property({ type: Object })
+  totalRow!: GenericObject;
+
+  static styles = [
+    disaggregationTableStyles,
+    css`
+      :host {
+        display: block;
+      }
+    `
+  ];
+
+  render() {
+    return html`
       <disaggregation-table-row
         .data="${this.totalRow}"
-        .level-reported="${this.data.level_reported}"
-        .indicator-type="${this.data.display_type}"
+        .levelReported="${this.data.level_reported}"
+        .indicatorType="${this.data.display_type}"
         row-type="totalsRow"
         .editable="${this.editable}"
-      >
-      </disaggregation-table-row>
+      ></disaggregation-table-row>
     `;
   }
 
-  @property({type: Number})
-  editable!: number;
-
-  @property({type: Object})
-  data!: GenericObject;
-
-  @property({type: Object})
-  totalRow!: GenericObject;
-
-  updated(changedProperties: PropertyValues): void {
+  updated(changedProperties: Map<string | number | symbol, unknown>) {
     super.updated(changedProperties);
-  
-    if (changedProperties.has('config')) {
+    if (changedProperties.has('data')) {
       this.totalRow = this._determineTotalRow(this.data);
     }
   }
-  
+
   _determineTotalRow(data: GenericObject) {
     return {
       title: 'total',
@@ -54,4 +54,4 @@ class ZeroDisaggregations extends LitElement {
   }
 }
 
-window.customElements.define('zero-disaggregations', ZeroDisaggregations);
+export default ZeroDisaggregations;

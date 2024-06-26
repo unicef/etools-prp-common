@@ -1,71 +1,77 @@
-import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import { LitElement, html, css, PropertyValues } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
-import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
-import {GenericObject} from '../../../typings/globals.types';
+import { disaggregationTableStyles } from '../../../styles/disaggregation-table-styles';
+import { GenericObject } from '../../../typings/globals.types';
 import '../disaggregation-table-row';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin DisaggregationMixin
  * @appliesMixin UtilsMixin
  */
+@customElement('one-disaggregation')
 class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement)) {
-   render() {
-    // language=HTML
+  @property({ type: Number })
+  editable!: number;
+
+  @property({ type: Object })
+  data!: GenericObject;
+
+  @property({ type: Array })
+  mapping!: any[];
+
+  @property({ type: Object })
+  totalRow!: any;
+
+  @property({ type: Array })
+  columns!: any[];
+
+  @property({ type: Array })
+  rows!: any[];
+
+  static styles = [
+    disaggregationTableStyles,
+    css`
+      :host {
+        display: block;
+      }
+    `
+  ];
+
+  render() {
     return html`
-      ${disaggregationTableStyles}
-      <style></style>
+      <table>
+        <tr class="horizontal layout headerRow">
+          <th></th>
+          <th>Total</th>
+        </tr>
 
-      <tr class="horizontal layout headerRow">
-        <th></th>
-        <th>Total</th>
-      </tr>
+        ${this.rows.map(
+      (row) => html`
+            <disaggregation-table-row
+              .data="${row}"
+              .levelReported="${this.data.level_reported}"
+              .indicatorType="${this.data.display_type}"
+              row-type="middleRow"
+              .editable="${this.editable}"
+            ></disaggregation-table-row>
+          `
+    )}
 
-      ${this.rows.map((row: any) => {
-        html`
         <disaggregation-table-row
-        .data="${row}"
-        .level-reported="${this.data.level_reported}"
-        .indicator-type="${this.data.display_type}"
-        row-type="middleRow"
-        .editable="${this.editable}"
-      >
-      </disaggregation-table-row>`
-      })}
-
-      <disaggregation-table-row
-        .data="${this.totalRow}"
-        .level-reported="${this.data.level_reported}"
-        .indicator-type="${this.data.display_type}"
-        row-type="totalsRow"
-      >
-      </disaggregation-table-row>
+          .data="${this.totalRow}"
+          .levelReported="${this.data.level_reported}"
+          .indicatorType="${this.data.display_type}"
+          row-type="totalsRow"
+        ></disaggregation-table-row>
+      </table>
     `;
   }
 
-  @property({type: Number})
-  editable!: number;
-
-  @property({type: Object})
-  data!: GenericObject;
-
-  @property({type: Array})
-  mapping!: any[];
-
-  @property({type: Array})
-  totalRow!: GenericObject;
-
-  @property({type: Array})
-  columns!: any[];
-
-  @property({type: Array})
-  rows!: any[];
-
   _getColumns(mapping: any[]) {
-    return (mapping[0] || []).choices;
+    return (mapping[0] || {}).choices || [];
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -95,7 +101,6 @@ class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement)) {
   _determineRows(columns: any[], data: GenericObject) {
     return columns.map((z) => {
       const formatted = this._formatDisaggregationIds([z.id]);
-
       return {
         title: z.value,
         data: [
@@ -105,8 +110,6 @@ class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement)) {
           }
         ]
       };
-    }, this);
+    });
   }
 }
-
-window.customElements.define('one-disaggregation', OneDisaggregation);

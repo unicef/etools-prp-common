@@ -1,5 +1,5 @@
-import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import { html, css, LitElement } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
@@ -9,46 +9,50 @@ import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-loading/etools-loading';
 import ModalMixin from '../../mixins/modal-mixin';
 import LocalizeMixin from '../../mixins/localize-mixin';
-import {buttonsStyles} from '../../styles/buttons-styles';
-import {modalStyles} from '../../styles/modal-styles';
+import { buttonsStyles } from '../../styles/buttons-styles';
+import { modalStyles } from '../../styles/modal-styles';
 import '../confirm-box';
 import './disaggregation-table';
-import {DisaggregationTableEl} from './disaggregation-table';
-import {ConfirmBoxEl} from '../confirm-box';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import { DisaggregationTableEl } from './disaggregation-table';
+import { ConfirmBoxEl } from '../confirm-box';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin ModalMixin
- * @appliesMixin LocalizeMixin
- */
-class DisaggregationModal extends ModalMixin(LocalizeMixin(LitElement)) {
+@customElement('disaggregation-modal')
+class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
+  @property({ type: String })
+  reportingPeriod!: string;
+
+  @property({ type: Boolean })
+  updatePending = false;
+
+  static styles = [
+    buttonsStyles,
+    modalStyles,
+    css`
+      :host {
+        display: block;
+      }
+
+      paper-dialog {
+        width: 700px;
+      }
+
+      ::slotted([slot='disaggregation-table']) {
+        margin-bottom: 1em;
+      }
+    `
+  ];
+
   render() {
-    // language=HTML
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <style include="iron-flex iron-flex-alignment iron-flex-reverse">
-        :host {
-          display: block;
-
-          --paper-dialog: {
-            width: 700px;
-          }
-        }
-        ::slotted([slot='disaggregation-table']) {
-          margin-bottom: 1em;
-        }
-      </style>
-
-      <paper-dialog id="dialog" modal ?opened="${this.opened}">
+      <paper-dialog id="dialog" modal .opened="${this.opened}">
         <div class="header layout horizontal justified">
           <h2>${this.localize('enter_data')}</h2>
 
           <div class="layout horizontal">
             <p>${this.localize('reporting_period')}: ${this.reportingPeriod}</p>
 
-            <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
+            <paper-icon-button class="self-center" @click="${this.close}" icon="icons:close"></paper-icon-button>
           </div>
         </div>
 
@@ -58,23 +62,16 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(LitElement)) {
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="${this._save}" raised> ${this.localize('save')} </paper-button>
-
-          <paper-button class="btn-cancel" on-tap="${this.close}"> ${this.localize('cancel')} </paper-button>
+          <paper-button class="btn-primary" @click="${this._save}" raised>${this.localize('save')}</paper-button>
+          <paper-button class="btn-cancel" @click="${this.close}">${this.localize('cancel')}</paper-button>
         </div>
 
         <confirm-box id="confirm"></confirm-box>
 
-        <etools-loading ?active="${this.updatePending}"></etools-loading>
+        <etools-loading .active="${this.updatePending}"></etools-loading>
       </paper-dialog>
     `;
   }
-
-  @property({type: String})
-  reportingPeriod!: string;
-
-  @property({type: Boolean})
-  updatePending = false;
 
   _save() {
     const tableElem = this.querySelector('disaggregation-table');
@@ -87,7 +84,6 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(LitElement)) {
           this.updatePending = false;
           this.close();
         })
-        // @ts-ignore
         .catch((_err: GenericObject) => {
           console.log(_err);
           this.updatePending = false;
@@ -102,25 +98,26 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(LitElement)) {
   _confirm(e: CustomEvent) {
     e.stopPropagation();
 
-    (this.$.confirm as ConfirmBoxEl).run({
-      body: 'Changing disaggregation will cause your previous data to be lost. ' + 'Do you want to continue?',
+    const confirmBox = this.shadowRoot!.getElementById('confirm') as ConfirmBoxEl;
+    confirmBox.run({
+      body: 'Changing disaggregation will cause your previous data to be lost. Do you want to continue?',
       result: e.detail
     });
   }
 
   _addEventListeners() {
-    this.close = this.close.bind(this);
-    this.addEventListener('dialog.iron-overlay-closed', this.close);
-    this.adjustPosition = this.adjustPosition.bind(this);
-    this.addEventListener('disaggregation-modal-refit', this.adjustPosition as any);
-    this._confirm = this._confirm.bind(this);
-    this.addEventListener('disaggregation-modal-confirm', this._confirm as any);
+    this._boundClose = this.close.bind(this);
+    this.addEventListener('dialog-iron-overlay-closed', this._boundClose);
+    this._boundAdjustPosition = this.adjustPosition.bind(this);
+    this.addEventListener('disaggregation-modal-refit', this._boundAdjustPosition as any);
+    this._boundConfirm = this._confirm.bind(this);
+    this.addEventListener('disaggregation-modal-confirm', this._boundConfirm as any);
   }
 
   _removeEventListeners() {
-    this.removeEventListener('dialog.iron-overlay-closed', this.close);
-    this.removeEventListener('disaggregation-modal-refit', this.adjustPosition as any);
-    this.removeEventListener('disaggregation-modal-confirm', this._confirm as any);
+    this.removeEventListener('dialog-iron-overlay-closed', this._boundClose);
+    this.removeEventListener('disaggregation-modal-refit', this._boundAdjustPosition as any);
+    this.removeEventListener('disaggregation-modal-confirm', this._boundConfirm as any);
   }
 
   connectedCallback() {
@@ -134,6 +131,4 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(LitElement)) {
   }
 }
 
-window.customElements.define('disaggregation-modal', DisaggregationModal);
-
-export {DisaggregationModal as DisaggregationModalEl};
+export { DisaggregationModal as DisaggregationModalEl };

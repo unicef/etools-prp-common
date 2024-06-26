@@ -1,4 +1,3 @@
-import {property, state} from 'lit/decorators.js';
 import {Constructor, GenericObject} from '../typings/globals.types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setL11NResources} from '../../redux/actions';

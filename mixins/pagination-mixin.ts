@@ -1,5 +1,5 @@
 import {LitElement} from 'lit';
-import {property, state} from 'lit/decorators.js';
+import {state} from 'lit/decorators.js';
 import {Constructor, GenericObject} from '../typings/globals.types';
 
 /**

@@ -1,5 +1,4 @@
 import {LitElement} from 'lit';
-import {property} from 'lit/decorators.js';
 import {Constructor} from '../typings/globals.types';
 import Settings from '../settings';
 

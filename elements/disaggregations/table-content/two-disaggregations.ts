@@ -1,72 +1,80 @@
-import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import { LitElement, html, css, PropertyValues } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
 import UtilsMixin from '../../../mixins/utils-mixin';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
-import {GenericObject} from '../../../typings/globals.types';
+import { disaggregationTableStyles } from '../../../styles/disaggregation-table-styles';
+import { GenericObject } from '../../../typings/globals.types';
 import '../disaggregation-table-row';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin DisaggregationMixin
  * @appliesMixin UtilsMixin
  */
-class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(LitElement)) {
-   render() {
-    // language=HTML
-    return html`
-      ${disaggregationTableStyles}
-      <style></style>
-
-      <tr class="horizontal layout headerRow">
-        <th></th>
-
-        ${(this.columns || []).map((column: any) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
-        <th>Total</th>
-      </tr>
-
-        ${(this.rowsForDisplay || []).map((row: any) => html`
-          <disaggregation-table-row
-          .data="${row}"
-          .level-reported="${this.data.level_reported}"
-          .indicator-type="${this.data.display_type}"
-          row-type="middleRow"
-          .editable="${this.editable}"
-        >
-        </disaggregation-table-row>`)}
-
-      <disaggregation-table-row
-        .data="${this.totalsForDisplay}"
-        .level-reported="${this.data.level_reported}"
-        .indicator-type="${this.data.display_type}"
-        row-type="totalsRow"
-      >
-      </disaggregation-table-row>
-    `;
-  }
-
-  @property({type: Number})
+@customElement('two-disaggregations')
+class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
+  @property({ type: Number })
   editable!: number;
 
-  @property({type: Object})
+  @property({ type: Object })
   data!: GenericObject;
 
-  @property({type: Array})
+  @property({ type: Array })
   mapping!: any[];
 
-  @property({type: Array})
+  @property({ type: Array })
   columns!: any[];
 
-  @property({type: Array})
+  @property({ type: Array })
   rows!: any[];
 
-  @property({type: Object})
+  @property({ type: Object })
   totalsForDisplay!: GenericObject;
 
-  @property({type: Object})
-  rowsForDisplay!: GenericObject;
+  @property({ type: Array })
+  rowsForDisplay!: GenericObject[];
+
+  static styles = [
+    disaggregationTableStyles,
+    css`
+      :host {
+        display: block;
+      }
+    `
+  ];
+
+  render() {
+    return html`
+      <table>
+        <tr class="horizontal layout headerRow">
+          <th></th>
+          ${this.columns.map(
+      (column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`
+    )}
+          <th>Total</th>
+        </tr>
+
+        ${this.rowsForDisplay.map(
+      (row) => html`
+            <disaggregation-table-row
+              .data="${row}"
+              .levelReported="${this.data.level_reported}"
+              .indicatorType="${this.data.display_type}"
+              row-type="middleRow"
+              .editable="${this.editable}"
+            ></disaggregation-table-row>
+          `
+    )}
+
+        <disaggregation-table-row
+          .data="${this.totalsForDisplay}"
+          .levelReported="${this.data.level_reported}"
+          .indicatorType="${this.data.display_type}"
+          row-type="totalsRow"
+        ></disaggregation-table-row>
+      </table>
+    `;
+  }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
@@ -79,20 +87,20 @@ class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(LitElement)) {
       this.totalsForDisplay = this._determineTotals(this.columns, this.data);
     }
     if (changedProperties.has('columns') || changedProperties.has('rows') || changedProperties.has('data')) {
-      this.rowsForDisplay = this._determineRowsForDisplay(this.columns, this.rows);
+      this.rowsForDisplay = this._determineRowsForDisplay(this.columns, this.rows, this.data);
     }
   }
   
 
   _getColumns(mapping: any[]) {
-    return (mapping[0] || []).choices;
+    return (mapping[0] || {}).choices || [];
   }
 
   _getRows(mapping: any[]) {
-    return (mapping[1] || []).choices;
+    return (mapping[1] || {}).choices || [];
   }
 
-  _determineRowsForDisplay(columns: any[], rows: any[]) {
+  _determineRowsForDisplay(columns: any[], rows: any[], data: GenericObject) {
     return this._determineRows(this, rows, columns);
   }
 
@@ -104,7 +112,7 @@ class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(LitElement)) {
         key: formatted,
         data: data.disaggregation[formatted]
       };
-    }, this);
+    });
 
     return {
       title: 'total',
@@ -117,4 +125,4 @@ class TwoDisaggregations extends UtilsMixin(DisaggregationMixin(LitElement)) {
   }
 }
 
-window.customElements.define('two-disaggregations', TwoDisaggregations);
+export default TwoDisaggregations;

@@ -1,4 +1,3 @@
-import {property} from 'lit/decorators.js';
 import {Constructor} from '../typings/globals.types';
 import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {BASE_PATH} from '../config';
