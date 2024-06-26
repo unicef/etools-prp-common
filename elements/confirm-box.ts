@@ -4,7 +4,6 @@ import '@polymer/paper-button/paper-button';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
-import '@polymer/polymer/lib/elements/dom-if';
 import Constants from '../constants';
 import {GenericObject} from '../typings/globals.types';
 import {buttonsStyles} from '../styles/buttons-styles';

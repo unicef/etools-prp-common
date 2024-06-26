@@ -20,8 +20,8 @@ class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
           line-height: 15px;
         }
       </style>
-      <paper-progress value="[[percentage]]"></paper-progress>
-      <span class="percentage">[[percentage]]%</span>
+      <paper-progress .value="${this.percentage}"></paper-progress>
+      <span class="percentage">${this.percentage}%</span>
     `;
   }
 

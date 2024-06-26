@@ -4,7 +4,6 @@ import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/paper-button/paper-button';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/polymer/lib/elements/dom-repeat';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';

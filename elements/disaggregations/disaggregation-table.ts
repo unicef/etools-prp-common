@@ -1,4 +1,4 @@
-import { html, css } from 'lit';
+import { html, css, PropertyValues } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { ReduxConnectedElement } from '../../ReduxConnectedElement';
 import UtilsMixin from '../../mixins/utils-mixin';
@@ -196,13 +196,6 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
     `;
   }
 
-  static get observers() {
-    return [
-      '_resetFields(formattedData.disaggregation_reported_on)',
-      '_initPercentageMap(localData, reportingEntityPercentageMap)'
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
     this._addEventListeners();
@@ -214,6 +207,17 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
   disconnectedCallback() {
     super.disconnectedCallback();
     this._removeEventListeners();
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+  
+    if (changedProperties.has('formattedData')) {
+      this._resetFields();
+    }
+    if (changedProperties.has('localData') || changedProperties.has('reportingEntityPercentageMap')) {
+      this._initPercentageMap(this.localData, this.reportingEntityPercentageMap);
+    }
   }
 
   _addEventListeners() {

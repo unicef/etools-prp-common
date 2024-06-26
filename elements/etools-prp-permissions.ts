@@ -1,8 +1,12 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
+import {LitElement, PropertyValues, html} from 'lit';
+import {property} from 'lit/decorators.js';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import UtilsMixin from '../mixins/utils-mixin';
 import Constants from '../constants';
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../typings/globals.types';
+import { store } from '../../redux/store';
+import { RootState } from '../../typings/redux.types';
+import { isJsonStrMatch } from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 (function () {
   const checkInResponsePlan = (roles: any[]) => {
@@ -189,30 +193,62 @@ import {GenericObject} from '../typings/globals.types';
    * @customElement
    * @appliesMixin UtilsMixin
    */
-  class EtoolsPrpPermissions extends UtilsMixin(ReduxConnectedElement) {
-    @property({type: Object, computed: 'getReduxStateObject(rootState.userProfile.profile)'})
+  class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement)) {
+    @property({type: Object})
     profile!: GenericObject;
 
-    @property({type: Array, computed: '_computePrpRoles(profile)'})
+    @property({type: Array})
     prpRoles!: any[];
 
-    @property({type: Array, computed: '_computeImoClusters(profile)'})
+    @property({type: Array})
     imoClusters!: any[];
 
-    @property({type: Object, computed: 'getReduxStateObject(rootState.partner.current)'})
+    @property({type: Object})
     partner!: GenericObject;
 
-    @property({type: String, computed: 'getReduxStateValue(rootState.workspaces.current)'})
-    workspace!: string;
+    @property({type: String})
+    workspace!: string | undefined;
 
-    @property({type: Object, computed: 'getReduxStateObject(rootState.responsePlans.current)'})
+    @property({type: Object})
     responsePlan!: GenericObject;
 
-    @property({type: Object, computed: '_computeParams(prpRoles, imoClusters, partner, workspace, responsePlan)'})
+    @property({type: Object})
     params!: GenericObject;
 
-    @property({type: Object, computed: '_computePermissions(params)', notify: true})
+    @property({type: Object})
     permissions!: GenericObject;
+
+    stateChanged(state: RootState) {
+      if(!isJsonStrMatch(state?.userProfile?.profile, this.profile)) {
+        this.profile = state.userProfile.profile;
+      }
+      if(!isJsonStrMatch(state?.partner?.current, this.partner)) {
+        this.partner = state.partner.current;
+      }
+      if(!isJsonStrMatch(state?.workspaces?.current, this.workspace)) {
+        this.workspace = state.workspaces.current;
+      }
+      if(!isJsonStrMatch(state?.responsePlans?.current, this.responsePlan)) {
+        this.responsePlan = state.responsePlans.current;
+      }
+    }
+
+    updated(changedProperties: PropertyValues): void {
+      super.updated(changedProperties);
+    
+      if (changedProperties.has('profile')) {
+        this.imoClusters = this._computeImoClusters(this.profile);
+        this.prpRoles = this._computePrpRoles(this.profile);
+      }
+      if (changedProperties.has('prpRoles') || changedProperties.has('imoClusters') ||
+        changedProperties.has('partner') || changedProperties.has('workspace') || changedProperties.has('responsePlan')) {
+          this.params = this._computeParams(this.prpRoles, this.imoClusters, this.partner, this.workspace || '', this.responsePlan);
+      }
+      if (changedProperties.has('params')) {
+        this.permissions = this._computePermissions(this.params);
+      }
+    }
+    
 
     _computePermissions(params: GenericObject) {
       return Object.keys(permissions).reduce(function (acc: any, key: string) {

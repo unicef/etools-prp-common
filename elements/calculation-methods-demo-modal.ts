@@ -5,7 +5,6 @@ import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/paper-button/paper-button';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/paper-styles/typography';
 import {GenericObject} from '../typings/globals.types';
 import ModalMixin from '../mixins/modal-mixin';

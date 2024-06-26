@@ -14,8 +14,6 @@ import '@polymer/paper-button/paper-button';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
 
 import './etools-prp-ajax';
 import '../elements/etools-prp-number';

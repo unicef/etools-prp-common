@@ -2,7 +2,6 @@ import {LitElement, html} from 'lit';
 import {property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/polymer/lib/elements/dom-repeat';
 import {GenericObject} from '../typings/globals.types';
 import '@polymer/paper-styles/typography';
 import './etools-prp-number';

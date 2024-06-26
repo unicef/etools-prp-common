@@ -3,7 +3,6 @@ import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import LocalizeMixin from '../mixins/localize-mixin';
-import '@polymer/polymer/lib/elements/dom-if';
 import { store } from '../../redux/store';
 import { RootState } from '../../typings/redux.types';
 
