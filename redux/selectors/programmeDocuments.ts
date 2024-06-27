@@ -1,6 +1,5 @@
 import {RootState} from '../../../typings/redux.types';
 import {createSelector} from 'reselect';
-import {GenericObject} from '../../typings/globals.types';
 
 function getAllPD(state: RootState) {
   return state.programmeDocuments.all;
@@ -12,7 +11,7 @@ function getCurrentPDId(state: RootState) {
 
 function getCurrentPD(pds: any[], currentPdId: string) {
   return (
-    pds.filter(function (pd: GenericObject) {
+    pds.filter(function (pd: any) {
       return String(pd.id) === String(currentPdId);
     })[0] || {}
   );

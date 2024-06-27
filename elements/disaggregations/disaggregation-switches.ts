@@ -5,31 +5,30 @@ import UtilsMixin from '../../mixins/utils-mixin';
 import LocalizeMixin from '../../mixins/localize-mixin';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import '../message-box';
-import { GenericObject } from '../../typings/globals.types';
 import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import { debounce } from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 @customElement('disaggregation-switches')
 class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixin(LitElement))) {
-  @property({ type: Object })
-  mapping!: GenericObject;
+  @property({type: Object})
+  mapping!: any;
 
-  @property({ type: Number })
+  @property({type: Number})
   editable!: number;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   warning = true;
 
-  @property({ type: Array })
+  @property({type: Array})
   reportedOn: number[] = [];
 
-  @property({ type: Object, reflect: true })
-  formattedData!: GenericObject;
+  @property({type: Object, reflect: true})
+  formattedData!: any;
 
-  @property({ type: Object })
-  data!: GenericObject;
+  @property({type: Object})
+  data!: any;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   editableBool!: boolean;
 
   @state()
@@ -64,30 +63,31 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
   render() {
     return html`
       ${this.editableBool
-      ? html`
+        ? html`
             <div class="container">
               <h4>${this.localize('enter_data_by_disaggregation')}</h4>
-              ${this.mapping.map((field) => html`
-                <paper-checkbox
-                  id="${field.id}"
-                  .checked="${this._computeChecked(field.id)}"
-                  @change="${this._fieldValueChanged}"
-                >
-                  ${this._formatFieldName(field.name)}
-                </paper-checkbox>
-              `)}
-
+              ${this.mapping.map(
+                (field) => html`
+                  <paper-checkbox
+                    id="${field.id}"
+                    .checked="${this._computeChecked(field.id)}"
+                    @change="${this._fieldValueChanged}"
+                  >
+                    ${this._formatFieldName(field.name)}
+                  </paper-checkbox>
+                `
+              )}
               ${this.warning
-        ? html`
+                ? html`
                     <message-box type="warning">
                       If one or more disaggregation box is unchecked, the reporting table will be simplified however the
                       report will not be in line with the disaggregation agreed in the PD/SSFA.
                     </message-box>
                   `
-        : ''}
+                : ''}
             </div>
           `
-      : ''}
+        : ''}
     `;
   }
 
@@ -108,8 +108,8 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
     return editable === 1;
   }
 
-  _cloneData(data: GenericObject) {
-    this.formattedData = { ...data };
+  _cloneData(data: any) {
+    this.formattedData = {...data};
   }
 
   _computeChecked(id: string) {
@@ -123,16 +123,16 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
   }
 
   _fieldValueChanged(e: Event) {
-    const field = e.target as GenericObject;
-    this.fieldValueChanged = debounce(this.fieldValueChanged, 100, () => {
+    const field = e.target as any;
+    this.fieldValueChanged = debounce(() => {
       this._recordField(field);
       this._confirmIntent(field)
         .then(() => this._commit())
         .catch(() => this._revert(field));
-    });
+    }, 200);
   }
 
-  _confirmIntent(field: GenericObject) {
+  _confirmIntent(field: any) {
     return new Promise((resolve, reject) => {
       const deferred = this._deferred();
       fireEvent(this, 'disaggregation-modal-confirm', deferred);
@@ -149,7 +149,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
     };
   }
 
-  _revert(field: GenericObject) {
+  _revert(field: any) {
     field.checked = !field.checked;
     this._recordField(field);
   }
@@ -158,7 +158,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
     this.warning = !!numDisagg && reportedOnLength < numDisagg;
   }
 
-  _recordField(field: GenericObject) {
+  _recordField(field: any) {
     this._updateReportedOn(field.id, field.checked);
   }
 

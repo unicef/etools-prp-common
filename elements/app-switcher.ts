@@ -1,18 +1,16 @@
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {connect} from 'pwa-helpers';
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-menu-button/paper-menu-button.js';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icons/image-icons.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
-import {GenericObject} from '../typings/globals.types';
 import '@polymer/paper-styles/typography';
 import RoutingMixin from '../mixins/routing-mixin';
-import { store } from '../../redux/store';
-import { RootState } from '../../typings/redux.types';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
-
 
 /**
  * @polymer
@@ -20,8 +18,9 @@ import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
  * @mixinFunction
  * @appliesMixin RoutingMixin
  */
-class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
-   render() {
+@customElement('app-switcher')
+export class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
+  render() {
     return html`
       <style include="iron-flex">
         :host {
@@ -91,17 +90,19 @@ class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
         <aside slot="dropdown-content">
           <h3>Select an application</h3>
           <ul class="apps layout horizontal">
-          ${this.profile?.access?.map((item: any) => html`
-               <li>
-                <a
-                  class="app app--item ${this._getSelectedClassName(item, this.app)}"
-                  href="${this.buildBaseUrl(this.workspace, item)}"
-                  on-tap="_navigate"
-                >
-                  ${this._getAppLabel(item)}
-                </a>
-              </li>
-            `)}
+            ${this.profile?.access?.map(
+              (item: any) => html`
+                <li>
+                  <a
+                    class="app app--item ${this._getSelectedClassName(item, this.app)}"
+                    href="${this.buildBaseUrl(this.workspace, item)}"
+                    on-tap="_navigate"
+                  >
+                    ${this._getAppLabel(item)}
+                  </a>
+                </li>
+              `
+            )}
           </ul>
         </aside>
       </paper-menu-button>
@@ -115,16 +116,16 @@ class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
   workspace!: string;
 
   @property({type: Object})
-  profile!: GenericObject;
+  profile!: any;
 
   stateChanged(state: RootState) {
-    if(state?.app?.current) {
+    if (state?.app?.current) {
       this.app = state.app.current;
     }
-    if(state?.workspaces?.current) {
+    if (state?.workspaces?.current) {
       this.workspace = state.workspaces.current;
     }
-    if(state?.userProfile?.profile) {
+    if (state?.userProfile?.profile) {
       this.profile = cloneDeep(state.userProfile.profile);
     }
   }
@@ -149,5 +150,3 @@ class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
     location.href = (e.target as any).href;
   }
 }
-
-window.customElements.define('app-switcher', AppSwitcher);

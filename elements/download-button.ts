@@ -1,5 +1,5 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/paper-button/paper-button';
@@ -9,7 +9,8 @@ import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
  * @polymer
  * @customElement
  */
-class DownloadButton extends MatomoMixin(LitElement) {
+@customElement('download-button')
+export class DownloadButton extends MatomoMixin(LitElement) {
   render() {
     return html`
       <style>
@@ -38,5 +39,3 @@ class DownloadButton extends MatomoMixin(LitElement) {
     e.target.blur();
   }
 }
-
-window.customElements.define('download-button', DownloadButton);

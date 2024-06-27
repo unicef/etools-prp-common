@@ -7,7 +7,6 @@ import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/paper-styles/typography';
 import '@polymer/iron-location/iron-location';
 import '@polymer/app-layout/app-grid/app-grid-style';
-import {GenericObject} from '../typings/globals.types';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
 import RoutingMixin from '../mixins/routing-mixin';
@@ -59,8 +58,8 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
         </div>
         <paper-dialog-scrollable>
           <h3>
-          ${this._equals(this.data.report_type, 'PR') ? html`${this.localize('you_are_about_to_delete')}`: ``}
-          ${this._equals(this.data.report_type, 'IR') ? html`${this.localize('you_are_about_to_location')}`: ``}
+            ${this._equals(this.data.report_type, 'PR') ? html`${this.localize('you_are_about_to_delete')}` : ``}
+            ${this._equals(this.data.report_type, 'IR') ? html`${this.localize('you_are_about_to_location')}` : ``}
           </h3>
         </paper-dialog-scrollable>
 
@@ -68,7 +67,9 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
           <etools-button variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
             ${this.localize('refresh')}
           </etools-button>
-          <etools-button variant="primary" @click="${this._cancel}" ?disabled="${this.busy}"> ${this.localize('cancel')} </etools-button>
+          <etools-button variant="primary" @click="${this._cancel}" ?disabled="${this.busy}">
+            ${this.localize('cancel')}
+          </etools-button>
         </div>
       </paper-dialog>
       <error-modal id="error"></error-modal>
@@ -76,7 +77,7 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
   }
 
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
   @property({type: Boolean})
   busy = false;
@@ -84,7 +85,7 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
   _refresh() {
     this.busy = true;
 
-    const refreshThunk = (this.$.refreshReport as EtoolsPrpAjaxEl).thunk();
+    const refreshThunk = (this.shadowRoot!.getElementById('refreshReport') as EtoolsPrpAjaxEl).thunk();
     refreshThunk()
       .then(() => {
         window.location.reload();

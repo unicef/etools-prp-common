@@ -1,11 +1,10 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-button/paper-button';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
 import Constants from '../constants';
-import {GenericObject} from '../typings/globals.types';
 import {buttonsStyles} from '../styles/buttons-styles';
 
 /**
@@ -14,8 +13,9 @@ import {buttonsStyles} from '../styles/buttons-styles';
  * @mixinFunction
  * @appliesMixin LocalizeMixin
  */
-class ConfirmBox extends LitElement {
-    render() {
+@customElement('confirm-box')
+export class ConfirmBox extends LitElement {
+  render() {
     return html`
       ${buttonsStyles}
       <style include="iron-flex iron-flex-reverse iron-flex-alignment">
@@ -55,20 +55,21 @@ class ConfirmBox extends LitElement {
         }
       </style>
 
-      ${this.active ? html`
-        <div class="overlay layout horizontal center-center" style="position: ${this.position};">
-          <div class="prompt" style="max-width: ${this.config.maxWidth};">
-            <div class="info-wrapper">
-              <iron-icon class="info-icon" icon="info-outline"></iron-icon>
-              <p>${this.config.body}</p>
-            </div>
-            <div class="layout horizontal-reverse">
-              <paper-button class="btn-primary" on-tap="_ok"> ${this.config.okLabel} </paper-button>
+      ${this.active
+        ? html` <div class="overlay layout horizontal center-center" style="position: ${this.position};">
+            <div class="prompt" style="max-width: ${this.config.maxWidth};">
+              <div class="info-wrapper">
+                <iron-icon class="info-icon" icon="info-outline"></iron-icon>
+                <p>${this.config.body}</p>
+              </div>
+              <div class="layout horizontal-reverse">
+                <paper-button class="btn-primary" on-tap="_ok"> ${this.config.okLabel} </paper-button>
 
-              <paper-button on-tap="_cancel"> ${this.config.cancelLabel} </paper-button>
+                <paper-button on-tap="_cancel"> ${this.config.cancelLabel} </paper-button>
+              </div>
             </div>
-          </div>
-        </div>`: ``}
+          </div>`
+        : ``}
     `;
   }
 
@@ -84,7 +85,7 @@ class ConfirmBox extends LitElement {
     cancelLabel: 'Cancel',
     maxWidth: '100%',
     mode: Constants.CONFIRM_INLINE,
-    result: <GenericObject>{},
+    result: <any>{},
     body: ''
   };
 
@@ -101,7 +102,7 @@ class ConfirmBox extends LitElement {
     }
   }
 
-  _computePosition(config: GenericObject) {
+  _computePosition(config: any) {
     switch (config.mode) {
       case Constants.CONFIRM_INLINE:
         return 'absolute';
@@ -144,12 +145,11 @@ class ConfirmBox extends LitElement {
     this.active = false;
   }
 
-  run(config: GenericObject) {
+  run(config: any) {
     this.config = Object.assign({}, this.config, config);
     this._open();
   }
 }
 
-window.customElements.define('confirm-box', ConfirmBox);
 
 export {ConfirmBox as ConfirmBoxEl};

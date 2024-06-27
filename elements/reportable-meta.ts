@@ -8,15 +8,13 @@ import './report-status';
 import {RefreshReportModalEl} from './refresh-report-modal';
 import './refresh-report-modal';
 import '@polymer/app-layout/app-grid/app-grid-style';
-import {GenericObject} from '../typings/globals.types';
 import UtilsMixin from '../mixins/utils-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {PaperInputElement} from '@polymer/paper-input/paper-input';
-import { EtoolsInput } from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
-
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
 /**
  * @polymer
@@ -25,7 +23,7 @@ import { EtoolsInput } from '@unicef-polymer/etools-unicef/src/etools-input/etoo
  * @appliesMixin LocalizeMixin
  */
 class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
-   render() {
+  render() {
     return html`
       ${buttonsStyles}
       <style>
@@ -75,45 +73,52 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
         }
       </style>
 
-      ${this.canRefresh ? html`<etools-button id="refresh-button" variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
-          ${this.localize('refresh')}
-        </etools-button>`: ``}
+      ${this.canRefresh
+        ? html`<etools-button id="refresh-button" variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
+            ${this.localize('refresh')}
+          </etools-button>`
+        : ``}
 
       <labelled-item .label="${this.localize('overall_status')}">
-       ${this._equals(this.mode, 'view') ?
-         html`<report-status .final="${this.completed}" .status="${this.data.overall_status}"></report-status>`: 
-         html`
-          <etools-radio-group id="overall_status" .value="${this.data.overall_status}"  @sl-change="${this._handleInput}">
-            <sl-radio value="Met">${this._computeMetLabel(this.completed, this.localize)}</sl-radio>
-           ${this.completed ? `` : 
-            html`<sl-radio value="OnT">${this.localize('on_track')}</sl-radio>
-            <sl-radio value="NoP">${this.localize('no_progress')}</sl-radio>`}                      
-            <sl-radio value="Con">${this._computeConstrainedLabel(this.completed, this.localize)}</sl-radio>
-            ${this.allowNoStatus ? html`<sl-radio value="NoS">${this.localize('no_status')}</sl-radio>` : ``}            
-          </etools-radio-group>
-          `}
+        ${this._equals(this.mode, 'view')
+          ? html`<report-status .final="${this.completed}" .status="${this.data.overall_status}"></report-status>`
+          : html`
+              <etools-radio-group
+                id="overall_status"
+                .value="${this.data.overall_status}"
+                @sl-change="${this._handleInput}"
+              >
+                <sl-radio value="Met">${this._computeMetLabel(this.completed, this.localize)}</sl-radio>
+                ${this.completed
+                  ? ``
+                  : html`<sl-radio value="OnT">${this.localize('on_track')}</sl-radio>
+                      <sl-radio value="NoP">${this.localize('no_progress')}</sl-radio>`}
+                <sl-radio value="Con">${this._computeConstrainedLabel(this.completed, this.localize)}</sl-radio>
+                ${this.allowNoStatus ? html`<sl-radio value="NoS">${this.localize('no_status')}</sl-radio>` : ``}
+              </etools-radio-group>
+            `}
       </labelled-item>
-
 
       <labelled-item id="labelled-narrative" .label="${this.localize('narrative_assessment')}">
-       ${this._equals(this.mode, 'view') ? html`${this.data.narrative_assessment}` :
-         html`
-          <div id="input-button-container">
-            <etools-input
-              id="narrative_assessment"
-              .value="${this.data.narrative_assessment}"
-              readonly
-              maxlength="2000"
-            >
-            </etools-input>
-            <etools-button variant="primary" id="toggle-button" @click="${this._handleInput}">
-              ${this.localizedToggle}
-            </etools-button>
-          </div>
-          `}
-
+        ${this._equals(this.mode, 'view')
+          ? html`${this.data.narrative_assessment}`
+          : html`
+              <div id="input-button-container">
+                <etools-input
+                  id="narrative_assessment"
+                  .value="${this.data.narrative_assessment}"
+                  readonly
+                  maxlength="2000"
+                >
+                </etools-input>
+                <etools-button variant="primary" id="toggle-button" @click="${this._handleInput}">
+                  ${this.localizedToggle}
+                </etools-button>
+              </div>
+            `}
       </labelled-item>
-      <refresh-report-modal id="refresh" .data="${this.refreshData}" .refresh-url="${this.refreshUrl}"> </refresh-report-modal>
+      <refresh-report-modal id="refresh" .data="${this.refreshData}" .refresh-url="${this.refreshUrl}">
+      </refresh-report-modal>
     `;
   }
 
@@ -127,10 +132,10 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
   localizedToggle!: string;
 
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
   @property({type: Object})
-  localData!: GenericObject;
+  localData!: any;
 
   @property({type: Boolean, reflect: true})
   allowNoStatus = false;
@@ -142,7 +147,7 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
   completed = false;
 
   @property({type: Object})
-  refreshData!: GenericObject;
+  refreshData!: any;
 
   @property({type: Boolean})
   canRefresh = false;
@@ -150,10 +155,9 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
   @property({type: String})
   refreshUrl: string = Endpoints.reportProgressReset();
 
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('toggle') || changedProperties.has('localize')) {
       this.localizedToggle = this._localizeToggle(this.toggle, this.localize);
     }
@@ -169,7 +173,7 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
   }
 
   _handleInput(event: CustomEvent) {
-    let field = event.target as GenericObject;
+    let field = event.target as any;
     const narrativeTextInput = this.shadowRoot!.querySelector('#narrative_assessment') as PaperInputElement;
 
     if (narrativeTextInput && this.toggle === 'Edit' && field.id === 'toggle-button') {
@@ -229,7 +233,7 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
     return localize(toggle.toLowerCase());
   }
 
-  _localDataChanged(change: GenericObject) {
+  _localDataChanged(change: any) {
     if (change.path.split('.').length < 2) {
       return;
     }
@@ -241,12 +245,12 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
     return {report_id: reportId, report_type: 'IR'};
   }
 
-  _computeCanRefresh(isCluster: boolean, data: GenericObject) {
+  _computeCanRefresh(isCluster: boolean, data: any) {
     return isCluster && data.can_submit;
   }
 
   _refresh() {
-    (this.$.refresh as RefreshReportModalEl).open();
+    (this.shadowRoot!.getElementById('refresh') as RefreshReportModalEl).open();
   }
 
   connectedCallback() {
@@ -268,11 +272,10 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
     ) {
       const paperButton = labelledItem[1].querySelector('etools-button');
       if (paperButton && paperButton.textContent!.trim() === 'Save') {
-        this.localData.narrative_assessment = 
-          (labelledItem[1].querySelector('etools-input') as EtoolsInput).value;        
+        this.localData.narrative_assessment = (labelledItem[1].querySelector('etools-input') as EtoolsInput).value;
       }
 
-      (this.$.refresh as RefreshReportModalEl).close();
+      (this.shadowRoot!.getElementById('refresh') as RefreshReportModalEl).close();
     }
   }
 }

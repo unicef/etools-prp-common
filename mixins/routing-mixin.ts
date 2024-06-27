@@ -1,25 +1,27 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import {BASE_PATH} from '../config';
+import {property} from 'lit/decorators';
+import {store} from '../../redux/store';
 
 /**
  * @mixinFunction
  */
 function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class RoutingClass extends baseClass {
-    // // @property({type: String})
+    @property({type: String})
     _$currentWorkspace!: string;
 
-    // // @property({type: String})
+    @property({type: String})
     _$currentApp!: string;
 
-    // // @property({type: String})
+    @property({type: String})
     _$currentPlan!: string;
 
-    // // @property({type: String})
+    @property({type: String})
     _baseUrl!: string;
 
-    // // @property({type: String})
+    @property({type: String})
     _baseUrlCluster!: string;
 
     private BEHAVIOR_NAME = 'RoutingBehavior';
@@ -67,7 +69,7 @@ function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
       super.connectedCallback();
 
       setTimeout(() => {
-        if (typeof this.reduxStore.dispatch !== 'function') {
+        if (typeof store.dispatch !== 'function') {
           throw new Error(`${this.BEHAVIOR_NAME} requires ReduxBehavior`);
         }
       });

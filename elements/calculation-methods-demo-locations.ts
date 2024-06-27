@@ -1,5 +1,5 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import '@polymer/paper-styles/typography';
@@ -11,7 +11,8 @@ import {modalStyles} from '../styles/modal-styles';
  * @polymer
  * @customElement
  */
-class CalculationMethodsDemoLocations extends LitElement {
+@customElement('calculation-methods-demo-locations')
+export class CalculationMethodsDemoLocations extends LitElement {
   render() {
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -56,18 +57,18 @@ class CalculationMethodsDemoLocations extends LitElement {
       </style>
 
       <ul class="app-grid">
-       ${(this.totals || [])
-                  .map((item: any) =>
-        html`
-          <li>
-            <div class="content-box">
-              <div class="bold-text">Location ${item.id}</div>
-              <div class="layout horizontal justified">
-                <div>Reporting period</div>
-                <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
+        ${(this.totals || []).map(
+          (item: any) =>
+            html` <li>
+              <div class="content-box">
+                <div class="bold-text">Location ${item.id}</div>
+                <div class="layout horizontal justified">
+                  <div>Reporting period</div>
+                  <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
+                </div>
               </div>
-            </div>
-          </li>`)}
+            </li>`
+        )}
       </ul>
     `;
   }
@@ -75,7 +76,5 @@ class CalculationMethodsDemoLocations extends LitElement {
   @property({type: Array})
   totals!: any[];
 }
-
-window.customElements.define('calculation-methods-demo-locations', CalculationMethodsDemoLocations);
 
 export {CalculationMethodsDemoLocations as CalculationMethodsDemoLocationsEl};

@@ -5,30 +5,28 @@ import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
 import './disaggregation-field';
 import '../../elements/etools-prp-number';
-import { disaggregationTableStyles } from '../../styles/disaggregation-table-styles';
-import { GenericObject } from '../../typings/globals.types';
+import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import { IronMeta } from '@polymer/iron-meta/iron-meta'; // TODO remove
 
 @customElement('disaggregation-table-cell-ratio')
 class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
-  @property({ type: String })
+  @property({type: String})
   vName!: string;
 
-  @property({ type: Number })
+  @property({type: Number})
   editable!: number;
 
-  @property({ type: Object })
-  localData!: GenericObject;
+  @property({type: Object})
+  localData!: any;
 
-  @property({ type: Object })
-  data!: GenericObject;
+  @property({type: Object})
+  data!: any;
 
-  @property({ type: String })
+  @property({type: String})
   coords!: string;
 
   static styles = [
-    disaggregationTableStyles,
     css`
       :host {
         display: block;
@@ -60,16 +58,31 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
 
   render() {
     return html`
+      ${disaggregationTableStyles}
       <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         <div slot="editable" class="app-grid">
           <div class="item">
-            <disaggregation-field id="v" key="v" min="0" .value="${this.data.v}" .coords="${this.coords}"></disaggregation-field>
+            <disaggregation-field
+              id="v"
+              key="v"
+              min="0"
+              .value="${this.data.v}"
+              .coords="${this.coords}"
+            ></disaggregation-field>
           </div>
           <div class="item">
-            <disaggregation-field id="d" key="d" min="0" .value="${this.data.d}" .coords="${this.coords}" .validator="${this.vName}"></disaggregation-field>
+            <disaggregation-field
+              id="d"
+              key="d"
+              min="0"
+              .value="${this.data.d}"
+              .coords="${this.coords}"
+              .validator="${this.vName}"
+            ></disaggregation-field>
           </div>
           <div class="computed-value">
-            <etools-prp-number .value="${this.localData.v}"></etools-prp-number> / <etools-prp-number .value="${this.localData.d}"></etools-prp-number>
+            <etools-prp-number .value="${this.localData.v}"></etools-prp-number> /
+            <etools-prp-number .value="${this.localData.d}"></etools-prp-number>
           </div>
         </div>
         <div slot="non-editable" class="app-grid">
@@ -80,7 +93,8 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
             <etools-prp-number .value="${this.data.d}"></etools-prp-number>
           </div>
           <div class="computed-value">
-            <etools-prp-number .value="${this.data.v}"></etools-prp-number> / <etools-prp-number .value="${this.data.d}"></etools-prp-number>
+            <etools-prp-number .value="${this.data.v}"></etools-prp-number> /
+            <etools-prp-number .value="${this.data.d}"></etools-prp-number>
           </div>
         </div>
       </disaggregation-table-cell>
@@ -89,7 +103,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('data')) {
       this._cloneData(this.data);
     }
@@ -112,7 +126,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
     const v = this.shadowRoot!.querySelector('#v') as EtoolsInput;
     const d = this.shadowRoot!.querySelector('#d') as EtoolsInput;
 
-    const change = { ...this.localData, ...value };
+    const change = {...this.localData, ...value};
 
     if (!v.validate() || !d.validate()) {
       change.c = null;
@@ -141,12 +155,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
       validatorName: vName,
       validatorType: 'validator',
       validate: (value: string) => {
-        return (
-          Number(value) !== 0 ||
-          Number(
-            (this.shadowRoot!.querySelector('#v') as EtoolsInput).value
-          ) === 0
-        );
+        return Number(value) !== 0 || Number((this.shadowRoot!.querySelector('#v') as EtoolsInput).value) === 0;
       }
     };
 
@@ -159,9 +168,9 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
     this.vName = vName;
   }
 
-  _cloneData(data: GenericObject) {
+  _cloneData(data: any) {
     if (!this.localData) {
-      this.localData = { ...data };
+      this.localData = {...data};
     }
   }
 

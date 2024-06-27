@@ -1,22 +1,20 @@
 import { LitElement, html, css } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { disaggregationTableStyles } from '../../../styles/disaggregation-table-styles';
-import { GenericObject } from '../../../typings/globals.types';
+import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
 import '../disaggregation-table-row';
 
 @customElement('zero-disaggregations')
 class ZeroDisaggregations extends LitElement {
-  @property({ type: Number })
+  @property({type: Number})
   editable!: number;
 
-  @property({ type: Object })
-  data!: GenericObject;
+  @property({type: Object})
+  data!: any;
 
-  @property({ type: Object })
-  totalRow!: GenericObject;
+  @property({type: Object})
+  totalRow!: any;
 
   static styles = [
-    disaggregationTableStyles,
     css`
       :host {
         display: block;
@@ -26,6 +24,7 @@ class ZeroDisaggregations extends LitElement {
 
   render() {
     return html`
+      ${disaggregationTableStyles}
       <disaggregation-table-row
         .data="${this.totalRow}"
         .levelReported="${this.data.level_reported}"
@@ -43,7 +42,7 @@ class ZeroDisaggregations extends LitElement {
     }
   }
 
-  _determineTotalRow(data: GenericObject) {
+  _determineTotalRow(data: any) {
     return {
       title: 'total',
       total: {

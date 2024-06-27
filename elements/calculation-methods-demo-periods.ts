@@ -1,8 +1,7 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/app-layout/app-grid/app-grid-style';
-import {GenericObject} from '../typings/globals.types';
 import '@polymer/paper-styles/typography';
 import './etools-prp-number';
 import {buttonsStyles} from '../styles/buttons-styles';
@@ -12,7 +11,8 @@ import {modalStyles} from '../styles/modal-styles';
  * @polymer
  * @customElement
  */
-class CalculationMethodsDemoPeriods extends LitElement {
+@customElement('calculation-methods-demo-period')
+export class CalculationMethodsDemoPeriods extends LitElement {
   render() {
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -53,26 +53,29 @@ class CalculationMethodsDemoPeriods extends LitElement {
       </style>
 
       <ul class="app-grid">
-          <ul class="app-grid">
-       ${(this.totals || [])
-        .map((item: any) =>
-        html`
-          <li>
-            <div class="content-box">
-              <div class="bold-text">Reporting period ${item.id}</div>
-              <div class="layout horizontal justified">
-                <div>progress in reporting period</div>
-                <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
-              </div>
-            </div>
-          </li> `)}
+        <ul class="app-grid">
+          ${(this.totals || []).map(
+            (item: any) =>
+              html`
+                <li>
+                  <div class="content-box">
+                    <div class="bold-text">Reporting period ${item.id}</div>
+                    <div class="layout horizontal justified">
+                      <div>progress in reporting period</div>
+                      <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
+                    </div>
+                  </div>
+                </li>
+              `
+          )}
+        </ul>
       </ul>
     `;
   }
 
   @property({type: Array})
-  totals!: GenericObject[];
+  totals!: any[];
 }
-window.customElements.define('calculation-methods-demo-periods', CalculationMethodsDemoPeriods);
+
 
 export {CalculationMethodsDemoPeriods as CalculationMethodsDemoPeriodsEl};

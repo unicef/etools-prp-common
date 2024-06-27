@@ -1,15 +1,15 @@
 import {LitElement} from 'lit';
-import {property} from 'lit/decorators.js';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {Constructor} from '../typings/globals.types';
+import {property} from 'lit/decorators';
 
 function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
-    // @property({type: Object}) queryParams = {};
-    // @property({type: Boolean}) _pageNumberInitialized = false;
-    // @property({type: Array}) openedDetails = [];
+    @property({type: Object}) queryParams = {};
+    @property({type: Boolean}) _pageNumberInitialized = false;
+    @property({type: Array}) openedDetails = [];
 
     _pageSizeChanged(e: CustomEvent) {
-      const change: GenericObject = {
+      const change: any = {
         page_size: e.detail.value
       };
 

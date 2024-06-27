@@ -1,15 +1,14 @@
-import {PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-ajax/iron-ajax';
 import {IronAjaxElement} from '@polymer/iron-ajax/iron-ajax';
 import UtilsMixin from '../mixins/utils-mixin';
-import {GenericObject} from '../typings/globals.types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setToken, resetToken} from '../../redux/actions';
 import LocalizeMixin from '../mixins/localize-mixin';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
-import { store } from '../../redux/store';
-import { RootState } from '../../typings/redux.types';
+import {connect} from 'pwa-helpers';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -17,7 +16,8 @@ import { RootState } from '../../typings/redux.types';
  * @appliesMixin UtilsMixin
  * @appliesMixin LocalizeMixin
  */
-class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
+@customElement('etools-prp-ajax')
+class EtoolsPrpAjax extends LocalizeMixin(UtilsMixin(connect(store)(LitElement))) {
   render() {
     return html`
       <iron-ajax
@@ -56,50 +56,50 @@ class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
   url!: string;
 
   @property({type: Object})
-  body!: GenericObject;
+  body!: any;
 
   @property({type: Object})
-  params!: GenericObject;
+  params!: any;
 
   @property({type: String})
   token!: string;
 
   @property({type: Object})
-  headers: GenericObject = {};
+  headers: any = {};
 
   @property({type: Boolean})
   loading!: boolean;
 
   @property({type: Object})
-  customHeaders!: GenericObject;
+  customHeaders!: any;
 
   @property({type: String})
   formattedMethod = 'GET';
 
   @property({type: Object})
-  lastRequest!: GenericObject;
+  lastRequest!: any;
 
   @property({type: Object})
-  lastResponse!: GenericObject;
+  lastResponse!: any;
 
   @property({type: Object})
-  lastError!: GenericObject;
+  lastError!: any;
 
   @property({type: Object})
-  lastProgress!: GenericObject;
+  lastProgress!: any;
 
   @property({type: Array})
-  activeRequests!: GenericObject[];
+  activeRequests!: any[];
 
   stateChanged(state: RootState) {
-    if(state?.auth?.token && this.token !== state.auth.token) {
+    if (state?.auth?.token && this.token !== state.auth.token) {
       this.token = state.auth.token;
     }
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('headers') || changedProperties.has('token')) {
       this.customHeaders = this._computeHeaders(this.headers, this.token);
     }
@@ -108,7 +108,7 @@ class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
     }
   }
 
-  _computeHeaders(headers: GenericObject, token: string) {
+  _computeHeaders(headers: any, token: string) {
     return Object.assign(
       {},
       {
@@ -146,7 +146,7 @@ class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
     const token = request.xhr.getResponseHeader('token');
 
     if (token) {
-      this.reduxStore.dispatch(setToken(token));
+      store.dispatch(setToken(token));
     }
     fireEvent(this, 'response', ['response'].concat(Array.from(args)));
   }
@@ -157,7 +157,7 @@ class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
 
   _handleError(...args: any[]) {
     if (this.lastError && this.lastError.status === 401) {
-      this.reduxStore.dispatch(resetToken());
+      store.dispatch(resetToken());
     }
 
     if (this.lastError && this.lastError.status === 500) {
@@ -169,7 +169,7 @@ class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
     fireEvent(this, 'error', ['error'].concat(Array.from(args)));
   }
 
-  _buildResponse(req: GenericObject) {
+  _buildResponse(req: any) {
     return {
       status: req.status,
       data: req.parseResponse(),
@@ -178,11 +178,17 @@ class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
   }
 
   generateRequest(...args: []) {
-    return (this.$.ajax as IronAjaxElement).generateRequest.apply(this.$.ajax, args);
+    return (this.shadowRoot!.getElementById('ajax') as IronAjaxElement).generateRequest.apply(
+      this.shadowRoot!.getElementById('ajax'),
+      args
+    );
   }
 
   toRequestOptions(...args: []) {
-    return (this.$.ajax as IronAjaxElement).toRequestOptions.apply(this.$.ajax, args);
+    return (this.shadowRoot!.getElementById('ajax') as IronAjaxElement).toRequestOptions.apply(
+      this.shadowRoot!.getElementById('ajax'),
+      args
+    );
   }
 
   thunk() {
@@ -233,6 +239,5 @@ class EtoolsPrpAjax extends connect(store)(LocalizeMixin(UtilsMixin)) {
     this._removeEventListeners();
   }
 }
-window.customElements.define('etools-prp-ajax', EtoolsPrpAjax);
 
 export {EtoolsPrpAjax as EtoolsPrpAjaxEl};

@@ -1,8 +1,10 @@
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {Constructor} from '../typings/globals.types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setL11NResources} from '../../redux/actions';
 import IntlMessageFormat from 'intl-messageformat';
-import { LitElement } from 'lit';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators';
+import {store} from '../../redux/store';
 
 function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class LocalizeClass extends baseClass {
@@ -11,22 +13,22 @@ function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {
                       formats or resources change. */
     };
 
-    // // @property({type: String})
+    @property({type: String})
     language!: string;
 
-    // // @property({type: Object})
-    resources!: GenericObject;
+    @property({type: Object})
+    resources!: any;
 
-    // // @property({type: Object})
+    @property({type: Object})
     formats = {};
 
-    // // @property({type: Boolean})
+    @property({type: Boolean})
     useKeyIfMissing = false;
 
     // @state()
     localize: (x: string) => string = this.__computeLocalize(this.language, this.resources, this.formats);
 
-    // // @property({type: Boolean})
+    @property({type: Boolean})
     bubbleEvent = false;
 
     updated(changedProperties: Map<string | number | symbol, unknown>) {
@@ -39,7 +41,7 @@ function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {
     /**
      Returns a computed `localize` method, based on the current `language`.
      */
-    __computeLocalize(language?: string, resources?: GenericObject, formats?: any) {
+    __computeLocalize(language?: string, resources?: any, formats?: any) {
       const proto = this.constructor.prototype;
 
       // Everytime any of the parameters change, invalidate the strings cache.
@@ -70,7 +72,7 @@ function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {
           proto.__localizationCache.messages[messageKey] = translatedMessage;
         }
 
-        const argsChanged: GenericObject = {};
+        const argsChanged: any = {};
         for (let i = 1; i < args.length; i += 2) {
           argsChanged[args[i]] = args[i + 1];
         }
@@ -79,8 +81,8 @@ function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {
       };
     }
 
-    dispatchResources(locales: GenericObject) {
-      this.reduxStore.dispatch(setL11NResources(locales));
+    dispatchResources(locales: any) {
+      store.dispatch(setL11NResources(locales));
       fireEvent(this, 'app-localize-resources-loaded');
     }
   }

@@ -7,13 +7,15 @@ import {CalculationMethodsDemoModalEl} from './calculation-methods-demo-modal';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {tableStyles} from '../styles/table-styles';
+import {customElement} from 'lit/decorators';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin LocalizeMixin
  */
-class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
+@customElement('calculation-methods-info-bar')
+export class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
   render() {
     return html`
       ${buttonsStyles} ${tableStyles}
@@ -52,7 +54,7 @@ class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
           </paper-button>
 
           <paper-button id="periods" on-tap="_openPeriodsModal" class="btn-primary">
-             ${this.localize('across_reporting_periods')}
+            ${this.localize('across_reporting_periods')}
           </paper-button>
         </div>
       </div>
@@ -71,6 +73,5 @@ class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
     (this.shadowRoot!.querySelector('#periods-modal') as CalculationMethodsDemoModalEl).open();
   }
 }
-window.customElements.define('calculation-methods-info-bar', CalculationMethodsInfoBar);
 
 export {CalculationMethodsInfoBar as CalculationMethodsInfoBarEl};

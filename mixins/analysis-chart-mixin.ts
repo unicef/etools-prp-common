@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
-import {property} from 'lit/decorators';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {Constructor} from '../typings/globals.types';
 import Constants from '../constants';
+import {property} from 'lit/decorators';
 
 declare const numeral: any;
 
@@ -49,7 +49,7 @@ function AnalysisChartMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     `;
 
-    // @property({type: Object})
+    @property({type: Object})
     _baseOptions = {
       bar: {
         groupWidth: 20
@@ -64,11 +64,11 @@ function AnalysisChartMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     };
 
-    // @property({type: Array})
-    rows: GenericObject[] = [];
+    @property({type: Array})
+    rows: any[] = [];
 
-    // @property({type: Object})
-    get options(): GenericObject {
+    @property({type: Object})
+    get options(): any {
       return this._computeOptions(this.rows);
     }
 
@@ -91,13 +91,13 @@ function AnalysisChartMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return items.join(', ');
     }
 
-    _computeRows(data: GenericObject[]) {
+    _computeRows(data: any[]) {
       return Object.keys(data).map((key: any) => {
         return [key, data[key].length, this._buildTooltipContent(key, data[key])];
       });
     }
 
-    _fromJSON(obj?: GenericObject) {
+    _fromJSON(obj?: any) {
       return obj ? obj.v / obj.d : 0;
     }
 

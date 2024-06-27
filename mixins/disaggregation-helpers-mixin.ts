@@ -1,31 +1,31 @@
 import {LitElement} from 'lit';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {Constructor} from '../typings/globals.types';
 
-function DisaggregationHelpersMixin<T extends Constructor<LitElement>>( baseClass: T ) {
+function DisaggregationHelpersMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DisaggregationHelpersClass extends baseClass {
     private matchers = {
       '(?,?)': () => /^\((\d*),\s?(\d*)\)$/,
       '(?,?,?)': () => /^\((\d*),\s?(\d*),\s?(\d*)\)$/,
-      '(?,Y)': ( y: string ) => new RegExp(`^\\((\\d+),\\s?(${y})\\)$`),
-      '(X,?)': ( x: string ) => new RegExp(`^\\((${x}),\\s?(\\d+)\\)$`),
-      '(X,Y,?)': ( x: string, y: string ) => new RegExp(`^\\((${x}),\\s?(${y}),\\s?(\\d+)\\)$`),
-      '(X,?,Z)': ( x: string, z: string ) => new RegExp(`^\\((${x}),\\s?(\\d+),\\s?(${z})\\)$`),
-      '(?,Y,Z)': ( y: string, z: string ) => new RegExp(`^\\((\\d+),\\s?(${y}),\\s?(${z})\\)$`),
-      '(?,?,Z)': ( z: string ) => new RegExp(`^\\((\\d+),\\s?(\\d+),\\s?(${z})\\)$`)
+      '(?,Y)': (y: string) => new RegExp(`^\\((\\d+),\\s?(${y})\\)$`),
+      '(X,?)': (x: string) => new RegExp(`^\\((${x}),\\s?(\\d+)\\)$`),
+      '(X,Y,?)': (x: string, y: string) => new RegExp(`^\\((${x}),\\s?(${y}),\\s?(\\d+)\\)$`),
+      '(X,?,Z)': (x: string, z: string) => new RegExp(`^\\((${x}),\\s?(\\d+),\\s?(${z})\\)$`),
+      '(?,Y,Z)': (y: string, z: string) => new RegExp(`^\\((\\d+),\\s?(${y}),\\s?(${z})\\)$`),
+      '(?,?,Z)': (z: string) => new RegExp(`^\\((\\d+),\\s?(\\d+),\\s?(${z})\\)$`)
     };
 
-    _calculateLevel1( key: string, data: GenericObject ) {
+    _calculateLevel1(key: string, data: any) {
       const coords = this.getCoords(key);
       const y = coords[1];
       const yRe = this.matchers['(?,Y)'](y);
-      const totals: GenericObject = {};
+      const totals: any = {};
       const yKey = this.formatKey(y);
       const yFields = this.extractFields(data, yRe);
       totals[yKey] = this.sumDisaggValues(yFields);
       return totals;
     }
 
-    _calculateLevel2( key: string, data: GenericObject ) {
+    _calculateLevel2(key: string, data: any) {
       const coords = this.getCoords(key);
       const [x, y] = coords;
       if (!x || !y) return;
@@ -34,8 +34,8 @@ function DisaggregationHelpersMixin<T extends Constructor<LitElement>>( baseClas
       const yRe = this.matchers['(?,Y)'](y);
       const tRe = this.matchers['(?,Y)']('');
 
-      const tmpTotals1: GenericObject = {};
-      const tmpTotals2: GenericObject = {};
+      const tmpTotals1: any = {};
+      const tmpTotals2: any = {};
 
       const xKey = this.formatKey(x, '');
       const yKey = this.formatKey(y, '');
@@ -56,7 +56,7 @@ function DisaggregationHelpersMixin<T extends Constructor<LitElement>>( baseClas
       return {...tmpTotals1, ...tmpTotals2};
     }
 
-    _calculateLevel3( key: string, data: GenericObject ) {
+    _calculateLevel3(key: string, data: any) {
       const coords = this.getCoords(key);
       const [x, y, z] = coords;
       if (!x || !y || !z) return;
@@ -69,9 +69,9 @@ function DisaggregationHelpersMixin<T extends Constructor<LitElement>>( baseClas
       const zRe = this.matchers['(?,?,Z)'](z);
       const tRe = this.matchers['(?,Y)']('');
 
-      const tmpTotals1: GenericObject = {};
-      const tmpTotals2: GenericObject = {};
-      const tmpTotals3: GenericObject = {};
+      const tmpTotals1: any = {};
+      const tmpTotals2: any = {};
+      const tmpTotals3: any = {};
 
       const xyKey = this.formatKey(x, y);
       const xzKey = this.formatKey(x, z);
@@ -109,19 +109,19 @@ function DisaggregationHelpersMixin<T extends Constructor<LitElement>>( baseClas
       return {...tmpTotals1, ...tmpTotals2, ...tmpTotals3};
     }
 
-    private identity( val: any ) {
+    private identity(val: any) {
       return val;
     }
 
-    private divideBy( d: number ) {
-      return ( v: number ) => v / d;
+    private divideBy(d: number) {
+      return (v: number) => v / d;
     }
 
-    private sumDisaggValues( fields: any[], transform: ( x: number ) => number = this.identity ) {
+    private sumDisaggValues(fields: any[], transform: (x: number) => number = this.identity) {
       const result = fields
-        .filter(field => ['v', 'd'].every(key => !isNaN(field[key])))
-        .reduce(( acc, curr ) => {
-          ['v', 'd'].forEach(key => {
+        .filter((field) => ['v', 'd'].every((key) => !isNaN(field[key])))
+        .reduce((acc, curr) => {
+          ['v', 'd'].forEach((key) => {
             acc[key] = (acc[key] || 0) + transform!(curr[key]);
           });
           return acc;
@@ -133,20 +133,18 @@ function DisaggregationHelpersMixin<T extends Constructor<LitElement>>( baseClas
       return result;
     }
 
-    private getCoords( key: string ) {
-      const match = [this.matchers['(?,?)'](), this.matchers['(?,?,?)']()]
-        .map(re => re.exec(key))
-        .filter(Boolean)[0];
+    private getCoords(key: string) {
+      const match = [this.matchers['(?,?)'](), this.matchers['(?,?,?)']()].map((re) => re.exec(key)).filter(Boolean)[0];
       return match ? match.slice(1, 4) : [];
     }
 
-    private extractFields( data: GenericObject, re: RegExp ) {
+    private extractFields(data: any, re: RegExp) {
       return Object.keys(data)
-        .filter(k => re.exec(k))
-        .map(k => data[k]);
+        .filter((k) => re.exec(k))
+        .map((k) => data[k]);
     }
 
-    private formatKey( ...args: any[] ) {
+    private formatKey(...args: any[]) {
       const chunks = Array.from(args);
       const formatted = `(${chunks.join(', ')})`;
       return formatted.replace(/(,)(\s)(\))$/, '$1$3');

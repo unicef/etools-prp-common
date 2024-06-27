@@ -19,15 +19,13 @@ import { ConfirmBoxEl } from '../confirm-box';
 
 @customElement('disaggregation-modal')
 class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
-  @property({ type: String })
+  @property({type: String})
   reportingPeriod!: string;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   updatePending = false;
 
   static styles = [
-    buttonsStyles,
-    modalStyles,
     css`
       :host {
         display: block;
@@ -45,6 +43,7 @@ class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
 
   render() {
     return html`
+      ${buttonsStyles} ${modalStyles}
       <paper-dialog id="dialog" modal .opened="${this.opened}">
         <div class="header layout horizontal justified">
           <h2>${this.localize('enter_data')}</h2>
@@ -84,7 +83,7 @@ class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
           this.updatePending = false;
           this.close();
         })
-        .catch((_err: GenericObject) => {
+        .catch((_err: any) => {
           console.log(_err);
           this.updatePending = false;
           fireEvent(this, 'toast', {

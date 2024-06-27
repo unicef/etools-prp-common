@@ -1,23 +1,23 @@
 import {property, state} from 'lit/decorators.js';
 import {LitElement} from 'lit';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {Constructor} from '../typings/globals.types';
 
-function FilterDependenciesMixin<T extends Constructor<LitElement>>( baseClass: T ) {
+function FilterDependenciesMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class FilterDependenciesClass extends baseClass {
-    // @property({type: String})
+    @property({type: String})
     lastParams = '';
 
-    // @property({type: Object})
-    params!: GenericObject;
+    @property({type: Object})
+    params!: any;
 
-    // @property({type: String})
+    @property({type: String})
     dependencies = '';
 
-    // @property({type: Object})
-    defaultParams: GenericObject = {};
+    @property({type: Object})
+    defaultParams: any = {};
 
     @state()
-    queryParams: GenericObject = {};
+    queryParams: any = {};
 
     updated(changedProperties: Map<string | number | symbol, unknown>) {
       super.updated(changedProperties);
@@ -26,7 +26,7 @@ function FilterDependenciesMixin<T extends Constructor<LitElement>>( baseClass: 
       }
     }
 
-    _computeParams(dependencies: string, queryParams: GenericObject) {
+    _computeParams(dependencies: string, queryParams: any) {
       if (!queryParams) {
         return;
       }
@@ -52,7 +52,7 @@ function FilterDependenciesMixin<T extends Constructor<LitElement>>( baseClass: 
       }
     }
 
-    _serializeParams(params: GenericObject) {
+    _serializeParams(params: any) {
       return JSON.stringify(params);
     }
   }

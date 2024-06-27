@@ -1,12 +1,11 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/paper-button/paper-button';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import '@polymer/paper-styles/typography';
-import {GenericObject} from '../typings/globals.types';
 import ModalMixin from '../mixins/modal-mixin';
 import UtilsMixin from '../mixins/utils-mixin';
 import './calculation-methods-demo-locations';
@@ -21,113 +20,108 @@ import {modalStyles} from '../styles/modal-styles';
  * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  */
-class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
+@customElement('calculation-methods-demo-modal')
+export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
   render() {
     return html`
-    ${buttonsStyles} ${modalStyles}
-    <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
-      :host {
-        display: block;
-        --paper-dialog: {
-          width: 750px;
-         }        
-      }
+      ${buttonsStyles} ${modalStyles}
+      <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
+        :host {
+          display: block;
+          --paper-dialog: {
+            width: 750px;
+          }
+        }
 
-      .content-box {
-        padding: 25px;
-        background: var(--paper-grey-200);
-      }
+        .content-box {
+          padding: 25px;
+          background: var(--paper-grey-200);
+        }
 
-      .total-box {
-        padding: 5px 5px 5px 50px;
-        min-width: 75px;
-        background: var(--paper-grey-400);
-        text-align: end;
-      }
+        .total-box {
+          padding: 5px 5px 5px 50px;
+          min-width: 75px;
+          background: var(--paper-grey-400);
+          text-align: end;
+        }
 
-      .bold-text {
-        font-weight: bold;
-        font-size: 1.17em;
-      }
+        .bold-text {
+          font-weight: bold;
+          font-size: 1.17em;
+        }
 
-      .total-label {
-        margin-right: 50px;
-      }
-    </style>
+        .total-label {
+          margin-right: 50px;
+        }
+      </style>
 
-    <paper-dialog id="calculation-methods-demo-modal-dialog" modal ?opened="${this.opened}">
-      <div class="header layout horizontal justified">
-        <h2>Calculation method across ${this.domain}</h2>
+      <paper-dialog id="calculation-methods-demo-modal-dialog" modal ?opened="${this.opened}">
+        <div class="header layout horizontal justified">
+          <h2>Calculation method across ${this.domain}</h2>
 
-        <paper-icon-button class="self-center" on-tap="close"
-          icon="icons:close">
-        </paper-icon-button>
-      </div>
+          <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
+        </div>
 
-      <br />
+        <br />
 
-      <paper-dialog-scrollable>
-        <div class="content-box">
-          <labelled-item label="Sample indicator">
-            <span class="bold-text">
-              # of children aged 6-59 months affected by severe acute
-              malnutrition who are admitted into treatment.
-            </span>
-          </labelled-item>
+        <paper-dialog-scrollable>
+          <div class="content-box">
+            <labelled-item label="Sample indicator">
+              <span class="bold-text">
+                # of children aged 6-59 months affected by severe acute malnutrition who are admitted into treatment.
+              </span>
+            </labelled-item>
+
+            <labelled-item label="Guidance on measurement (for each reporting period)">
+              <span>
+                Quality standard: requires agreed treatment protocol and duration (usually 2 mo); Measurement/reporting
+                clarification: measures newly admitted cases for an ongoing service, therefore requires agreement to
+                consistently report NEW admissions for an agreed reporting period (set dates) to avoid double counting.
+              </span>
+            </labelled-item>
+          </div>
+
+          <br />
 
           <labelled-item
-            label="Guidance on measurement (for each reporting period)">
-            <span>
-              Quality standard: requires agreed treatment protocol and duration
-              (usually 2 mo); Measurement/reporting clarification: measures
-              newly admitted cases for an ongoing service, therefore requires
-              agreement to consistently report NEW admissions for an agreed
-              reporting period (set dates) to avoid double counting.
-            </span>
+            label="Choose calculation method to read description
+          and observe the impact on data presented below:"
+          >
+            <paper-radio-group on-paper-radio-group-changed="_onRadioChange" selected=${this.selectedType}>
+              <paper-radio-button name="sum">SUM</paper-radio-button>
+              <paper-radio-button name="max">MAX</paper-radio-button>
+              <paper-radio-button name="avg">AVG</paper-radio-button>
+            </paper-radio-group>
+            <div>${this.description}</div>
           </labelled-item>
-        </div>
 
-        <br />
-
-        <labelled-item label="Choose calculation method to read description
-          and observe the impact on data presented below:">
-          <paper-radio-group on-paper-radio-group-changed="_onRadioChange"
-            selected=${this.selectedType}>
-            <paper-radio-button name="sum">SUM</paper-radio-button>
-            <paper-radio-button name="max">MAX</paper-radio-button>
-            <paper-radio-button name="avg">AVG</paper-radio-button>
-          </paper-radio-group>
-          <div>${this.description}</div>
-        </labelled-item>
-
-        <br />
-        ${this._equals(this.domain, 'locations') ? html`
-          <calculation-methods-demo-locations .totals=${this.locationTotals}>
-          </calculation-methods-demo-locations>` : ``}
-
-        ${this._equals(this.domain, 'reporting periods') ? html`
+          <br />
+          ${this._equals(this.domain, 'locations')
+            ? html` <calculation-methods-demo-locations .totals=${this.locationTotals}>
+              </calculation-methods-demo-locations>`
+            : ``}
+          ${this._equals(this.domain, 'reporting periods')
+            ? html`
           <calculation-methods-demo-periods .totals=${this.locationTotals}>
-            </calculation-methods-demo-locations>` : ``}
+            </calculation-methods-demo-locations>`
+            : ``}
 
-        <div class="content-box layout horizontal justified center-center">
-          <div class="flex-2"></div>
-          <div class="total-label bold-text">Total progress:</div>
-          <div class="total-box bold-text">
-            <etools-prp-number .value=${this.finalTotal}></etools-prp-number>
+          <div class="content-box layout horizontal justified center-center">
+            <div class="flex-2"></div>
+            <div class="total-label bold-text">Total progress:</div>
+            <div class="total-box bold-text">
+              <etools-prp-number .value=${this.finalTotal}></etools-prp-number>
+            </div>
           </div>
+
+          <br />
+        </paper-dialog-scrollable>
+
+        <div class="buttons layout horizontal-reverse">
+          <paper-button class="btn-primary" dialog-dismiss raised> Close </paper-button>
         </div>
-
-        <br />
-
-      </paper-dialog-scrollable>
-
-      <div class="buttons layout horizontal-reverse">
-        <paper-button class="btn-primary" dialog-dismiss raised>
-          Close
-        </paper-button>
-      </div>
-    </paper-dialog>
-  `;
+      </paper-dialog>
+    `;
   }
 
   @property({type: String})
@@ -206,10 +200,19 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
-    if (changedProperties.has('selectedType') || changedProperties.has('domain')
-      || changedProperties.has('descriptionsLocations') ||  changedProperties.has('descriptionsReportingPeriods') ) {
-      this.description = this._computeDescription(this.selectedType, this.domain, this.descriptionsLocations, this.descriptionsReportingPeriods);
+
+    if (
+      changedProperties.has('selectedType') ||
+      changedProperties.has('domain') ||
+      changedProperties.has('descriptionsLocations') ||
+      changedProperties.has('descriptionsReportingPeriods')
+    ) {
+      this.description = this._computeDescription(
+        this.selectedType,
+        this.domain,
+        this.descriptionsLocations,
+        this.descriptionsReportingPeriods
+      );
     }
     if (changedProperties.has('totals') || changedProperties.has('items')) {
       this.locationTotals = this._computeTotals(this.totals, this.items);
@@ -219,7 +222,7 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
     }
   }
 
-  _computeFinalTotal(selectedType: string, totals: GenericObject[]) {
+  _computeFinalTotal(selectedType: string, totals: any[]) {
     if (!totals) {
       return;
     }
@@ -240,15 +243,15 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
     }
   }
 
-  _computeTotals(totals: GenericObject[], items: number) {
+  _computeTotals(totals: any[], items: number) {
     return totals.slice(0, items);
   }
 
   _computeDescription(
     selectedType: string,
     domain: string,
-    descriptionsLocations: GenericObject,
-    descriptionsReportingPeriods: GenericObject
+    descriptionsLocations: any,
+    descriptionsReportingPeriods: any
   ) {
     return domain === 'locations' ? descriptionsLocations[selectedType] : descriptionsReportingPeriods[selectedType];
   }
@@ -257,13 +260,13 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
     this.selectedType = (e.target! as any).selected;
   }
 
-  _totalSum(data: GenericObject[]) {
+  _totalSum(data: any[]) {
     return data.reduce(function (acc, next) {
       return acc + next.value;
     }, 0);
   }
 
-  _totalAvg(data: GenericObject[]) {
+  _totalAvg(data: any[]) {
     return (
       data.reduce(function (acc, next) {
         return acc + next.value;
@@ -271,6 +274,5 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
     );
   }
 }
-window.customElements.define('calculation-methods-demo-modal', CalculationMethodsDemoModal);
 
 export {CalculationMethodsDemoModal as CalculationMethodsDemoModalEl};

@@ -5,7 +5,6 @@ import '../../elements/etools-prp-number';
 import './disaggregation-field';
 import {DisaggregationFieldEl} from './disaggregation-field';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import {GenericObject} from '../../typings/globals.types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import '@polymer/iron-meta/iron-meta';
 import {IronMeta} from '@polymer/iron-meta/iron-meta';
@@ -20,103 +19,101 @@ class DisaggregationTableCellPercentage extends LitElement {
   editable!: number;
 
   @property({type: Object})
-  localData!: GenericObject;
+  localData!: any;
 
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
   @property({type: String})
   coords!: string;
 
   static styles = [
-    disaggregationTableStyles,
     css`
-        :host {
-            display: block;
+      :host {
+        display: block;
 
-            --app-grid-columns: 2;
-            --app-grid-gutter: 0px;
-            --app-grid-item-height: auto;
-            --app-grid-expandible-item-columns: 2;
-        }
+        --app-grid-columns: 2;
+        --app-grid-gutter: 0px;
+        --app-grid-item-height: auto;
+        --app-grid-expandible-item-columns: 2;
+      }
 
-        .item,
-        .computed-value {
-            box-sizing: border-box;
-            min-height: 25px;
-            line-height: 25px;
-        }
+      .item,
+      .computed-value {
+        box-sizing: border-box;
+        min-height: 25px;
+        line-height: 25px;
+      }
 
-        .item {
-            padding: 0;
-            border-bottom: 1px solid white;
-            white-space: nowrap;
-        }
+      .item {
+        padding: 0;
+        border-bottom: 1px solid white;
+        white-space: nowrap;
+      }
 
-        .item:not(:first-child) {
-            border-left: 1px solid white;
-        }
+      .item:not(:first-child) {
+        border-left: 1px solid white;
+      }
 
-        .computed-value {
-            grid-column: span 2;
-            color: var(--theme-secondary-text-color);
-        }
+      .computed-value {
+        grid-column: span 2;
+        color: var(--theme-secondary-text-color);
+      }
 
-        .app-grid,
-        .cellValue {
-            width: 100%;
-        }
+      .app-grid,
+      .cellValue {
+        width: 100%;
+      }
     `
   ];
 
   render() {
     return html`
+      ${disaggregationTableStyles}
       ${this.editable
         ? html`
-          <div class="app-grid">
-            <div class="item">
-              <disaggregation-field
-                id="v"
-                key="v"
-                min="0"
-                .value="${this.data.v}"
-                .coords="${this.coords}"
-              ></disaggregation-field>
-            </div>
-            <div class="item">
-              <disaggregation-field
-                id="d"
-                key="d"
-                min="0"
-                .value="${this.data.d}"
-                .coords="${this.coords}"
-                .validator="${this.vName}"
-              ></disaggregation-field>
-            </div>
-            <div class="computed-value">${this._toPercentage(this.data.c)}</div>
-          </div>
-        `
-        : html`
-          ${this.isNotEditableAndValue(this.editable, this.data)
-            ? html`
-              <div class="app-grid">
-                <div class="item">
-                  <etools-prp-number .value="${this.data.v}"></etools-prp-number>
-                </div>
-                <div class="item">
-                  <etools-prp-number .value="${this.data.d}"></etools-prp-number>
-                </div>
-                <div class="computed-value">${this._toPercentage(this.data.c)}</div>
+            <div class="app-grid">
+              <div class="item">
+                <disaggregation-field
+                  id="v"
+                  key="v"
+                  min="0"
+                  .value="${this.data.v}"
+                  .coords="${this.coords}"
+                ></disaggregation-field>
               </div>
-            `
-            : html`
-              <div class="cellValue">0</div>
-            `}
-        `}
+              <div class="item">
+                <disaggregation-field
+                  id="d"
+                  key="d"
+                  min="0"
+                  .value="${this.data.d}"
+                  .coords="${this.coords}"
+                  .validator="${this.vName}"
+                ></disaggregation-field>
+              </div>
+              <div class="computed-value">${this._toPercentage(this.data.c)}</div>
+            </div>
+          `
+        : html`
+            ${this.isNotEditableAndValue(this.editable, this.data)
+              ? html`
+                  <div class="app-grid">
+                    <div class="item">
+                      <etools-prp-number .value="${this.data.v}"></etools-prp-number>
+                    </div>
+                    <div class="item">
+                      <etools-prp-number .value="${this.data.d}"></etools-prp-number>
+                    </div>
+                    <div class="computed-value">${this._toPercentage(this.data.c)}</div>
+                  </div>
+                `
+              : html` <div class="cellValue">0</div> `}
+          `}
     `;
   }
 
-  updated( changedProperties: Map<string | number | symbol, unknown> ) {
+  updated(changedProperties: Map<string | number | symbol, unknown>) {
     super.updated(changedProperties);
     if (changedProperties.has('data')) {
       this._cloneData(this.data);
@@ -126,19 +123,19 @@ class DisaggregationTableCellPercentage extends LitElement {
     }
   }
 
-  noValue( data: GenericObject ) {
+  noValue(data: any) {
     return data ? !data.c && !data.d && !data.v : true;
   }
 
-  isNotEditableAndNoValue( editable: number, data: GenericObject ) {
+  isNotEditableAndNoValue(editable: number, data: any) {
     return !editable && this.noValue(data);
   }
 
-  isNotEditableAndValue( editable: number, data: GenericObject ) {
+  isNotEditableAndValue(editable: number, data: any) {
     return !editable && !this.noValue(data);
   }
 
-  _handleInput( e: CustomEvent ) {
+  _handleInput(e: CustomEvent) {
     const key = e.detail.key;
     const value = e.detail.value;
 
@@ -173,15 +170,15 @@ class DisaggregationTableCellPercentage extends LitElement {
     this.localData = change;
   }
 
-  _bindValidation( coords: string ) {
+  _bindValidation(coords: string) {
     const vName = 'v-' + coords;
     const validator = {
       validatorName: vName,
       validatorType: 'validator',
-      validate: ( value: string ) => {
+      validate: (value: string) => {
         return (
           Number(value) !== 0 ||
-          Number((this.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as EtoolsInput).value === 0
+          Number((this.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as EtoolsInput) === 0
         );
       }
     };
@@ -195,7 +192,7 @@ class DisaggregationTableCellPercentage extends LitElement {
     this.vName = vName;
   }
 
-  _cloneData( data: GenericObject ) {
+  _cloneData(data: any) {
     if (!this.localData) {
       this.localData = {...data};
     }
@@ -222,7 +219,7 @@ class DisaggregationTableCellPercentage extends LitElement {
     this.removeEventListener('field-value-changed', this._handleInput as any);
   }
 
-  _toPercentage( value: number | null ): string {
+  _toPercentage(value: number | null): string {
     return value != null ? `${Math.floor(value * 100)}%` : '0%';
   }
 }

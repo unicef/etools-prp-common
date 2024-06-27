@@ -1,15 +1,16 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
+import {property} from 'lit/decorators';
 
 /**
  * @mixinFunction
  */
 function PageNavMixin<T extends Constructor<LitElement>>( baseClass: T ) {
   class PageNavClass extends baseClass {
-    // // @property({type: Boolean})
+    @property({type: Boolean})
     subMenuOpened = false;
 
-    // // @property({type: Number})
+    @property({type: Number})
     selected = 0;
 
     updated(changedProperties: Map<string | number | symbol, unknown>) {

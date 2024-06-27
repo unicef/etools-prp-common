@@ -6,14 +6,13 @@ import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-loading/etools-loading';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import LocalizeMixin from '../mixins/localize-mixin';
-import {GenericObject} from '../typings/globals.types';
 
 /**
  * @polymer
  * @customElement
  */
 class FilterList extends LocalizeMixin(LitElement) {
-    render() {
+  render() {
     return html`
       <style include="iron-flex">
         :host {
@@ -39,21 +38,24 @@ class FilterList extends LocalizeMixin(LitElement) {
 
       <slot></slot>
 
-      ${this.hideClear ? `` : html`<div id="action">
-          <paper-button on-tap="${this._clearFilters}">${this.localize('clear')}</paper-button></div>`}
-                    
+      ${this.hideClear
+        ? ``
+        : html`<div id="action">
+            <paper-button on-tap="${this._clearFilters}">${this.localize('clear')}</paper-button>
+          </div>`}
+
       <etools-loading ?active="${this.loading}"></etools-loading>
     `;
   }
 
   @property({type: Object})
-  queryParams!: GenericObject;
+  queryParams!: any;
 
   @property({type: Array})
   filters!: any[];
 
   @property({type: Object})
-  filtersReady!: GenericObject;
+  filtersReady!: any;
 
   @property({type: String})
   ignore = '';
@@ -69,13 +71,13 @@ class FilterList extends LocalizeMixin(LitElement) {
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('ignore')) {
       this.ignoredFilters = this._computeIgnoredFilters(this.ignore);
     }
     if (changedProperties.has('filters') || changedProperties.has('filtersReady')) {
       this._updateLoading();
-    }    
+    }
   }
 
   _onFilterChanged(e: CustomEvent) {
@@ -164,10 +166,9 @@ class FilterList extends LocalizeMixin(LitElement) {
   }
 
   _resetPageNumber() {
-    this.queryParams = 
-      Object.assign({}, this.queryParams, {
-        page: 1
-      })
+    this.queryParams = Object.assign({}, this.queryParams, {
+      page: 1
+    });
   }
 
   _computeIgnoredFilters(ignore: string) {

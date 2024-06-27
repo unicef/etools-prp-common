@@ -1,6 +1,5 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {property} from 'lit/decorators.js';
 
 function ModalMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class ModalClass extends baseClass {

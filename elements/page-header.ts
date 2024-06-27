@@ -1,6 +1,6 @@
 import { LitElement, PropertyValues, html } from 'lit';
 import {property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {connect} from 'pwa-helpers';
 import '@polymer/paper-styles/typography';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';

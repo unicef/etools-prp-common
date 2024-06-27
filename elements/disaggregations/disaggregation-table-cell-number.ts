@@ -4,22 +4,20 @@ import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
 import './disaggregation-field';
 import '../../elements/etools-prp-number';
-import { disaggregationTableStyles } from '../../styles/disaggregation-table-styles';
-import { GenericObject } from '../../typings/globals.types';
+import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 
 @customElement('disaggregation-table-cell-number')
 class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
-  @property({ type: Object })
-  data!: GenericObject;
+  @property({type: Object})
+  data!: any;
 
-  @property({ type: String })
+  @property({type: String})
   coords!: string;
 
-  @property({ type: Number })
+  @property({type: Number})
   editable!: number;
 
   static styles = [
-    disaggregationTableStyles,
     css`
       :host {
         display: block;
@@ -29,9 +27,10 @@ class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
 
   render() {
     return html`
+      ${disaggregationTableStyles}
       <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         ${this.editable
-      ? html`
+          ? html`
               <disaggregation-field
                 slot="editable"
                 key="v"
@@ -39,9 +38,7 @@ class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
                 .coords="${this.coords}"
               ></disaggregation-field>
             `
-      : html`
-              <etools-prp-number slot="non-editable" .value="${this.data.v}"></etools-prp-number>
-            `}
+          : html` <etools-prp-number slot="non-editable" .value="${this.data.v}"></etools-prp-number> `}
       </disaggregation-table-cell>
     `;
   }

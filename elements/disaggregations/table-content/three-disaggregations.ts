@@ -2,10 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
-import { disaggregationTableStyles } from '../../../styles/disaggregation-table-styles';
-import { GenericObject } from '../../../typings/globals.types';
+import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
 import '../disaggregation-table-row';
-import { GenericObject } from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @customElement
@@ -14,35 +12,34 @@ import { GenericObject } from '@unicef-polymer/etools-utils/dist/types/global.ty
  */
 @customElement('three-disaggregations')
 class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
-  @property({ type: Number })
+  @property({type: Number})
   editable!: number;
 
-  @property({ type: Object })
-  data!: GenericObject;
+  @property({type: Object})
+  data!: any;
 
-  @property({ type: Array })
+  @property({type: Array})
   mapping!: any[];
 
-  @property({ type: Object })
-  columnTotalRow!: GenericObject;
+  @property({type: Object})
+  columnTotalRow!: any;
 
-  @property({ type: Array })
+  @property({type: Array})
   columns!: any[];
 
-  @property({ type: Array })
+  @property({type: Array})
   rows!: any[];
 
-  @property({ type: Array })
+  @property({type: Array})
   middleRows!: any[];
 
-  @property({ type: Array })
+  @property({type: Array})
   outerRowsForDisplay!: any[];
 
-  @property({ type: Array })
+  @property({type: Array})
   bottomRows!: any[];
 
   static styles = [
-    disaggregationTableStyles,
     css`
       :host {
         display: block;
@@ -52,19 +49,18 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
 
   render() {
     return html`
+      ${disaggregationTableStyles}
       <table>
         <!-- Column names -->
         <tr class="horizontal layout headerRow">
           <th></th>
-          ${this.columns.map(
-      (column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`
-    )}
+          ${this.columns.map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
           <th>Total</th>
         </tr>
 
         <!-- Data rows: outer and middle. -->
         ${this.outerRowsForDisplay.map(
-      (outerRow) => html`
+          (outerRow) => html`
             <disaggregation-table-row
               .data="${outerRow}"
               .levelReported="${this.data.level_reported}"
@@ -73,7 +69,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
             ></disaggregation-table-row>
 
             ${this._determineMiddleRows(outerRow.id, this.columns, this.middleRows, this.data).map(
-        (middleRow) => html`
+              (middleRow) => html`
                 <disaggregation-table-row
                   .data="${middleRow}"
                   .levelReported="${this.data.level_reported}"
@@ -82,9 +78,9 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
                   .editable="${this.editable}"
                 ></disaggregation-table-row>
               `
-      )}
+            )}
           `
-    )}
+        )}
 
         <!-- Totals row -->
         <disaggregation-table-row
@@ -96,7 +92,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
 
         <!-- Bottom table -->
         ${this.bottomRows.map(
-      (bottomRow) => html`
+          (bottomRow) => html`
             <disaggregation-table-row
               .data="${bottomRow}"
               .levelReported="${this.data.level_reported}"
@@ -104,7 +100,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
               row-type="bottomRow"
             ></disaggregation-table-row>
           `
-    )}
+        )}
       </table>
     `;
   }
@@ -114,7 +110,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
     if (changedProperties.has('data') || changedProperties.has('mapping')) {
       this.columns = this._getColumns(this.mapping);
       this.rows = this._getRows(this.mapping);
-      this.middleRows = this._getMiddleRows(this.mapping);     
+      this.middleRows = this._getMiddleRows(this.mapping);
       this._determineTotals(this.columns, this.middleRows, this.data);
     }
     if (changedProperties.has('columns') || changedProperties.has('rows')) {
@@ -138,7 +134,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
     return this._determineRows(this, rows, columns);
   }
 
-  _determineMiddleRows(outerRowID: number, columns: any[], middleRows: any[], data: GenericObject) {
+  _determineMiddleRows(outerRowID: number, columns: any[], middleRows: any[], data: any) {
     if (!columns || !middleRows) {
       return [];
     }
@@ -168,7 +164,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
     });
   }
 
-  _determineTotals(columns: any[], middleRows: any[], data: GenericObject) {
+  _determineTotals(columns: any[], middleRows: any[], data: any) {
     const columnData = columns.map((z) => {
       const formatted = this._formatDisaggregationIds([z.id]);
 

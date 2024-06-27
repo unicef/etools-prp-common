@@ -1,9 +1,9 @@
 import {LitElement} from 'lit';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {Constructor} from '../typings/globals.types';
 import Settings from '../settings';
 declare const dayjs: any;
 
-const pdListStatuses: GenericObject = {
+const pdListStatuses: any = {
   Signed: 'signed',
   Active: 'active',
   Suspended: 'suspended',
@@ -69,7 +69,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return value == null ? defaultValue : value;
     }
 
-    _withDefaultFrom(obj: GenericObject, key: string, defaultValue: any = '...') {
+    _withDefaultFrom(obj: any, key: string, defaultValue: any = '...') {
       return obj[key] || defaultValue;
     }
 
@@ -107,7 +107,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _deferred() {
-      const defer: GenericObject = {};
+      const defer: any = {};
       defer.promise = new Promise(function (resolve, reject) {
         defer.resolve = resolve;
         defer.reject = reject;
@@ -219,7 +219,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return true;
     }
 
-    _withDefaultParams(queryParams: GenericObject) {
+    _withDefaultParams(queryParams: any) {
       return {...queryParams, page: 1, page_size: 10};
     }
 
@@ -285,17 +285,17 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     //   });
     // }
 
-    _prop(obj: GenericObject, key: string) {
+    _prop(obj: any, key: string) {
       return obj[key];
     }
 
-    _omit(src: GenericObject, keys: string[]) {
+    _omit(src: any, keys: string[]) {
       return Object.keys(src)
         .filter((key) => !keys.includes(key))
         .reduce((acc, key) => {
           acc[key] = src[key];
           return acc;
-        }, {} as GenericObject);
+        }, {} as any);
     }
 
     _normalizeDate(date: any) {

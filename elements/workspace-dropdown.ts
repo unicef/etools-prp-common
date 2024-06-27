@@ -1,16 +1,15 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {customElement, property} from 'lit/decorators.js';
+import {connect} from 'pwa-helpers';
 import '@polymer/paper-dropdown-menu/paper-dropdown-menu';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
 import RoutingMixin from '../mixins/routing-mixin';
 import {setWorkspace} from '../../redux/actions';
-import {GenericObject} from '../typings/globals.types';
 import Endpoints from '../endpoints';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
-import { store } from '../../redux/store';
-import { RootState } from '../../typings/redux.types';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -18,8 +17,9 @@ import { RootState } from '../../typings/redux.types';
  * @mixinFunction
  * @appliesMixin RoutingMixin
  */
-class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
-   render() {
+@customElement('workspace-dropdown')
+export class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
+  render() {
     return html` <style>
         :host {
           display: block;
@@ -83,7 +83,7 @@ class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
       >
       </etools-prp-ajax>
 
-      <paper-dropdown-menu label="${this.workspace.name}" noink no-label-float>
+      <paper-dropdown-menu label="${this.workspace?.name}" noink no-label-float>
         <paper-listbox
           slot="dropdown-content"
           class="dropdown-content"
@@ -96,7 +96,7 @@ class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
   }
 
   @property({type: Object})
-  workspace!: GenericObject;
+  workspace!: any;
 
   @property({type: Number})
   selected = 0;
@@ -111,23 +111,23 @@ class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
   changeworkspaceUrl = Endpoints.changeWorkspace();
 
   @property({type: Object})
-  workspaceData!: GenericObject;
+  workspaceData!: any;
 
   private prevWorkspace!: string;
 
   stateChanged(state: RootState) {
-   if(state?.workspaces?.current && this.current !== state.workspaces.current) {
-    this.current = state.workspaces.current;
-    this._currentWorkspaceChanged();
-   }
-   if(state?.workspaces?.all && this.data !== state.workspaces.all) {
-    this.data = state.workspaces.all;
-   }
+    if (state?.workspaces?.current && this.current !== state.workspaces.current) {
+      this.current = state.workspaces.current;
+      this._currentWorkspaceChanged();
+    }
+    if (state?.workspaces?.all && this.data !== state.workspaces.all) {
+      this.data = state.workspaces.all;
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('data') || changedProperties.has('current')) {
       this.workspace = this._computeWorkspace(this.data, this.current);
       this.selected = this._computeSelected(this.data, this.current);
@@ -145,7 +145,7 @@ class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
   }
 
   _workspaceSelected(e: CustomEvent) {
-    //@dci  (this.$.repeat as DomRepeat).itemForElement(e.detail.item);
+    //@dci  (this.shadowRoot!.getElementById('repeat') as DomRepeat).itemForElement(e.detail.item);
     const workspace = e.detail.item;
     const newCode = workspace.code;
     if (!newCode || newCode === this.current) {
@@ -153,10 +153,10 @@ class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
     }
 
     this.workspaceData = {workspace: workspace.id};
-    const thunk = (this.$.changeworkspace as EtoolsPrpAjaxEl).thunk();
+    const thunk = (this.shadowRoot!.getElementById('changeworkspace') as EtoolsPrpAjaxEl).thunk();
     thunk()
       .then(() => {
-        this.reduxStore.dispatch(setWorkspace(newCode));
+        store.dispatch(setWorkspace(newCode));
       })
       .catch((err) => {
         console.log(err);
@@ -178,5 +178,3 @@ class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) {
     return data.findIndex((x) => x.code === workspace);
   }
 }
-
-window.customElements.define('workspace-dropdown', WorkspaceDropdown);

@@ -1,5 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import Constants from '../constants';
 import '../elements/numeral-js';
 
@@ -7,10 +7,13 @@ import '../elements/numeral-js';
  * @polymer
  * @customElement
  */
-class EtoolsPrpNumber extends LitElement {
+@customElement('etools-prp-number')
+export class EtoolsPrpNumber extends LitElement {
   render() {
     return html`
-      ${this._noValue(this.value) ? html`0` : html`<numeral-js number="${this.value}" format="${this._finalFormat}" print></numeral-js>`}
+      ${this._noValue(this.value)
+        ? html`0`
+        : html`<numeral-js number="${this.value}" format="${this._finalFormat}" print></numeral-js>`}
     `;
   }
 
@@ -42,6 +45,5 @@ class EtoolsPrpNumber extends LitElement {
     return overrideFormat || _defaultFormat;
   }
 }
-window.customElements.define('etools-prp-number', EtoolsPrpNumber);
 
 export {EtoolsPrpNumber as EtoolsPrpNumberEl};

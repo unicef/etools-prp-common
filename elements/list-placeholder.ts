@@ -2,7 +2,6 @@
 import { LitElement, html } from 'lit';
 import {property} from 'lit/decorators.js';
 import LocalizeMixin from '../mixins/localize-mixin';
-import {GenericObject} from '../typings/globals.types';
 
 class ListPlaceholder extends LocalizeMixin(LitElement) {
   render() {
@@ -35,7 +34,7 @@ class ListPlaceholder extends LocalizeMixin(LitElement) {
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('data') || changedProperties.has('loading')) {
       this.hidden = this._computeHidden(this.data, this.loading);
     }
@@ -44,7 +43,7 @@ class ListPlaceholder extends LocalizeMixin(LitElement) {
     }
   }
 
-  _computeHidden(data: GenericObject[], loading: boolean) {
+  _computeHidden(data: any[], loading: boolean) {
     return loading || (data && !!data.length);
   }
 

@@ -1,6 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {connect} from 'pwa-helpers';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/paper-button/paper-button';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
@@ -14,7 +14,6 @@ import '@polymer/paper-styles/typography';
 import '@polymer/iron-location/iron-location';
 import '@polymer/paper-input/paper-input';
 import '@polymer/app-layout/app-grid/app-grid-style';
-import {GenericObject} from '../typings/globals.types';
 import ModalMixin from '../mixins/modal-mixin';
 import UtilsMixin from '../mixins/utils-mixin';
 import './etools-prp-permissions';
@@ -30,8 +29,8 @@ import {tableStyles} from '../styles/table-styles';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
-import { store } from '../../redux/store';
-import { RootState } from '../../typings/redux.types';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -82,7 +81,13 @@ class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
 
       <etools-prp-ajax id="reports" .url="${this.pullUrl}"> </etools-prp-ajax>
 
-      <etools-prp-ajax id="pull" .url="${this.pullUrl}" method="post" .body="${this.postBody}" content-type="application/json">
+      <etools-prp-ajax
+        id="pull"
+        .url="${this.pullUrl}"
+        method="post"
+        .body="${this.postBody}"
+        content-type="application/json"
+      >
       </etools-prp-ajax>
 
       <paper-dialog id="dialog" modal ?opened="${this.opened}">
@@ -115,16 +120,18 @@ class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
             </etools-data-table-column>
           </etools-data-table-header>
 
-          ${(this.data.reports || []).amp((report: any) => html`
-            <etools-data-table-row no-collapse>
-              <div slot="row-data">
-                <div class="table-cell table-cell--text">${report.report_name}</div>
-                <div class="table-cell table-cell--text">${report.due_date}</div>
-                <div class="table-cell table-cell--text">${report.start_date} - ${report.end_date}</div>
-                <div class="table-cell table-cell--text">${report.report_location_total.v}</div>
-              </div>
-            </etools-data-table-row>
-          `)};
+          ${(this.data.reports || []).amp(
+            (report: any) => html`
+              <etools-data-table-row no-collapse>
+                <div slot="row-data">
+                  <div class="table-cell table-cell--text">${report.report_name}</div>
+                  <div class="table-cell table-cell--text">${report.due_date}</div>
+                  <div class="table-cell table-cell--text">${report.start_date} - ${report.end_date}</div>
+                  <div class="table-cell table-cell--text">${report.report_location_total.v}</div>
+                </div>
+              </etools-data-table-row>
+            `
+          )};
 
           <div class="layout horizontal justified overwrite-notification">
             <etools-icon name="icons:info"></etools-icon>
@@ -159,7 +166,7 @@ class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
   updatePending = false;
 
   @property({type: Object})
-  postBody: GenericObject = {};
+  postBody: any = {};
 
   @property({type: String})
   workspaceId!: string;
@@ -174,28 +181,32 @@ class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
   pullUrl!: string;
 
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
   _computePullUrl(workspaceId: string, reportId: string, indicatorId: string) {
     return Endpoints.indicatorPullData(workspaceId, reportId, indicatorId);
   }
 
   stateChanged(state: RootState) {
-    if(state?.location?.id && state?.location?.id !== this.workspaceId) {
+    if (state?.location?.id && state?.location?.id !== this.workspaceId) {
       this.workspaceId = state.location.id;
     }
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
-    if (changedProperties.has('workspaceId') || changedProperties.has('reportId') || changedProperties.has('indicatorId')) {
+
+    if (
+      changedProperties.has('workspaceId') ||
+      changedProperties.has('reportId') ||
+      changedProperties.has('indicatorId')
+    ) {
       this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
     }
   }
 
   _save() {
-    (this.$.pull as EtoolsPrpAjaxEl)
+    (this.shadowRoot!.getElementById('pull') as EtoolsPrpAjaxEl)
       .thunk()()
       .then(() => {
         this.close();
@@ -215,11 +226,11 @@ class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
   }
 
   open() {
-    (this.$.reports as EtoolsPrpAjaxEl).abort();
+    (this.shadowRoot!.getElementById('reports') as EtoolsPrpAjaxEl).abort();
 
-    const thunk = (this.$.reports as EtoolsPrpAjaxEl).thunk();
+    const thunk = (this.shadowRoot!.getElementById('reports') as EtoolsPrpAjaxEl).thunk();
     thunk()
-      .then((res: GenericObject) => {
+      .then((res: any) => {
         this.data = {reports: res.data};
         this.opened = true;
       })

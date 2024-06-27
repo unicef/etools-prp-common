@@ -1,6 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {connect} from 'pwa-helpers';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import '@unicef-polymer/etools-loading/etools-loading';
 import '@polymer/paper-tabs/paper-tab';
@@ -28,14 +28,13 @@ import {PullModalEl} from './pull-modal';
 import UtilsMixin from '../mixins/utils-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {GenericObject} from '../typings/globals.types';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {disaggregationsFetch} from '../../redux/actions/disaggregations';
 import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
 import {RootState} from '../../typings/redux.types';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
-import { store } from '../../redux/store';
+import {store} from '../../redux/store';
 
 /**
  * @polymer
@@ -45,8 +44,8 @@ import { store } from '../../redux/store';
  */
 class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElement))) {
   render() {
-    if(!this.dataLoaded) {
-      return 
+    if (!this.dataLoaded) {
+      return;
     }
     return html`
       ${buttonsStyles}
@@ -213,206 +212,262 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
         }
       </style>
 
-      <etools-prp-ajax id="disaggregations" .url="${this.disaggregationsUrl}" .params="${this.params}"> </etools-prp-ajax>
+      <etools-prp-ajax id="disaggregations" .url="${this.disaggregationsUrl}" .params="${this.params}">
+      </etools-prp-ajax>
 
-      ${this.dataLoaded ? html`
-        <div>
-          ${this.showPullDataFromHR(this.isHfIndicator, this.mode) ? html`
-            <div class="tab-header layout horizontal justified">
-              <div class="self-center">${this.localize('for_this_indicator')}</div>
-              <div>
-                <etools-button
-                  variant="primary"
-                  modal-index="${this.indicatorId}"
-                  @click="${this._openPullModal}"
-                  ?disabled="${this.disablePull}"
-                >
-                  ${this.localize('pull_data')}
-                </etools-button>
-              </div>
-            </div>
-          `: ``}
-        </div>
-
-        <etools-prp-printer selector=".printme">
-          <div id="tabs-pages-container">
-            <div id="tabs-list-container">
-              <div class="tabs-header-container">
-                <div class="header">
-                  <h3 class="locations-heading">${this.localize('data_for_locations')}</h3>
-
-                  <etools-icon-button class="print-btn" name="icons:print"> </etools-icon-button>
-                </div>
-
-                <div hidden aria-hidden="true">
-                  ${this.currentPd.title ? html`
-                    <dl class="printme" style="margin: 0;">
-                      <dt style="display: inline;">${this._singularLocalized('programme_documents', this.localize)}:</dt>
-                      <dd style="display: inline; margin: 0;">${this.currentPd.title}</dd>
-                    </dl>
-                  `: ``}
-
-                  ${this.indicatorName ? html`
-                    <dl class="printme" style="margin: 0;">
-                      <dt style="display: inline;">${this.localize('indicator')}:</dt>
-                      <dd style="display: inline; margin: 0;">${this.indicatorName}</dd>
-                    </dl>
-                  `: ``}
-
-                  ${this.indicatorStatus ? html`
-                    <span class="printme" style="margin-right: .5em;">${this.localize('indicator_status')}:</span>
-                    <report-status class="printme" .status="${this.indicatorStatus}" .report-type="${this.reportType}">
-                    </report-status>
-                  `: ``}
-
-                  <div class="printme" style="margin-bottom: 2em;"></div>
-                </div>
-              </div>
-
-              <paper-listbox .selected="${this.selected}" id="tabs-list">
-                ${(this.locationData || []).map((topLevelLocation: any) => html`
-                  <!-- on-rendered-item-count-changed="onLocationRendered" -->
-                  <paper-item id="tab-item">
-                    <status-badge .type="${this._computeLocationStatus(topLevelLocation)}"></status-badge>
-                    ${topLevelLocation.name}
-                  </paper-item>
-                `)}}
-              </paper-listbox>
-            </div>
-
-            <iron-pages .selected="${this.selected}" id="pages-container">
-
-              ${(this.locationData || []).map((topLevelLocation: any, topLevelLocationIndex: number) => html`              
-                <div>
-                  <div id="page-header-container">
-                   ${this._canEnterData(this.computedMode, topLevelLocation.byEntity[0].is_locked) ? html`
-                      <div class="tab-header layout horizontal justified">
-                        <div class="self-center">${this.localize('enter_data_location')}</div>
-                        <div>
-                          <paper-button
-                            class="btn-primary"
-                            modal-index="${topLevelLocationIndex}"
-                            @click="${this._openModal}"
-                            raised
-                          >
-                            ${this.localize('enter_data')}
-                          </paper-button>
-                        </div>
+      ${this.dataLoaded
+        ? html`
+            <div>
+              ${this.showPullDataFromHR(this.isHfIndicator, this.mode)
+                ? html`
+                    <div class="tab-header layout horizontal justified">
+                      <div class="self-center">${this.localize('for_this_indicator')}</div>
+                      <div>
+                        <etools-button
+                          variant="primary"
+                          modal-index="${this.indicatorId}"
+                          @click="${this._openPullModal}"
+                          ?disabled="${this.disablePull}"
+                        >
+                          ${this.localize('pull_data')}
+                        </etools-button>
                       </div>
-                    ` : ``}
+                    </div>
+                  `
+                : ``}
+            </div>
 
-                    <div id="reporting-tabs-list">
-                      <paper-tabs
-                        .selected="${topLevelLocation.selected}"
-                        hide-scroll-buttons
-                        id="reporting-tabs-container"
-                      >
-                        ${(topLevelLocation.byEntity || []).map((location: any) => 
-                          html`<paper-tab>${this._localizeLowerCased(location.reporting_entity.title, this.localize)}</paper-tab>`)}
-                      </paper-tabs>
+            <etools-prp-printer selector=".printme">
+              <div id="tabs-pages-container">
+                <div id="tabs-list-container">
+                  <div class="tabs-header-container">
+                    <div class="header">
+                      <h3 class="locations-heading">${this.localize('data_for_locations')}</h3>
+
+                      <etools-icon-button class="print-btn" name="icons:print"> </etools-icon-button>
+                    </div>
+
+                    <div hidden aria-hidden="true">
+                      ${this.currentPd.title
+                        ? html`
+                            <dl class="printme" style="margin: 0;">
+                              <dt style="display: inline;">
+                                ${this._singularLocalized('programme_documents', this.localize)}:
+                              </dt>
+                              <dd style="display: inline; margin: 0;">${this.currentPd.title}</dd>
+                            </dl>
+                          `
+                        : ``}
+                      ${this.indicatorName
+                        ? html`
+                            <dl class="printme" style="margin: 0;">
+                              <dt style="display: inline;">${this.localize('indicator')}:</dt>
+                              <dd style="display: inline; margin: 0;">${this.indicatorName}</dd>
+                            </dl>
+                          `
+                        : ``}
+                      ${this.indicatorStatus
+                        ? html`
+                            <span class="printme" style="margin-right: .5em;"
+                              >${this.localize('indicator_status')}:</span
+                            >
+                            <report-status
+                              class="printme"
+                              .status="${this.indicatorStatus}"
+                              .report-type="${this.reportType}"
+                            >
+                            </report-status>
+                          `
+                        : ``}
+
+                      <div class="printme" style="margin-bottom: 2em;"></div>
                     </div>
                   </div>
 
-                  <iron-pages .selected="${topLevelLocation.selected}" id="page-view-container">
-                  ${(topLevelLocation.byEntity || []).map((location: any) => html`
-                      <div>
-                        <div class="table-container app-grid">
-                          <div class="item">
-                            <div hidden aria-hidden="true">
-                              <dl class="printme">
-                                <dt style="display: inline;">${this.localize('location')}:</dt>
-                                <dd style="display: inline; margin: 0;">
-                                  ${location.location.name} - ${location.reporting_entity.title}
-                                </dd>
-                              </dl>
-                            </div>
+                  <paper-listbox .selected="${this.selected}" id="tabs-list">
+                    ${(this.locationData || []).map(
+                      (topLevelLocation: any) => html`
+                        <!-- on-rendered-item-count-changed="onLocationRendered" -->
+                        <paper-item id="tab-item">
+                          <status-badge .type="${this._computeLocationStatus(topLevelLocation)}"></status-badge>
+                          ${topLevelLocation.name}
+                        </paper-item>
+                      `
+                    )}}
+                  </paper-listbox>
+                </div>
 
-                            <dl>
-                              ${this._equals(location.display_type, 'number') ? html`
-                                <dt>
-                                  ${this.localize('location_progress_against')}
-                                  ${this._localizeLowerCased(location.reporting_entity.title, this.localize)}:
-                                </dt>
-                                <dd>
-                                  <etools-prp-number .value="${location.location_progress.v}"></etools-prp-number>
-                                </dd>
-                                <dt>${this.localize('previous_location_progress')}:</dt>
-                                <dd>
-                                  <etools-prp-number
-                                    .value="${location.previous_location_progress.v}"
-                                  ></etools-prp-number>
-                                </dd>`: 
-                                html`
-                                  <dt>${this.localize('location_progress')}:</dt>
-                                  <dd>${this._formatIndicatorValue(location.display_type, location.location_progress.c)}</dd>
-                                  <dt>${this.localize('previous_location_progress')}:</dt>
-                                  <dd>
-                                    ${this._formatIndicatorValue(location.display_type, location.previous_location_progress.c)}
-                                  </dd>
-                                  `}
-                            </dl>
-                            <disaggregation-table
-                              class="printme print-styles"
-                              .data="${location}"
-                              .mapping="${this.disaggregations.disagg_lookup_map}"
-                              .labels="${this.disaggregations.labels}"
+                <iron-pages .selected="${this.selected}" id="pages-container">
+                  ${(this.locationData || []).map(
+                    (topLevelLocation: any, topLevelLocationIndex: number) => html`
+                      <div>
+                        <div id="page-header-container">
+                          ${this._canEnterData(this.computedMode, topLevelLocation.byEntity[0].is_locked)
+                            ? html`
+                                <div class="tab-header layout horizontal justified">
+                                  <div class="self-center">${this.localize('enter_data_location')}</div>
+                                  <div>
+                                    <paper-button
+                                      class="btn-primary"
+                                      modal-index="${topLevelLocationIndex}"
+                                      @click="${this._openModal}"
+                                      raised
+                                    >
+                                      ${this.localize('enter_data')}
+                                    </paper-button>
+                                  </div>
+                                </div>
+                              `
+                            : ``}
+
+                          <div id="reporting-tabs-list">
+                            <paper-tabs
+                              .selected="${topLevelLocation.selected}"
+                              hide-scroll-buttons
+                              id="reporting-tabs-container"
                             >
-                            </disaggregation-table>
+                              ${(topLevelLocation.byEntity || []).map(
+                                (location: any) =>
+                                  html`<paper-tab
+                                    >${this._localizeLowerCased(
+                                      location.reporting_entity.title,
+                                      this.localize
+                                    )}</paper-tab
+                                  >`
+                              )}
+                            </paper-tabs>
                           </div>
                         </div>
+
+                        <iron-pages .selected="${topLevelLocation.selected}" id="page-view-container">
+                          ${(topLevelLocation.byEntity || []).map(
+                            (location: any) => html`
+                              <div>
+                                <div class="table-container app-grid">
+                                  <div class="item">
+                                    <div hidden aria-hidden="true">
+                                      <dl class="printme">
+                                        <dt style="display: inline;">${this.localize('location')}:</dt>
+                                        <dd style="display: inline; margin: 0;">
+                                          ${location.location.name} - ${location.reporting_entity.title}
+                                        </dd>
+                                      </dl>
+                                    </div>
+
+                                    <dl>
+                                      ${this._equals(location.display_type, 'number')
+                                        ? html` <dt>
+                                              ${this.localize('location_progress_against')}
+                                              ${this._localizeLowerCased(
+                                                location.reporting_entity.title,
+                                                this.localize
+                                              )}:
+                                            </dt>
+                                            <dd>
+                                              <etools-prp-number
+                                                .value="${location.location_progress.v}"
+                                              ></etools-prp-number>
+                                            </dd>
+                                            <dt>${this.localize('previous_location_progress')}:</dt>
+                                            <dd>
+                                              <etools-prp-number
+                                                .value="${location.previous_location_progress.v}"
+                                              ></etools-prp-number>
+                                            </dd>`
+                                        : html`
+                                            <dt>${this.localize('location_progress')}:</dt>
+                                            <dd>
+                                              ${this._formatIndicatorValue(
+                                                location.display_type,
+                                                location.location_progress.c
+                                              )}
+                                            </dd>
+                                            <dt>${this.localize('previous_location_progress')}:</dt>
+                                            <dd>
+                                              ${this._formatIndicatorValue(
+                                                location.display_type,
+                                                location.previous_location_progress.c
+                                              )}
+                                            </dd>
+                                          `}
+                                    </dl>
+                                    <disaggregation-table
+                                      class="printme print-styles"
+                                      .data="${location}"
+                                      .mapping="${this.disaggregations.disagg_lookup_map}"
+                                      .labels="${this.disaggregations.labels}"
+                                    >
+                                    </disaggregation-table>
+                                  </div>
+                                </div>
+                              </div>
+                            `
+                          )}
+                        </iron-pages>
+                        ${!this._equals(this.computedMode, 'view')
+                          ? html`
+                              <disaggregation-modal
+                                id="modal-${topLevelLocationIndex}"
+                                .reporting-period="${this.reportingPeriod}"
+                                on-opened-changed="${this._updateModals}"
+                              >
+                                <div slot="meta" class="layout horizontal justified">
+                                  <div>
+                                    <h3>${this.indicatorName}</h3>
+                                    <p class="location">
+                                      <iron-icon icon="maps:place"></iron-icon>
+                                      ${topLevelLocation.name}
+                                    </p>
+                                    ${this.hasPD
+                                      ? html`<p class="current-pd">
+                                          ${this.currentPd.agreement} | ${this.currentPd.title}
+                                        </p>`
+                                      : ``}
+                                  </div>
+                                  <div class="layout vertical end-justified">
+                                    <dl class="location-progress">
+                                      <dt>${this.localize('location_progress')}</dt>
+                                      <dd>
+                                        ${this._equals(topLevelLocation.byEntity[0].display_type, 'number')
+                                          ? html`<etools-prp-number
+                                              .value="${topLevelLocation.byEntity[0].location_progress.v}"
+                                            ></etools-prp-number>`
+                                          : html`<span
+                                              >${this._formatIndicatorValue(
+                                                topLevelLocation.byEntity[0].display_type,
+                                                topLevelLocation.byEntity[0].location_progress.c,
+                                                1
+                                              )}</span
+                                            >`}
+                                      </dd>
+                                    </dl>
+                                  </div>
+                                </div>
+                                ${this._computeTableVisibility(this.opened, String(topLevelLocationIndex))
+                                  ? html`
+                                      <disaggregation-table
+                                        slot="disaggregation-table"
+                                        .data="${topLevelLocation.byEntity[0]}"
+                                        .by-entity="${topLevelLocation.byEntity}"
+                                        .mapping="${this.disaggregations.disagg_lookup_map}"
+                                        .labels="${this.disaggregations.labels}"
+                                        .indicator-id="${this.indicatorId}"
+                                        editable="1"
+                                      >
+                                      </disaggregation-table>
+                                    `
+                                  : ``}
+                              </disaggregation-modal>
+                            `
+                          : ``}
                       </div>
-                    `)}
-                  </iron-pages>
-                  ${!this._equals(this.computedMode, 'view') ? html`
-                    <disaggregation-modal
-                      id="modal-${topLevelLocationIndex}"
-                      .reporting-period="${this.reportingPeriod}"
-                      on-opened-changed="${this._updateModals}"
-                    >
-                      <div slot="meta" class="layout horizontal justified">
-                        <div>
-                          <h3>${this.indicatorName}</h3>
-                          <p class="location">
-                            <iron-icon icon="maps:place"></iron-icon>
-                            ${topLevelLocation.name}
-                          </p>
-                          ${this.hasPD ? html`<p class="current-pd">${this.currentPd.agreement} | ${this.currentPd.title}</p>`: ``}
-                        </div>
-                        <div class="layout vertical end-justified">
-                          <dl class="location-progress">
-                            <dt>${this.localize('location_progress')}</dt>
-                            <dd>
-                              ${this._equals(topLevelLocation.byEntity[0].display_type, 'number') ? 
-                              html`<etools-prp-number
-                                  .value="${topLevelLocation.byEntity[0].location_progress.v}"
-                                ></etools-prp-number>`: 
-                              html`<span>${this._formatIndicatorValue(topLevelLocation.byEntity[0].display_type,
-                                  topLevelLocation.byEntity[0].location_progress.c, 1)}</span>`}
-                            </dd>
-                          </dl>
-                        </div>
-                      </div>
-                      ${this._computeTableVisibility(this.opened, String(topLevelLocationIndex)) ? 
-                      html`
-                        <disaggregation-table
-                          slot="disaggregation-table"
-                          .data="${topLevelLocation.byEntity[0]}"
-                          .by-entity="${topLevelLocation.byEntity}"
-                          .mapping="${this.disaggregations.disagg_lookup_map}"
-                          .labels="${this.disaggregations.labels}"
-                          .indicator-id="${this.indicatorId}"
-                          editable="1"
-                        >
-                        </disaggregation-table>
-                      ` : ``}
-                    </disaggregation-modal>
-                  `: ``}
-                </div>
-              `)}
-            </iron-pages>
-          </div>
-        </etools-prp-printer>
-      `: ``}
+                    `
+                  )}
+                </iron-pages>
+              </div>
+            </etools-prp-printer>
+          `
+        : ``}
 
       <pull-modal
         id="pull-modal-${this.indicatorId}"
@@ -458,7 +513,7 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
   reportingPeriod!: string;
 
   @property({type: Object})
-  opened!: GenericObject;
+  opened!: any;
 
   @property({type: Number})
   selected = 0;
@@ -467,7 +522,7 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
   initialized = false;
 
   @property({type: Object})
-  currentPd!: GenericObject;
+  currentPd!: any;
 
   @property({type: Boolean})
   hasPD!: boolean;
@@ -476,16 +531,16 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
   disaggregationsUrl!: string;
 
   @property({type: Object})
-  params!: GenericObject | undefined;
+  params!: any | undefined;
 
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
   @property({type: Object})
-  disaggregations!: GenericObject;
+  disaggregations!: any;
 
   @property({type: Array})
-  locationData!: GenericObject[];
+  locationData!: any[];
 
   @property({type: String})
   mode = '';
@@ -513,7 +568,7 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
   }
 
   stateChanged(state: RootState) {
-    if(state) {
+    if (state) {
       this.currentPd = this._currentProgrammeDocument(state);
     }
     if (!isJsonStrMatch(state?.disaggregations?.byIndicator, this.data)) {
@@ -526,7 +581,7 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('currentPd')) {
       this.hasPD = this._computeHasPD(this.currentPd);
     }
@@ -548,15 +603,15 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
     }
     if (changedProperties.has('reportStatus')) {
       this.disablePull = this._computeDisablePull(this.reportStatus);
-    }    
+    }
   }
 
   _fetchData() {
-    const disaggregationsThunk = (this.$.disaggregations as EtoolsPrpAjaxEl).thunk();
+    const disaggregationsThunk = (this.shadowRoot!.getElementById('disaggregations') as EtoolsPrpAjaxEl).thunk();
     // Cancel the pending request, if any
-    (this.$.disaggregations as EtoolsPrpAjaxEl).abort();
+    (this.shadowRoot!.getElementById('disaggregations') as EtoolsPrpAjaxEl).abort();
 
-    return this.reduxStore.dispatch(disaggregationsFetch(disaggregationsThunk, String(this.indicatorId)));
+    return store.dispatch(disaggregationsFetch(disaggregationsThunk, String(this.indicatorId)));
   }
 
   init() {
@@ -587,11 +642,11 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
     return Endpoints.indicatorReports(reportableId);
   }
 
-  _computeParams(indicatorId: number, currentPD: GenericObject) {
+  _computeParams(indicatorId: number, currentPD: any) {
     if (!currentPD) {
       return;
     }
-    const params: GenericObject = {
+    const params: any = {
       pks: indicatorId,
       limit: 1
     };
@@ -603,7 +658,7 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
     return params;
   }
 
-  _computeDisaggregations(data: GenericObject, key: number) {
+  _computeDisaggregations(data: any, key: number) {
     if (!data || !key) {
       return;
     }
@@ -615,7 +670,7 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
     return disaggregations;
   }
 
-  _computeIsHfIndicator(disaggregations: GenericObject) {
+  _computeIsHfIndicator(disaggregations: any) {
     return disaggregations !== undefined && this.reportIsQpr === true && disaggregations.is_hf_indicator === true;
   }
 
@@ -635,28 +690,28 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
     (this.shadowRoot!.querySelector('#pull-modal-' + (e.target as any).modalIndex) as PullModalEl).open();
   }
 
-  _updateModals(e: CustomEvent, data: GenericObject) {
+  _updateModals(e: CustomEvent, data: any) {
     const id = (e.target as any).id;
 
     if (!id) {
       return;
     }
 
-    const change: GenericObject = {};
+    const change: any = {};
     change[id] = data.value;
 
     this.opened = Object.assign({}, this.opened, change);
   }
 
-  _computeTableVisibility(opened: GenericObject, index: string) {
+  _computeTableVisibility(opened: any, index: string) {
     return !!opened['modal-' + index];
   }
 
-  _computeLocationStatus(location: GenericObject) {
+  _computeLocationStatus(location: any) {
     return location.byEntity[0].is_complete ? 'success' : 'error';
   }
 
-  _computeHasPD(currentPD: GenericObject) {
+  _computeHasPD(currentPD: any) {
     return !!Object.keys(currentPD).length;
   }
 
@@ -667,11 +722,11 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
     fireEvent(this, 'refresh-report', String(this.indicatorId));
   }
 
-  checkReportIsComplete(disaggregations: GenericObject) {
+  checkReportIsComplete(disaggregations: any) {
     if (!disaggregations) {
       return;
     }
-    const allComplete = (disaggregations.indicator_location_data || []).every(function (location: GenericObject) {
+    const allComplete = (disaggregations.indicator_location_data || []).every(function (location: any) {
       return location.is_complete;
     });
 

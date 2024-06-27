@@ -1,14 +1,14 @@
 import {LitElement} from 'lit';
-import {state} from 'lit/decorators.js';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {property, state} from 'lit/decorators.js';
+import {Constructor} from '../typings/globals.types';
 
 /**
  * @mixinFunction
  */
 function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class PaginationClass extends baseClass {
-    // @property({type: Object})
-    queryParams!: GenericObject;
+    @property({type: Object})
+    queryParams!: any;
 
     @state()
     pageSize!: number;
@@ -27,11 +27,11 @@ function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _computePageSize(queryParams: GenericObject) {
+    _computePageSize(queryParams: any) {
       return Number(queryParams.page_size || 10);
     }
 
-    _computePageNumber(queryParams: GenericObject) {
+    _computePageNumber(queryParams: any) {
       return Number(queryParams.page || 1);
     }
 

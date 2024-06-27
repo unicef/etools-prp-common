@@ -2,28 +2,27 @@ import { html, css, LitElement } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
-import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import { GenericObject } from '../../typings/globals.types';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
 @customElement('disaggregation-field')
 class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
-  @property({ type: String })
+  @property({type: String})
   key!: string;
 
-  @property({ type: String })
+  @property({type: String})
   coords!: string;
 
-  @property({ type: String })
+  @property({type: String})
   validator!: string;
 
-  @property({ type: Number })
+  @property({type: Number})
   min!: number;
 
-  @property({ type: Number })
+  @property({type: Number})
   value = 0;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   invalid!: boolean;
 
   static styles = css`
@@ -79,7 +78,7 @@ class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   }
 
   _inputValueChanged(e: CustomEvent) {
-    const change: GenericObject = {};
+    const change: any = {};
     change[this.key] = (e.target as any).value;
 
     fireEvent(this, 'field-value-changed', {
@@ -89,7 +88,7 @@ class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   }
 
   _preventInvalidInput(e: KeyboardEvent) {
-    if (e.key === '.' && (e.target as EtoolsInput).value!.indexOf('.') > -1) {
+    if (e.key === '.' && (e.target as EtoolsInput).value!.toString()?.indexOf('.') > -1) {
       e.preventDefault();
     }
   }

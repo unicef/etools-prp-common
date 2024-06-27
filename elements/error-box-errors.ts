@@ -1,12 +1,12 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
-import {GenericObject} from '../typings/globals.types';
+import {customElement, property} from 'lit/decorators.js';
 
 /**
  * @polymer
  * @customElement
  */
-class ErrorBoxErrors extends LitElement {
+@customElement('error-box-errors')
+export class ErrorBoxErrors extends LitElement {
   render() {
     return html`
       <style>
@@ -22,19 +22,21 @@ class ErrorBoxErrors extends LitElement {
       </style>
 
       <ul>
-        ${(this.errors || [].map((error: any) => html`        
-          <li>
-            ${error.field ? html`<span>${error.field}:</span>` : ``}
-            ${error.value ? html`<span>${error.value}:</span>` : ``}
-            ${error.details ? html`<error-box-errors .errors="${error.details}"> </error-box-errors>` : ``}
-          </li>
-        `))}
+        ${this.errors ||
+        [].map(
+          (error: any) => html`
+            <li>
+              ${error.field ? html`<span>${error.field}:</span>` : ``}
+              ${error.value ? html`<span>${error.value}:</span>` : ``}
+              ${error.details ? html`<error-box-errors .errors="${error.details}"> </error-box-errors>` : ``}
+            </li>
+          `
+        )}
       </ul>
     `;
   }
 
   @property({type: Object})
-  errors!: GenericObject;
+  errors!: any;
 }
 
-window.customElements.define('error-box-errors', ErrorBoxErrors);

@@ -14,12 +14,8 @@ export type MixinFunction = <T extends Constructor<LitElement>>(
   new (...args: any[]): any;
 };
 
-export interface GenericObject {
-  [key: string]: any;
-}
-
 export interface Route {
   prefix: string;
   path: string;
-  __queryParams: GenericObject;
+  __queryParams: any;
 }

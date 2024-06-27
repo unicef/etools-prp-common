@@ -1,9 +1,8 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icon/iron-icon';
 import UtilsMixin from '../mixins/utils-mixin';
-import {GenericObject} from '../typings/globals.types';
 import './error-box-errors';
 
 /**
@@ -12,7 +11,8 @@ import './error-box-errors';
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class ErrorBox extends UtilsMixin(LitElement) {
+@customElement('error-box')
+export class ErrorBox extends UtilsMixin(LitElement) {
   render() {
     return html`
       <style include="iron-flex iron-flex-alignment iron-flex-reverse">
@@ -43,10 +43,10 @@ class ErrorBox extends UtilsMixin(LitElement) {
   }
 
   @property({type: Object}) //@@ observer: '_scrollToBox'
-  errors: GenericObject = {};
+  errors: any = {};
 
   @property({type: Array})
-  mappedErrors: GenericObject[] = [];
+  mappedErrors: any[] = [];
 
   @property({type: Boolean})
   _hidden = true;
@@ -62,7 +62,7 @@ class ErrorBox extends UtilsMixin(LitElement) {
     }
   }
 
-  _computeMappedErrors(errors: GenericObject[]) {
+  _computeMappedErrors(errors: any[]) {
     return this.errorMapper(errors);
   }
 
@@ -72,7 +72,7 @@ class ErrorBox extends UtilsMixin(LitElement) {
     });
   }
 
-  _computeHidden(mappedErrors: GenericObject[]) {
+  _computeHidden(mappedErrors: any[]) {
     return !mappedErrors.length;
   }
 
@@ -96,7 +96,7 @@ class ErrorBox extends UtilsMixin(LitElement) {
           .map((key) => {
             return {
               field: key,
-              details: error[key].reduce((acc: any, err: GenericObject) => {
+              details: error[key].reduce((acc: any, err: any) => {
                 return acc.concat(this.errorMapper(err));
               }, [])
             };
@@ -104,5 +104,3 @@ class ErrorBox extends UtilsMixin(LitElement) {
     }
   }
 }
-
-window.customElements.define('error-box', ErrorBox);

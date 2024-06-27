@@ -1,5 +1,5 @@
 import { LitElement, PropertyValues, html } from 'lit';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {connect} from 'pwa-helpers';
 import {property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import LocalizeMixin from '../mixins/localize-mixin';
