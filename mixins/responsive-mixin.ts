@@ -14,7 +14,7 @@ function ResponsiveMixin<T extends Constructor<LitElement>>( baseClass: T ) {
     @property({type: Boolean})
     isDesktop: boolean = false;
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated(changedProperties) {
       super.updated(changedProperties);
       if (changedProperties.has('isDesktop')) {
         this._isDesktopChanged();

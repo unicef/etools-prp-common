@@ -13,7 +13,7 @@ function FilterMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @state()
     lastValue!: string;
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated(changedProperties) {
       super.updated(changedProperties);
       if (changedProperties.has('value')) {
         this.lastValue = this._computeLastValue(this.value);

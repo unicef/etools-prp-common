@@ -43,7 +43,7 @@ class LabelledItem extends LitElement {
       </style>
 
       <dl class="labelled-item">
-        <dt class$="labelled-item__label ${this.labelClassName}">${this.label}</dt>
+        <dt class="labelled-item__label ${this.labelClassName}">${this.label}</dt>
         <dd class="labelled-item__content">
           <slot></slot>
         </dd>

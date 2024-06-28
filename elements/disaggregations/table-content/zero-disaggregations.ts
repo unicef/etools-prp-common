@@ -35,7 +35,7 @@ class ZeroDisaggregations extends LitElement {
     `;
   }
 
-  updated(changedProperties: Map<string | number | symbol, unknown>) {
+  updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has('data')) {
       this.totalRow = this._determineTotalRow(this.data);

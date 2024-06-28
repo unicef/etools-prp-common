@@ -13,7 +13,7 @@ class ListPlaceholder extends LocalizeMixin(LitElement) {
         }
       </style>
 
-      <div class="msg">${this.getMessageToDisplay(localize)}</div>
+      <div class="msg">${this.getMessageToDisplay(this.localize)}</div>
     `;
   }
 

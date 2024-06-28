@@ -105,7 +105,7 @@ export class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) 
   current!: string;
 
   @property({type: Array})
-  data!: any[];
+  data: any[] = [];
 
   @property({type: String})
   changeworkspaceUrl = Endpoints.changeWorkspace();

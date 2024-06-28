@@ -116,7 +116,7 @@ class FilterList extends LocalizeMixin(LitElement) {
       return;
     }
 
-    if (this.ignoredFilters.indexOf(name) !== -1) {
+    if (this.ignoredFilters?.indexOf(name) !== -1) {
       return;
     }
 
@@ -126,7 +126,7 @@ class FilterList extends LocalizeMixin(LitElement) {
   _deregisterFilter(e: CustomEvent) {
     e.stopPropagation();
     const name = e.detail;
-    const index = this.filters.indexOf(name);
+    const index = this.filters?.indexOf(name);
 
     if (index === -1) {
       return;
@@ -142,7 +142,7 @@ class FilterList extends LocalizeMixin(LitElement) {
       return;
     }
 
-    if (this.ignoredFilters.indexOf(name) !== -1) {
+    if (this.ignoredFilters?.indexOf(name) !== -1) {
       return;
     }
 

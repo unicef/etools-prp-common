@@ -1,10 +1,10 @@
-import { LitElement, PropertyValues, html } from 'lit';
+import {LitElement, html} from 'lit';
 import {connect} from 'pwa-helpers';
 import {property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import LocalizeMixin from '../mixins/localize-mixin';
-import { store } from '../../redux/store';
-import { RootState } from '../../typings/redux.types';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -13,8 +13,9 @@ import { RootState } from '../../typings/redux.types';
  * @appliesMixin LocalizeMixin
  */
 class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
-   render() {
-    return html` <style>
+  render() {
+    return html`
+      <style>
         :host {
           display: inline-block;
           margin-right: 0.5em;
@@ -34,7 +35,7 @@ class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
 
       <status-badge type="${this.type}"></status-badge>
       ${this.noLabel ? html`` : html`${this.label}`}
-    `;      
+    `;
   }
 
   @property({type: String})
@@ -59,19 +60,24 @@ class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
   reportType = '';
 
   stateChanged(state: RootState) {
-    if(state?.app?.current) {
-     this.app = state.app.current;
+    if (state?.app?.current) {
+      this.app = state.app.current;
     }
-   }
+  }
 
-   updated(changedProperties: PropertyValues): void {
+  updated(changedProperties): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('status')) {
       this.type = this._computeType(this.status);
     }
-    if (changedProperties.has('status') || changedProperties.has('final') ||
-    changedProperties.has('app') || changedProperties.has('reportType') || changedProperties.has('localize')) {
+    if (
+      changedProperties.has('status') ||
+      changedProperties.has('final') ||
+      changedProperties.has('app') ||
+      changedProperties.has('reportType') ||
+      changedProperties.has('localize')
+    ) {
       this.label = this._computeLabel(this.status, this.final, this.app, this.reportType, this.localize);
     }
   }

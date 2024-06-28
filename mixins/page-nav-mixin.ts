@@ -13,7 +13,7 @@ function PageNavMixin<T extends Constructor<LitElement>>( baseClass: T ) {
     @property({type: Number})
     selected = 0;
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated(changedProperties) {
       super.updated(changedProperties);
       if (changedProperties.has('selected')) {
         this._selectedChanged();

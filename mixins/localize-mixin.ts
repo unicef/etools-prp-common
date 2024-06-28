@@ -31,7 +31,7 @@ function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Boolean})
     bubbleEvent = false;
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated(changedProperties) {
       super.updated(changedProperties);
       if (changedProperties.has('language') || changedProperties.has('resources') || changedProperties.has('formats')) {
         this.localize = this.__computeLocalize(this.language, this.resources, this.formats);

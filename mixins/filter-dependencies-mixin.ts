@@ -19,7 +19,7 @@ function FilterDependenciesMixin<T extends Constructor<LitElement>>(baseClass: T
     @state()
     queryParams: any = {};
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated(changedProperties) {
       super.updated(changedProperties);
       if (changedProperties.has('dependencies') || changedProperties.has('queryParams')) {
         this._computeParams(this.dependencies, this.queryParams);

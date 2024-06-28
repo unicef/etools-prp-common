@@ -91,7 +91,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
     `;
   }
 
-  updated(changedProperties: Map<string | number | symbol, unknown>) {
+  updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has('editable')) {
       this.editableBool = this._computeEditableBool(this.editable);

@@ -113,7 +113,7 @@ class DisaggregationTableCellPercentage extends LitElement {
     `;
   }
 
-  updated(changedProperties: Map<string | number | symbol, unknown>) {
+  updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has('data')) {
       this._cloneData(this.data);

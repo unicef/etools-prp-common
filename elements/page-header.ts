@@ -1,5 +1,5 @@
 import { LitElement, PropertyValues, html } from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
 import '@polymer/paper-styles/typography';
 import '@polymer/iron-icons/iron-icons';
@@ -9,8 +9,8 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import LocalizeMixin from '../mixins/localize-mixin';
 import RoutingMixin from '../mixins/routing-mixin';
 import {sharedStyles} from '../styles/shared-styles';
-import { store } from '../../redux/store';
-import { RootState } from '../../typings/redux.types';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
 
 /**
  * @polymer
@@ -19,7 +19,8 @@ import { RootState } from '../../typings/redux.types';
  * @appliesMixin LocalizeMixin
  * @appliesMixin RoutingMixin
  */
-class PageHeader extends connect(store)(LocalizeMixin(RoutingMixin(LitElement))) {
+@customElement('page-header')
+export class PageHeader extends LocalizeMixin(RoutingMixin(connect(store)(LitElement))) {
   render() {
     return html`
       ${sharedStyles}
@@ -68,9 +69,11 @@ class PageHeader extends connect(store)(LocalizeMixin(RoutingMixin(LitElement)))
             <slot name="above-title"></slot>
           </div>
           <div class="layout horizontal center">
-          ${this.back ? html`<a href="${this.backUrl}" class="back-button">
-                <paper-icon-button icon="chevron-left"></paper-icon-button>
-              </a>`: ``}            
+            ${this.back
+              ? html`<a href="${this.backUrl}" class="back-button">
+                  <paper-icon-button icon="chevron-left"></paper-icon-button>
+                </a>`
+              : ``}
             <h1>${this.title}<slot name="in-title"></slot></h1>
           </div>
         </div>
@@ -103,19 +106,18 @@ class PageHeader extends connect(store)(LocalizeMixin(RoutingMixin(LitElement)))
   app!: string;
 
   stateChanged(state: RootState) {
-   if(state?.app?.current) {
-    this.app = state.app.current;
-   }
+    if (state?.app?.current) {
+      this.app = state.app.current;
+    }
   }
 
-  
-updated(changedProperties: PropertyValues): void {
-	super.updated(changedProperties);
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
 
-	if (changedProperties.has('back') || changedProperties.has('_baseUrl') || changedProperties.has('app')) {
-	  this.backUrl = this._computeBackUrl(this.back, this._baseUrl, this.app);
-	}
-}
+    if (changedProperties.has('back') || changedProperties.has('_baseUrl') || changedProperties.has('app')) {
+      this.backUrl = this._computeBackUrl(this.back, this._baseUrl, this.app);
+    }
+  }
 
   _computeBackUrl(tail: string, baseUrl: string, app: string) {
     if (tail === undefined) {
@@ -128,5 +130,3 @@ updated(changedProperties: PropertyValues): void {
     return tail ? this.buildUrl(baseUrl, tail) : '';
   }
 }
-
-window.customElements.define('page-header', PageHeader);

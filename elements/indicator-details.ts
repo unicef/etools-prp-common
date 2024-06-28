@@ -540,7 +540,7 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
   disaggregations!: any;
 
   @property({type: Array})
-  locationData!: any[];
+  locationData: any[] = [];
 
   @property({type: String})
   mode = '';

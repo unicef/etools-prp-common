@@ -105,7 +105,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
     `;
   }
 
-  updated(changedProperties: Map<string | number | symbol, unknown>) {
+  updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has('data') || changedProperties.has('mapping')) {
       this.columns = this._getColumns(this.mapping);

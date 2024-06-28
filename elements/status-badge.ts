@@ -1,14 +1,14 @@
 
-import {LitElement, PropertyValues, html} from 'lit';
+import {LitElement, html} from 'lit';
 import {property} from 'lit/decorators.js';
-import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+// import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
 /**
  * @polymer
  * @customElement
  */
 class StatusBadge extends LitElement {
-   render() {
+  render() {
     return html` <style>
         :host {
           display: inline-block;
@@ -39,15 +39,14 @@ class StatusBadge extends LitElement {
   @property({type: String})
   color!: string;
 
-  
-updated(changedProperties: PropertyValues): void {
-	super.updated(changedProperties);
+  updated(changedProperties): void {
+    super.updated(changedProperties);
 
-	if (changedProperties.has('type')) {
-	  this.icon = this._computeIcon(this.type);
-    this.color = this._computeColor(this.type);
-	}
-}
+    if (changedProperties.has('type')) {
+      this.icon = this._computeIcon(this.type);
+      this.color = this._computeColor(this.type);
+    }
+  }
 
   _computeIcon(type: string) {
     if (!this.hideIcon) {

@@ -16,7 +16,7 @@ function PaginationMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @state()
     pageNumber!: number;
 
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
+    updated(changedProperties) {
       super.updated(changedProperties);
       if (changedProperties.has('queryParams')) {
         this.pageSize = this._computePageSize(this.queryParams);
