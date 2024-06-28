@@ -90,7 +90,7 @@ export class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
         <aside slot="dropdown-content">
           <h3>Select an application</h3>
           <ul class="apps layout horizontal">
-            ${this.profile?.access?.map(
+            ${(this.profile?.access || []).map(
               (item: any) => html`
                 <li>
                   <a

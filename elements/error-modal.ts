@@ -30,7 +30,7 @@ export class ErrorModal extends LocalizeMixin(UtilsMixin(LitElement)) {
       <paper-dialog modal .opened="${this.opened}">
         <div>
           <ul>
-            ${this.localizeedErrors.map((localizedError: any) => html`<li>${localizedError}</li>`)}
+            ${(this.localizeedErrors || []).map((localizedError: any) => html`<li>${localizedError}</li>`)}
           </ul>
           <div class="layout horizontal-reverse">
             <paper-button class="btn-primary" dialog-dismiss> Close </paper-button>

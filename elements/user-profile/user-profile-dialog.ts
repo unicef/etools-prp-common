@@ -136,7 +136,7 @@ class UserProfileDialog extends RoutingMixin(UtilsMixin(connect(store)(LitElemen
             </div>
             <div class="full-width">
               <div class="caption">My roles</div>
-              ${this.prpRoles.map((role) => html`<div>${role}</div>`)}
+              ${(this.prpRoles || []).map((role) => html`<div>${role}</div>`)}
               <hr />
             </div>
             ${this.profile?.partner

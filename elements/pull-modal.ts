@@ -1,5 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/paper-button/paper-button';
@@ -38,7 +38,8 @@ import {RootState} from '../../typings/redux.types';
  * @appliesMixin UtilsMixin
  * @appliesMixin ModalMixin
  */
-class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
+@customElement('pull-modal')
+export class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
   render() {
     return html`
       ${tableStyles} ${buttonsStyles} ${modalStyles}
@@ -242,6 +243,5 @@ class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))) {
       });
   }
 }
-window.customElements.define('pull-modal', PullModal);
 
 export {PullModal as PullModalEl};

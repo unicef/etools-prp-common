@@ -54,12 +54,12 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
         <!-- Column names -->
         <tr class="horizontal layout headerRow">
           <th></th>
-          ${this.columns.map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
+          ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
           <th>Total</th>
         </tr>
 
         <!-- Data rows: outer and middle. -->
-        ${this.outerRowsForDisplay.map(
+        ${(this.outerRowsForDisplay || []).map(
           (outerRow) => html`
             <disaggregation-table-row
               .data="${outerRow}"
@@ -68,7 +68,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
               row-type="outerRow"
             ></disaggregation-table-row>
 
-            ${this._determineMiddleRows(outerRow.id, this.columns, this.middleRows, this.data).map(
+            ${(this._determineMiddleRows(outerRow.id, this.columns, this.middleRows, this.data) || []).map(
               (middleRow) => html`
                 <disaggregation-table-row
                   .data="${middleRow}"
@@ -91,7 +91,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
         ></disaggregation-table-row>
 
         <!-- Bottom table -->
-        ${this.bottomRows.map(
+        ${(this.bottomRows || []).map(
           (bottomRow) => html`
             <disaggregation-table-row
               .data="${bottomRow}"

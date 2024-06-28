@@ -1,6 +1,6 @@
 import {LitElement, html} from 'lit';
 import {connect} from 'pwa-helpers';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {store} from '../../redux/store';
@@ -12,7 +12,8 @@ import {RootState} from '../../typings/redux.types';
  * @mixinFunction
  * @appliesMixin LocalizeMixin
  */
-class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
+@customElement('report-status')
+export class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
   render() {
     return html`
       <style>
@@ -150,4 +151,4 @@ class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
   }
 }
 
-window.customElements.define('report-status', ReportStatus);
+export {ReportStatus as ReportStatusEl};

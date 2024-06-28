@@ -1,5 +1,5 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-dialog/paper-dialog';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
@@ -26,7 +26,8 @@ import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
  * @appliesMixin RoutingMixin
  * @appliesMixin LocalizeMixin
  */
-class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixin(LitElement)))) {
+@customElement('refresh-report-modal')
+export class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixin(LitElement)))) {
   render() {
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -100,7 +101,5 @@ class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixi
     this.close();
   }
 }
-
-window.customElements.define('refresh-report-modal', RefreshReportModal);
 
 export {RefreshReportModal as RefreshReportModalEl};

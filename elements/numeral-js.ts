@@ -1,12 +1,13 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 declare const numeral: any;
 
 /**
  * @polymer
  * @customElement
  */
-class NumeralJs extends LitElement {
+@customElement('numeral-js')
+export class NumeralJs extends LitElement {
   render() {
     return this.print ? html`${this.output}` : ``;
   }
@@ -124,6 +125,5 @@ class NumeralJs extends LitElement {
     this.number = numeral(this.number).divide(this.divide).value();
   }
 }
-window.customElements.define('numeral-js', NumeralJs);
 
 export {NumeralJs as NumeralJsEl};

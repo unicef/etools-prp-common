@@ -1,5 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-progress/paper-progress';
 import UtilsMixin from '../mixins/utils-mixin';
 import {progressBarStyles} from '../styles/progress-bar-styles';
@@ -10,7 +10,8 @@ import {progressBarStyles} from '../styles/progress-bar-styles';
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
+@customElement('etools-prp-progress-bar')
+export class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
   render() {
     return html`
       ${progressBarStyles}
@@ -52,4 +53,4 @@ class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
   }
 }
 
-window.customElements.define('etools-prp-progress-bar', EtoolsPrpProgressBar);
+export {EtoolsPrpProgressBar as EtoolsPrpProgressBarEl};

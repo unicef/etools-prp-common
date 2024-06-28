@@ -1,5 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
@@ -22,7 +22,8 @@ import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools
  * @appliesMixin UtilsMixin
  * @appliesMixin LocalizeMixin
  */
-class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
+@customElement('reportable-meta')
+export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
   render() {
     return html`
       ${buttonsStyles}
@@ -279,6 +280,5 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
     }
   }
 }
-window.customElements.define('reportable-meta', ReportableMeta);
 
 export {ReportableMeta as ReportableMetaEl};

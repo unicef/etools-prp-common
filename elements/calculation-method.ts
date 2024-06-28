@@ -41,7 +41,7 @@ export class CalculationMethod extends connect(store)(UtilsMixin(LocalizeMixin(L
       ${this.readonly
         ? html`<span class="read-only-label">${this._localizeLowerCased(this.readOnlyLabel, this.localize)}</span>`
         : html`<etools-radio-group .value="${this.value}">
-      ${this.choices.map(
+      ${(this.choices || []).map(
         (item: any) =>
           html`<sl-radio class="${this.disabled ? 'readonly' : ''}" name="${item.id}">
             ${this._localizeLowerCased(item.title, this.localize)}</sl-radio
