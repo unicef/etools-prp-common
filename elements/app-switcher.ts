@@ -96,7 +96,7 @@ export class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
                   <a
                     class="app app--item ${this._getSelectedClassName(item, this.app)}"
                     href="${this.buildBaseUrl(this.workspace, item)}"
-                    on-tap="_navigate"
+                    @click="${this._navigate}"
                   >
                     ${this._getAppLabel(item)}
                   </a>
