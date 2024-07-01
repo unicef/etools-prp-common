@@ -1,5 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-button/paper-button';
@@ -28,7 +28,8 @@ import {PaperDialogElement} from '@polymer/paper-dialog/paper-dialog';
  * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  */
-class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement))) {
+@customElement('upload-button')
+export class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement))) {
   render() {
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -150,4 +151,4 @@ class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement))) {
   }
 }
 
-window.customElements.define('upload-button', UploadButton);
+export {UploadButton as UploadButtonEl};

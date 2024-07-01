@@ -90,13 +90,13 @@ export class AppSwitcher extends RoutingMixin(connect(store)(LitElement)) {
         <aside slot="dropdown-content">
           <h3>Select an application</h3>
           <ul class="apps layout horizontal">
-            ${this.profile?.access?.map(
+            ${(this.profile?.access || []).map(
               (item: any) => html`
                 <li>
                   <a
                     class="app app--item ${this._getSelectedClassName(item, this.app)}"
                     href="${this.buildBaseUrl(this.workspace, item)}"
-                    on-tap="_navigate"
+                    @click="${this._navigate}"
                   >
                     ${this._getAppLabel(item)}
                   </a>

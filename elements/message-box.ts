@@ -1,5 +1,5 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {property, customElement} from 'lit/decorators.js';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
@@ -8,7 +8,8 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
  * @polymer
  * @customElement
  */
-class MessageBox extends LitElement {
+@customElement('message-box')
+export class MessageBox extends LitElement {
    render() {
     return html` <style include="iron-flex iron-flex-alignment">
         :host {
@@ -57,4 +58,4 @@ class MessageBox extends LitElement {
   type!: string;
 }
 
-window.customElements.define('message-box', MessageBox);
+export {MessageBox as MessageBoxEl};

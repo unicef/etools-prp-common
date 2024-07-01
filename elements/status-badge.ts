@@ -1,12 +1,13 @@
 
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 // import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
 /**
  * @polymer
  * @customElement
  */
+@customElement('status-badge')
 class StatusBadge extends LitElement {
   render() {
     return html` <style>
@@ -80,4 +81,4 @@ class StatusBadge extends LitElement {
   }
 }
 
-window.customElements.define('status-badge', StatusBadge);
+export {StatusBadge as StatusBadgeEl};

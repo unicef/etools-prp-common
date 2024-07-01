@@ -47,7 +47,7 @@ export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement
           <th>Total</th>
         </tr>
 
-        ${this.rows.map(
+        ${(this.rows || []).map(
           (row) => html`
             <disaggregation-table-row
               .data="${row}"

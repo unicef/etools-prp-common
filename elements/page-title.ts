@@ -1,11 +1,12 @@
 import {LitElement, PropertyValues} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 
 /**
  * @polymer
  * @customElement
  */
-class PageTitle extends LitElement {
+@customElement('page-title')
+export class PageTitle extends LitElement {
   @property({type: String})
   baseTitle = 'PRP';
 
@@ -28,4 +29,4 @@ class PageTitle extends LitElement {
   }
 }
 
-window.customElements.define('page-title', PageTitle);
+export{PageTitle as PageTitleEl};

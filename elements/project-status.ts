@@ -1,5 +1,5 @@
 import { LitElement, PropertyValues, html } from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import './status-badge';
 import UtilsMixin from '../mixins/utils-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
@@ -11,7 +11,8 @@ import LocalizeMixin from '../mixins/localize-mixin';
  * @appliesMixin UtilsMixin
  * @appliesMixin LocalizeMixin
  */
-class ProjectStatus extends LocalizeMixin(UtilsMixin(LitElement)) {
+@customElement('project-status')
+export class ProjectStatus extends LocalizeMixin(UtilsMixin(LitElement)) {
   render() {
     return html`
       <style>
@@ -71,4 +72,4 @@ class ProjectStatus extends LocalizeMixin(UtilsMixin(LitElement)) {
   }
 }
 
-window.customElements.define('project-status', ProjectStatus);
+export {ProjectStatus as ProjectStatusEl};

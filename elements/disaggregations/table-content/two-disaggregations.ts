@@ -47,11 +47,11 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
       <table>
         <tr class="horizontal layout headerRow">
           <th></th>
-          ${this.columns.map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
+          ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
           <th>Total</th>
         </tr>
 
-        ${this.rowsForDisplay.map(
+        ${(this.rowsForDisplay || []).map(
           (row) => html`
             <disaggregation-table-row
               .data="${row}"

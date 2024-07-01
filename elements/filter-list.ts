@@ -1,5 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-location/iron-location';
 import '@polymer/iron-location/iron-query-params';
 import '@polymer/paper-button/paper-button';
@@ -11,7 +11,8 @@ import LocalizeMixin from '../mixins/localize-mixin';
  * @polymer
  * @customElement
  */
-class FilterList extends LocalizeMixin(LitElement) {
+@customElement('filter-list')
+export class FilterList extends LocalizeMixin(LitElement) {
   render() {
     return html`
       <style include="iron-flex">
@@ -215,6 +216,5 @@ class FilterList extends LocalizeMixin(LitElement) {
     this._removeEventListeners();
   }
 }
-window.customElements.define('filter-list', FilterList);
 
 export {FilterList as FilterListEl};

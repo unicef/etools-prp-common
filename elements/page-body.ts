@@ -1,10 +1,12 @@
 import {LitElement, html} from 'lit';
+import { customElement } from 'lit/decorators';
 
 /**
  * @polymer
  * @customElement
  */
-class PageBody extends LitElement {
+@customElement('page-body')
+export class PageBody extends LitElement {
   render() {
     return html`
       <style>
@@ -18,4 +20,4 @@ class PageBody extends LitElement {
   }
 }
 
-window.customElements.define('page-body', PageBody);
+export{PageBody as PageBodyEl};

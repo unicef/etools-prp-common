@@ -66,7 +66,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
         ? html`
             <div class="container">
               <h4>${this.localize('enter_data_by_disaggregation')}</h4>
-              ${this.mapping.map(
+              ${(this.mapping || []).map(
                 (field) => html`
                   <paper-checkbox
                     id="${field.id}"

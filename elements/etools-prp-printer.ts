@@ -1,5 +1,5 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
 
 /**
@@ -8,7 +8,8 @@ import UtilsMixin from '../mixins/utils-mixin';
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
+@customElement('etools-prp-printer')
+export class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
   render() {
     return html` <slot></slot> `;
   }
@@ -62,4 +63,4 @@ class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
   }
 }
 
-window.customElements.define('etools-prp-printer', EtoolsPrpPrinter);
+export {EtoolsPrpPrinter as EtoolsPrpPrinterEl}

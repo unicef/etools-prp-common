@@ -1,5 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import '@unicef-polymer/etools-loading/etools-loading';
@@ -42,7 +42,8 @@ import {store} from '../../redux/store';
  * @appliesMixin UtilsMixin
  * @appliesMixin LocalizeMixin
  */
-class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElement))) {
+@customElement('indicator-details')
+export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElement))) {
   render() {
     if (!this.dataLoaded) {
       return;
@@ -801,6 +802,5 @@ class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElemen
     this._removeEventListeners();
   }
 }
-window.customElements.define('indicator-details', IndicatorDetails);
 
 export {IndicatorDetails as IndicatorDetailsEl};

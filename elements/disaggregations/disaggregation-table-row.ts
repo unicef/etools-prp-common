@@ -43,7 +43,7 @@ class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
           <span class="cellValue">${this._capitalizeFirstLetter(this.data.title)}</span>
         </td>
 
-        ${this.data.data.map(
+        ${(this.data?.data || []).map(
           (item) => html`
             <td>
               ${this.indicatorType === 'number'

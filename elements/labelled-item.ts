@@ -1,13 +1,14 @@
 
 import {LitElement, PropertyValues, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {sharedStyles} from '../styles/shared-styles';
 
 /**
  * @polymer
  * @customElement
  */
-class LabelledItem extends LitElement {
+@customElement('labelled-item')
+export class LabelledItem extends LitElement {
    render() {
     return html`
       ${sharedStyles}
@@ -73,4 +74,4 @@ class LabelledItem extends LitElement {
   }
 }
 
-window.customElements.define('labelled-item', LabelledItem);
+export {LabelledItem as LabelledItemEl};

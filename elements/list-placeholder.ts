@@ -1,9 +1,10 @@
 // @ts-nocheck
 import { LitElement, html } from 'lit';
-import {property} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import LocalizeMixin from '../mixins/localize-mixin';
 
-class ListPlaceholder extends LocalizeMixin(LitElement) {
+@customElement('list-placeholder')
+export class ListPlaceholder extends LocalizeMixin(LitElement) {
   render() {
     return html`
       <style>
@@ -56,4 +57,4 @@ class ListPlaceholder extends LocalizeMixin(LitElement) {
   }
 }
 
-window.customElements.define('list-placeholder', ListPlaceholder);
+export {ListPlaceholder as ListPlaceholderEl};
