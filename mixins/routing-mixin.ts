@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import {BASE_PATH} from '../config';
-import {property} from 'lit/decorators';
+import {property} from 'lit/decorators.js';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 

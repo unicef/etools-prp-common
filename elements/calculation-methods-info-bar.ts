@@ -7,7 +7,7 @@ import {CalculationMethodsDemoModalEl} from './calculation-methods-demo-modal';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {tableStyles} from '../styles/table-styles';
-import {customElement} from 'lit/decorators';
+import {customElement} from 'lit/decorators.js';
 
 /**
  * @polymer

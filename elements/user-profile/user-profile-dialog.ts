@@ -13,7 +13,7 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 import '../labelled-item';
 import {modalStyles} from '../../styles/modal-styles';
-import {customElement, property} from 'lit/decorators';
+import {customElement, property} from 'lit/decorators.js';
 import {LitElement, html} from 'lit';
 import {RootState} from '../../../typings/redux.types';
 /**

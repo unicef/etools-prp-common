@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import Settings from '../settings';
-declare const dayjs: any;
+import dayjs from 'dayjs';
 
 const pdListStatuses: any = {
   Signed: 'signed',

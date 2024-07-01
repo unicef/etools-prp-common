@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import Constants from '../constants';
-import {property} from 'lit/decorators';
+import {property} from 'lit/decorators.js';
 
 declare const numeral: any;
 

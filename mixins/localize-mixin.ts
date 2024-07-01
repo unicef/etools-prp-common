@@ -3,7 +3,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setL11NResources} from '../../redux/actions';
 import IntlMessageFormat from 'intl-messageformat';
 import {LitElement} from 'lit';
-import {property} from 'lit/decorators';
+import {property} from 'lit/decorators.js';
 import {store} from '../../redux/store';
 
 function LocalizeMixin<T extends Constructor<LitElement>>(baseClass: T) {

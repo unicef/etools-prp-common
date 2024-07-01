@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import Settings from '../settings';
-import {property} from 'lit/decorators';
+import {property} from 'lit/decorators.js';
 
 /**
  * @mixinFunction
