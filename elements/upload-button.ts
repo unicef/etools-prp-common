@@ -9,7 +9,7 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button';
-import '@unicef-polymer/etools-file/etools-file';
+import '@unicef-polymer/etools-unicef/src/etools-upload/etools-file';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
 import LocalizeMixin from '../mixins/localize-mixin';
