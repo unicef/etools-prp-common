@@ -1,6 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-declare const numeral: any;
+import numeral from 'numeral';
 
 /**
  * @polymer
@@ -92,10 +92,10 @@ export class NumeralJs extends LitElement {
   _format() {
     if (this.format) {
       // @ts-ignore _setOutput defined by polymer / 'output' prop is readonly
-      this._setOutput(numeral(this.number).format(this.format));
+      this.output = numeral(this.number).format(this.format);
     } else {
       // @ts-ignore _setOutput defined by polymer / 'output' prop is readonly
-      this._setOutput(this.number);
+      this.output = this.number;
     }
   }
 
@@ -106,7 +106,7 @@ export class NumeralJs extends LitElement {
 
   _unformatChanged() {
     // @ts-ignore _setOutput defined by polymer / 'output' prop is readonly
-    this._setOutput(numeral().unformat(this.unformat));
+    this.output = numeral().unformat(this.unformat);
   }
 
   _add() {

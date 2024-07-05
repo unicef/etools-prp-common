@@ -61,9 +61,9 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return localize(text).substring(0, text.length - 1);
     }
 
-    _withDefault(value: any, defaultValue: any = '...', localize?: (x: string) => string) {
-      if (pdListStatuses[value] !== undefined && localize) {
-        return localize(pdListStatuses[value]);
+    _withDefault(value: any, defaultValue: any = '...') {
+      if (pdListStatuses[value] !== undefined && this.localize) {
+        return this.localize(pdListStatuses[value]);
       }
 
       return value == null ? defaultValue : value;
