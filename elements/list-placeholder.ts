@@ -14,7 +14,7 @@ export class ListPlaceholder extends LocalizeMixin(LitElement) {
         }
       </style>
 
-      <div class="msg">${this.getMessageToDisplay(this.localize)}</div>
+      <div class="msg">${this.getMessageToDisplay()}</div>
     `;
   }
 
@@ -52,8 +52,8 @@ export class ListPlaceholder extends LocalizeMixin(LitElement) {
     return hidden ? 'true' : 'false';
   }
 
-  getMessageToDisplay(localize: any) {
-    return this.message ? this.message : localize('no_results_found');
+  getMessageToDisplay() {
+    return this.message ? this.message : this.localize('no_results_found');
   }
 }
 

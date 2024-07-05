@@ -35,7 +35,13 @@ export class FilterList extends LocalizeMixin(LitElement) {
 
       <iron-location .query="${this.query}"> </iron-location>
 
-      <iron-query-params .params-string="${this.query}" .params-object="${this.queryParams}"> </iron-query-params>
+      <iron-query-params
+        .paramsString="${this.query}"
+        .paramsObject="${this.queryParams}"
+        @params-string-changed=${(e) => (this.query = e.detail.value)}
+        @params-object-changed=${(e) => (this.queryParams = e.detail.value)}
+      >
+      </iron-query-params>
 
       <slot></slot>
 
