@@ -50,7 +50,7 @@ export class AppRedirect extends RoutingMixin(connect(store)(LitElement)) {
       // user has no workspaces
       location.href = '/unauthorized';
     }
-    if (app === undefined || workspace === undefined || !profile) {
+    if (!app || app === 'null' || !workspace || workspace === 'null' || !profile) {
       return;
     }
     // redirect to `unauthorized` only if we have a selected partner, otherwise let the option to select one
