@@ -19,7 +19,7 @@ function SortingMixin<T extends Constructor<LitElement>>( baseClass: T ) {
         e.stopPropagation();
         // @ts-ignore
         this.queryParams = newParams;
-      }, 100);
+      }, 100)();
     }
 
     connectedCallback() {

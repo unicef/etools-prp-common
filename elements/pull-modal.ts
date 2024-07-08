@@ -11,7 +11,6 @@ import '@unicef-polymer/etools-loading/etools-loading';
 
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/paper-styles/typography';
-import '@polymer/iron-location/iron-location';
 import '@polymer/paper-input/paper-input';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import ModalMixin from '../mixins/modal-mixin';

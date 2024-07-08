@@ -5,7 +5,6 @@ import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/paper-styles/typography';
-import '@polymer/iron-location/iron-location';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
