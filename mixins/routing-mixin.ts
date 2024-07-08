@@ -4,12 +4,16 @@ import {BASE_PATH} from '../config';
 import {property} from 'lit/decorators.js';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
+import {connect} from 'pwa-helpers';
+//import {connectStore} from '@unicef-polymer/etools-modules-common/dist/mixins/connect-store-mixin';
+
 
 /**
  * @mixinFunction
  */
 function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
-  class RoutingClass extends baseClass {
+  class RoutingClass extends connect(store)(baseClass) {
+
     @property({type: String})
     _currentWorkspace?: string;
 
@@ -28,33 +32,43 @@ function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
     private BEHAVIOR_NAME = 'RoutingBehavior';
 
     stateChanged(state: RootState) {
-      this._currentWorkspace = state.workspaces.current;
-      this._currentApp = state.app.current;
-      this._currentPlan = state.responsePlans.current;
+      if (state.workspaces?.current && state.workspaces.current !== this._currentWorkspace) {
+        this._currentWorkspace = state.workspaces?.current;
+      }
+      if (state.app?.current && state.app?.current !== this._currentApp) {
+        this._currentApp = state.app?.current;
+      }
+      if (state.responsePlans?.current && state.responsePlans?.current !== this._currentPlan) {
+        this._currentPlan = state.responsePlans?.current;
+      }
     }
 
     updated(changedProperties) {
       super.updated(changedProperties);
 
-      if (changedProperties.has('_currentWorkspace') || changedProperties.has('_currentApp')) {
-        this._baseUrl = this._computeBaseUrl(this._currentWorkspace, this._currentApp);
-      }
+      if (changedProperties.has('_currentWorkspace') || changedProperties.has('_currentApp')) {             
+          this._computeBaseUrl(this._currentWorkspace, this._currentApp);
+        }      
 
       if (
         changedProperties.has('_currentWorkspace') ||
         changedProperties.has('_currentApp') ||
         changedProperties.has('_currentPlan')
       ) {
-        this._baseUrlCluster = this._computeBaseUrlCluster(this._currentWorkspace, this._currentApp, this._currentPlan);
+        this._computeBaseUrlCluster(this._currentWorkspace, this._currentApp, this._currentPlan);
       }
     }
 
     _computeBaseUrl(workspace?: string, app?: string) {
-      return `/${BASE_PATH}/${workspace}/${app}`;
+      if (workspace && app) {        
+        this._baseUrl = `/${BASE_PATH}/${workspace}/${app}`;
+      }
     }
 
     _computeBaseUrlCluster(workspace?: string, app?: string, planId?: string) {
-      return `${this._computeBaseUrl(workspace, app)}/plan/${planId}`;
+      if (workspace && app && planId) {   
+        this._baseUrlCluster = `${this._computeBaseUrl(workspace, app)}/plan/${planId}`;
+      }
     }
 
     buildBaseUrl(workspace: string, item: string) {

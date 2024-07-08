@@ -1,6 +1,7 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import Settings from '../settings';
+import LocalizeMixin from '../../etools-prp-common/mixins/localize-mixin';
 import dayjs from 'dayjs';
 
 const pdListStatuses: any = {
@@ -36,7 +37,16 @@ const buildQuery = (chunks: any[]): string => {
  * @mixinFunction
  */
 function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
-  class UtilsClass extends baseClass {
+  class UtilsClass extends LocalizeMixin(baseClass) {
+
+    getReportName(type: string, index: number) {
+      const typeLocalized = this.localize(type.toLowerCase());
+      if (typeLocalized) {
+        return this.localize(type.toLowerCase()).split(' ')[0] + (index + 1);
+      }
+      return type;
+    }
+
     _equals(a: any, b: any) {
       return a === b;
     }

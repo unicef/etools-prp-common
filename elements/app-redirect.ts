@@ -20,6 +20,8 @@ export class AppRedirect extends RoutingMixin(connect(store)(LitElement)) {
   profile?;
 
   updated(changedProperties) {
+    super.updated(changedProperties);
+    
     if (
       changedProperties.has('app') ||
       changedProperties.has('workspaces') ||
