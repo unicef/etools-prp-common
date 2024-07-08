@@ -59,7 +59,7 @@ export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElemen
         <div class="header layout horizontal justified">
           <h2>Calculation method across ${this.domain}</h2>
 
-          <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
+          <paper-icon-button class="self-center" @click="close" icon="icons:close"> </paper-icon-button>
         </div>
 
         <br />

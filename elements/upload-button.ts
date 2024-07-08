@@ -50,7 +50,7 @@ export class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement
 
       <etools-prp-ajax id="upload" method="post" .url="${this.url}" body="${this.payload}"> </etools-prp-ajax>
 
-      <paper-button class="btn-primary" on-tap="_openModal">
+      <paper-button class="btn-primary" @click="_openModal">
         <iron-icon icon="icons:file-upload"></iron-icon>
         <slot></slot>
       </paper-button>
@@ -61,22 +61,29 @@ export class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement
             <slot>${this.modalTitle}</slot>
           </h2>
 
-          <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
+          <paper-icon-button class="self-center" @click="close" icon="icons:close"> </paper-icon-button>
         </div>
 
         <paper-dialog-scrollable>
-        ${this.opened ? 
-          html`<error-box errors="${this.errors}"></error-box>
-            <div class="row">
-              <etools-file files="${this.files}" label="Template file" ?disabled="${this.pending}" accept=".xlsx, .xls" required>
-              </etools-file>
-            </div>`: ``}
+          ${this.opened
+            ? html`<error-box errors="${this.errors}"></error-box>
+                <div class="row">
+                  <etools-file
+                    files="${this.files}"
+                    label="Template file"
+                    ?disabled="${this.pending}"
+                    accept=".xlsx, .xls"
+                    required
+                  >
+                  </etools-file>
+                </div>`
+            : ``}
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button on-tap="_save" class="btn-primary" raised> Save </paper-button>
+          <paper-button @click="_save" class="btn-primary" raised> Save </paper-button>
 
-          <paper-button on-tap="close"> Cancel </paper-button>
+          <paper-button @click="close"> Cancel </paper-button>
         </div>
 
         <etools-loading ?active="${this.pending}"></etools-loading>

@@ -6,13 +6,20 @@ import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-loading/etools-loading';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import LocalizeMixin from '../mixins/localize-mixin';
+import {RootState} from '../../typings/redux.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {connect} from 'pwa-helpers';
+import {store} from '../../redux/store';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {getCurrentPath} from '../utils/util';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @polymer
  * @customElement
  */
 @customElement('filter-list')
-export class FilterList extends LocalizeMixin(LitElement) {
+export class FilterList extends LocalizeMixin(connect(store)(LitElement)) {
   render() {
     return html`
       <style include="iron-flex">
@@ -33,22 +40,12 @@ export class FilterList extends LocalizeMixin(LitElement) {
         }
       </style>
 
-      <iron-location .query="${this.query}"> </iron-location>
-
-      <iron-query-params
-        .paramsString="${this.query}"
-        .paramsObject="${this.queryParams}"
-        @params-string-changed=${(e) => (this.query = e.detail.value)}
-        @params-object-changed=${(e) => (this.queryParams = e.detail.value)}
-      >
-      </iron-query-params>
-
       <slot></slot>
 
       ${this.hideClear
         ? ``
         : html`<div id="action">
-            <paper-button on-tap="${this._clearFilters}">${this.localize('clear')}</paper-button>
+            <paper-button @click="${this._clearFilters}">${this.localize('clear')}</paper-button>
           </div>`}
 
       <etools-loading ?active="${this.loading}"></etools-loading>
@@ -59,7 +56,7 @@ export class FilterList extends LocalizeMixin(LitElement) {
   queryParams!: any;
 
   @property({type: Array})
-  filters!: any[];
+  filters: any[] = [];
 
   @property({type: Object})
   filtersReady!: any;
@@ -68,13 +65,22 @@ export class FilterList extends LocalizeMixin(LitElement) {
   ignore = '';
 
   @property({type: Array})
-  ignoredFilters!: any[];
+  ignoredFilters: any[] = [];
 
   @property({type: Boolean})
   loading = false;
 
   @property({type: Boolean})
   hideClear = false;
+
+  stateChanged(state: RootState) {
+    if (
+      state.app?.routeDetails?.queryParams &&
+      !isJsonStrMatch(this.routeDetails, state.app.routeDetails.queryParams)
+    ) {
+      this.queryParams = state.app?.routeDetails.queryParams;
+    }
+  }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
@@ -84,6 +90,9 @@ export class FilterList extends LocalizeMixin(LitElement) {
     }
     if (changedProperties.has('filters') || changedProperties.has('filtersReady')) {
       this._updateLoading();
+    }
+    if (changedProperties.has('filters')) {
+      fireEvent(this, 'filters-changed', {value: this.filters});
     }
   }
 
@@ -111,8 +120,8 @@ export class FilterList extends LocalizeMixin(LitElement) {
       }
 
       this.queryParams = newParams;
-
       this._resetPageNumber();
+      EtoolsRouter.replaceAppLocation(getCurrentPath(), EtoolsRouter.encodeQueryParams(this.queryParams));
     });
   }
 
@@ -153,13 +162,13 @@ export class FilterList extends LocalizeMixin(LitElement) {
       return;
     }
 
-    this.filtersReady[name] = true;
+    this.filtersReady = {...this.filtersReady, [name]: true};
     this.requestUpdate();
   }
 
   _clearFilters() {
     const clearParams = Object.keys(this.queryParams).reduce((prev: any, curr) => {
-      if (this.filters.indexOf(curr) === -1) {
+      if (this.filters?.indexOf(curr) === -1) {
         prev[curr] = this.queryParams[curr];
       } else {
         prev[curr] = ''; // Can't set to undefined (does not trigger observers)
@@ -168,8 +177,8 @@ export class FilterList extends LocalizeMixin(LitElement) {
       return prev;
     }, {});
     this.queryParams = clearParams;
-    this.requestUpdate();
     this._resetPageNumber();
+    EtoolsRouter.replaceAppLocation(getCurrentPath(), EtoolsRouter.encodeQueryParams(this.queryParams));
   }
 
   _resetPageNumber() {

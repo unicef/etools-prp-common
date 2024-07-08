@@ -49,11 +49,11 @@ export class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
           <span>${this.localize('to_help_you_decide')}:</span>
         </div>
         <div>
-          <paper-button id="locations" on-tap="_openLocationsModal" class="btn-primary">
+          <paper-button id="locations" @click="_openLocationsModal" class="btn-primary">
             ${this.localize('across_locations')}
           </paper-button>
 
-          <paper-button id="periods" on-tap="_openPeriodsModal" class="btn-primary">
+          <paper-button id="periods" @click="_openPeriodsModal" class="btn-primary">
             ${this.localize('across_reporting_periods')}
           </paper-button>
         </div>

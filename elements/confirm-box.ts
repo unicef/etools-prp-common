@@ -63,9 +63,9 @@ export class ConfirmBox extends LitElement {
                 <p>${this.config.body}</p>
               </div>
               <div class="layout horizontal-reverse">
-                <paper-button class="btn-primary" on-tap="_ok"> ${this.config.okLabel} </paper-button>
+                <paper-button class="btn-primary" @click="_ok"> ${this.config.okLabel} </paper-button>
 
-                <paper-button on-tap="_cancel"> ${this.config.cancelLabel} </paper-button>
+                <paper-button @click="_cancel"> ${this.config.cancelLabel} </paper-button>
               </div>
             </div>
           </div>`
