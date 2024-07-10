@@ -77,9 +77,13 @@ export class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))
         }
       </style>
 
-      <etools-prp-permissions .permissions="${this.permissions}"> </etools-prp-permissions>
+      <etools-prp-permissions
+        .permissions="${this.permissions}"
+        @permissions-changed="${(e) => (this.permissions = e.detail.value)}"
+      >
+      </etools-prp-permissions>
 
-      <etools-prp-ajax id="reports" .url="${this.pullUrl}"> </etools-prp-ajax>
+      <etools-prp-ajax id="pullReports" .url="${this.pullUrl}"> </etools-prp-ajax>
 
       <etools-prp-ajax
         id="pull"
@@ -226,9 +230,9 @@ export class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))
   }
 
   open() {
-    (this.shadowRoot!.getElementById('reports') as EtoolsPrpAjaxEl).abort();
+    (this.shadowRoot!.getElementById('pullReports') as EtoolsPrpAjaxEl).abort();
 
-    const thunk = (this.shadowRoot!.getElementById('reports') as EtoolsPrpAjaxEl).thunk();
+    const thunk = (this.shadowRoot!.getElementById('pullReports') as EtoolsPrpAjaxEl).thunk();
     thunk()
       .then((res: any) => {
         this.data = {reports: res.data};

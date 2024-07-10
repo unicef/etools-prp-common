@@ -13,7 +13,7 @@ import {RootState} from '../../typings/redux.types';
  * @appliesMixin LocalizeMixin
  */
 @customElement('report-status')
-export class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
+export class ReportStatus extends LocalizeMixin(connect(store)(LitElement)) {
   render() {
     return html`
       <style>
@@ -79,7 +79,7 @@ export class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
       changedProperties.has('reportType') ||
       changedProperties.has('localize')
     ) {
-      this.label = this._computeLabel(this.status, this.final, this.app, this.reportType, this.localize);
+      this.label = this._computeLabel(this.status, this.final, this.app, this.reportType);
     }
   }
 
@@ -111,42 +111,42 @@ export class ReportStatus extends connect(store)(LocalizeMixin(LitElement)) {
     return 'no-status';
   }
 
-  _computeLabel(status: string, final: boolean, app: string, reportType: string, localize: any) {
+  _computeLabel(status: string, final: boolean, app: string, reportType: string) {
     switch (status) {
       case '1':
-        return localize('nothing_due');
+        return this.localize('nothing_due');
       case '2':
       case 'Ove':
-        return localize('overdue');
+        return this.localize('overdue');
       case '3':
       case 'Due':
-        return localize('due');
+        return this.localize('due');
       case 'Sub':
-        return localize('submitted');
+        return this.localize('submitted');
       case 'Rej':
-        return localize('rejected');
+        return this.localize('rejected');
       case 'Met':
-        return final ? localize('met_results') : localize('met');
+        return final ? this.localize('met_results') : this.localize('met');
       case 'OnT':
-        return localize('on_track');
+        return this.localize('on_track');
       case 'NoP':
-        return localize('no_progress');
+        return this.localize('no_progress');
       case 'Con':
-        return final ? localize('constrained_partially') : localize('constrained');
+        return final ? this.localize('constrained_partially') : this.localize('constrained');
       case 'Ong':
-        return localize('ongoing');
+        return this.localize('ongoing');
       case 'Pla':
-        return localize('planned');
+        return this.localize('planned');
       case 'Com':
-        return localize('completed');
+        return this.localize('completed');
       case 'NoS':
-        return localize('no_status');
+        return this.localize('no_status');
       case 'Sen':
-        return localize('sent_back');
+        return this.localize('sent_back');
       case 'Not':
-        return localize('not_yet_due');
+        return this.localize('not_yet_due');
       case 'Acc':
-        return app === 'ip-reporting' && reportType !== 'HR' ? localize('accepted') : localize('received');
+        return app === 'ip-reporting' && reportType !== 'HR' ? this.localize('accepted') : this.localize('received');
     }
   }
 }

@@ -34,11 +34,11 @@ class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
               <disaggregation-field
                 slot="editable"
                 key="v"
-                .value="${this.data.v}"
+                .value="${this.data?.v}"
                 .coords="${this.coords}"
               ></disaggregation-field>
             `
-          : html` <etools-prp-number slot="non-editable" .value="${this.data.v}"></etools-prp-number> `}
+          : html` <etools-prp-number slot="non-editable" .value="${this.data?.v}"></etools-prp-number> `}
       </disaggregation-table-cell>
     `;
   }

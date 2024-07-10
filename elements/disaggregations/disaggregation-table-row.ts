@@ -40,7 +40,7 @@ class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
       ${disaggregationTableStyles}
       <tr class="${this._computeClass(this.rowType)}">
         <td class="cellTitle">
-          <span class="cellValue">${this._capitalizeFirstLetter(this.data.title)}</span>
+          <span class="cellValue">${this._capitalizeFirstLetter(this.data?.title)}</span>
         </td>
 
         ${(this.data?.data || []).map(
@@ -76,14 +76,14 @@ class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
             </td>
           `
         )}
-        ${this.data.total
+        ${this.data?.total
           ? html`
               <td class="cellTotal">
                 ${this.indicatorType === 'number'
                   ? html`
                       <disaggregation-table-cell-number
-                        .coords="${this.data.total.key}"
-                        .data="${this.data.total.data}"
+                        .coords="${this.data?.total.key}"
+                        .data="${this.data?.total.data}"
                         .editable="${this.totalEditable}"
                       ></disaggregation-table-cell-number>
                     `
@@ -91,8 +91,8 @@ class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
                 ${this.indicatorType === 'percentage'
                   ? html`
                       <disaggregation-table-cell-percentage
-                        .coords="${this.data.total.key}"
-                        .data="${this.data.total.data}"
+                        .coords="${this.data?.total.key}"
+                        .data="${this.data?.total.data}"
                         .editable="${this.totalEditable}"
                       ></disaggregation-table-cell-percentage>
                     `
@@ -100,8 +100,8 @@ class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
                 ${this.indicatorType === 'ratio'
                   ? html`
                       <disaggregation-table-cell-ratio
-                        .coords="${this.data.total.key}"
-                        .data="${this.data.total.data}"
+                        .coords="${this.data?.total.key}"
+                        .data="${this.data?.total.data}"
                         .editable="${this.totalEditable}"
                       ></disaggregation-table-cell-ratio>
                     `
@@ -121,7 +121,7 @@ class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
     super.updated(changedProperties);
 
     if (changedProperties.has('data') || changedProperties.has('levelReported') || changedProperties.has('editable')) {
-      this._setTotalEditable(this.data.total.key, this.levelReported, this.editable);
+      this._setTotalEditable(this.data?.total.key, this.levelReported, this.editable);
     }
   }
 

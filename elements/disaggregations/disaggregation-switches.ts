@@ -22,7 +22,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
   @property({type: Array})
   reportedOn: number[] = [];
 
-  @property({type: Object, reflect: true})
+  @property({type: Object})
   formattedData!: any;
 
   @property({type: Object})
@@ -30,9 +30,6 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
 
   @property({type: Boolean})
   editableBool!: boolean;
-
-  @state()
-  fieldValueChanged: any = null;
 
   static styles = css`
     :host {
@@ -71,7 +68,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
                   <paper-checkbox
                     id="${field.id}"
                     .checked="${this._computeChecked(field.id)}"
-                    @change="${this._fieldValueChanged}"
+                    @change="${this.fieldValueChanged}"
                   >
                     ${this._formatFieldName(field.name)}
                   </paper-checkbox>
@@ -100,7 +97,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
       this._cloneData(this.data);
     }
     if (changedProperties.has('data') || changedProperties.has('reportedOn')) {
-      this._computeWarning(this.data.num_disaggregation, this.reportedOn.length);
+      this._computeWarning(this.data?.num_disaggregation, this.reportedOn?.length);
     }
   }
 
@@ -110,6 +107,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
 
   _cloneData(data: any) {
     this.formattedData = {...data};
+    fireEvent(this, 'formatted-data-changed', {value: this.formattedData});
   }
 
   _computeChecked(id: string) {
@@ -122,14 +120,12 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
     return this._capitalizeFirstLetter(name);
   }
 
-  _fieldValueChanged(e: Event) {
+  fieldValueChanged(e: Event) {
     const field = e.target as any;
-    this.fieldValueChanged = debounce(() => {
-      this._recordField(field);
-      this._confirmIntent(field)
-        .then(() => this._commit())
-        .catch(() => this._revert(field));
-    }, 200);
+    this._recordField(field);
+    this._confirmIntent(field)
+      .then(() => this._commit())
+      .catch(() => this._revert(field));
   }
 
   _confirmIntent(field: any) {
@@ -174,15 +170,12 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
   connectedCallback() {
     super.connectedCallback();
 
-    this.fieldValueChanged = debounce(this.fieldValueChanged.bind(this), 100);
+    this.fieldValueChanged = debounce(this.fieldValueChanged.bind(this), 200);
     this.reportedOn = [];
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    if (this.fieldValueChanged && this.fieldValueChanged.isActive()) {
-      this.fieldValueChanged.cancel();
-    }
   }
 }
 

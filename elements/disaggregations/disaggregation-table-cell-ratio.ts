@@ -66,7 +66,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
               id="v"
               key="v"
               min="0"
-              .value="${this.data.v}"
+              .value="${this.data?.v}"
               .coords="${this.coords}"
             ></disaggregation-field>
           </div>
@@ -75,7 +75,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
               id="d"
               key="d"
               min="0"
-              .value="${this.data.d}"
+              .value="${this.data?.d}"
               .coords="${this.coords}"
               .validator="${this.vName}"
             ></disaggregation-field>
@@ -87,14 +87,14 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
         </div>
         <div slot="non-editable" class="app-grid">
           <div class="item">
-            <etools-prp-number .value="${this.data.v}"></etools-prp-number>
+            <etools-prp-number .value="${this.data?.v}"></etools-prp-number>
           </div>
           <div class="item">
-            <etools-prp-number .value="${this.data.d}"></etools-prp-number>
+            <etools-prp-number .value="${this.data?.d}"></etools-prp-number>
           </div>
           <div class="computed-value">
-            <etools-prp-number .value="${this.data.v}"></etools-prp-number> /
-            <etools-prp-number .value="${this.data.d}"></etools-prp-number>
+            <etools-prp-number .value="${this.data?.v}"></etools-prp-number> /
+            <etools-prp-number .value="${this.data?.d}"></etools-prp-number>
           </div>
         </div>
       </disaggregation-table-cell>

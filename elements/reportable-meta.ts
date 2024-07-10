@@ -216,21 +216,21 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
     this.requestUpdate();
   }
 
-  _computeMetLabel(completed: boolean, localize: (x: string) => string) {
+  _computeMetLabel(completed: boolean, localize: any) {
     if (completed) {
       return localize('met_results');
     }
     return localize('met');
   }
 
-  _computeConstrainedLabel(completed: boolean, localize: (x: string) => string) {
+  _computeConstrainedLabel(completed: boolean, localize: any) {
     if (completed) {
       return localize('constrained_partially');
     }
     return localize('constrained');
   }
 
-  _localizeToggle(toggle: string, localize: (x: string) => string) {
+  _localizeToggle(toggle: string, localize: any) {
     return localize(toggle.toLowerCase());
   }
 

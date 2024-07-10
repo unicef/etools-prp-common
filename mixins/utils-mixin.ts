@@ -38,7 +38,6 @@ const buildQuery = (chunks: any[]): string => {
  */
 function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class UtilsClass extends LocalizeMixin(baseClass) {
-
     getReportName(type: string, index: number) {
       const typeLocalized = this.localize(type.toLowerCase());
       if (typeLocalized) {
@@ -55,7 +54,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.shadowRoot?.querySelectorAll(selector).forEach(fn);
     }
 
-    _toLowerCaseLocalized(text: string, localize: (text: string) => string) {
+    _toLowerCaseLocalized(text: string, localize: any) {
       const localizedText = localize(text);
       if (localizedText) {
         return localizedText.toLowerCase();
@@ -63,11 +62,11 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return text;
     }
 
-    _localizeLowerCased(text: string, localize: (x: string) => string) {
+    _localizeLowerCased(text: string, localize: any) {
       return text ? localize(text.split(' ').join('_').toLowerCase()) : '';
     }
 
-    _singularLocalized(text: string, localize: (x: string) => string) {
+    _singularLocalized(text: string, localize: any) {
       return localize(text).substring(0, text.length - 1);
     }
 

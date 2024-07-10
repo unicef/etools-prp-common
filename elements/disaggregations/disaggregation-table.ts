@@ -16,6 +16,8 @@ import './table-content/zero-disaggregations';
 import './disaggregation-switches';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import { store } from '../../../redux/store';
+import {RootState} from '../../../typings/redux.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 @customElement('disaggregation-table')
 class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(UtilsMixin(LitElement))) {
@@ -35,13 +37,13 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
   editable = 0;
 
   @property({type: String, state: true})
-  app!: string;
+  app?: string;
 
   @property({type: Object})
-  formattedData!: any;
+  formattedData: any = {};
 
   @property({type: Array})
-  formattedMapping!: any[];
+  formattedMapping: any[] = [];
 
   @property({type: Object})
   viewData!: any;
@@ -162,11 +164,11 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
         ${this.viewLabel
           ? html`<dl class="data-key">
               <dt>${this.localize('label')} -</dt>
-              ${this.data.display_type === 'number'
-                ? html`<dd>${this._withDefault(this.labels.label)}</dd>`
+              ${this.data?.display_type === 'number'
+                ? html`<dd>${this._withDefault(this.labels?.label)}</dd>`
                 : html`<dd>
-                    ${this._withDefault(this.labels.numerator_label)} /
-                    ${this._withDefault(this.labels.denominator_label)}
+                    ${this._withDefault(this.labels?.numerator_label)} /
+                    ${this._withDefault(this.labels?.denominator_label)}
                   </dd>`}
             </dl>`
           : ''}
@@ -176,28 +178,28 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
             ${this.dualReportingEnabled ? html`<h4>${this.localize('progress_against_cluster_target')}:</h4>` : ''}
 
             <table class="vertical layout">
-              ${this.formattedMapping.length === 0
+              ${this.formattedMapping?.length === 0
                 ? html`<zero-disaggregations
                     .data="${this.viewData}"
                     .mapping="${this.formattedMapping}"
                     .editable="${this.editable}"
                   ></zero-disaggregations>`
                 : ''}
-              ${this.formattedMapping.length === 1
+              ${this.formattedMapping?.length === 1
                 ? html`<one-disaggregation
                     .data="${this.viewData}"
                     .mapping="${this.formattedMapping}"
                     .editable="${this.editable}"
                   ></one-disaggregation>`
                 : ''}
-              ${this.formattedMapping.length === 2
+              ${this.formattedMapping?.length === 2
                 ? html`<two-disaggregations
                     .data="${this.viewData}"
                     .mapping="${this.formattedMapping}"
                     .editable="${this.editable}"
                   ></two-disaggregations>`
                 : ''}
-              ${this.formattedMapping.length === 3
+              ${this.formattedMapping?.length === 3
                 ? html`<three-disaggregations
                     .data="${this.viewData}"
                     .mapping="${this.formattedMapping}"
@@ -224,14 +226,55 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
     this._removeEventListeners();
   }
 
+  stateChanged(state: RootState): void {
+    if (this.app !== state.app.current) {
+      this.app = state.app.current;
+    }
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
     if (changedProperties.has('formattedData')) {
+      console.log('formattedData', this.formattedData);
+      this._cloneData(this.formattedData);
       this._resetFields();
     }
+
     if (changedProperties.has('localData') || changedProperties.has('reportingEntityPercentageMap')) {
       this._initPercentageMap(this.localData, this.reportingEntityPercentageMap);
+    }
+
+    if (
+      changedProperties.has('editableBool') ||
+      changedProperties.has('formattedData') ||
+      changedProperties.has('mapping')
+    ) {
+      this.formattedMapping = this._computeMapping(this.editableBool, this.formattedData, this.mapping);
+    }
+
+    if (changedProperties.has('formattedData') || changedProperties.has('totals')) {
+      this.viewData = this._computeViewData(this.formattedData, this.totals);
+    }
+
+    if (changedProperties.has('editable')) {
+      this.editableBool = this._computeEditableBool(this.editable);
+    }
+
+    if (changedProperties.has('data')) {
+      this.indicatorType = this._computeIndicatorType(this.data);
+    }
+
+    if (changedProperties.has('app') || changedProperties.has('indicatorType')) {
+      this.viewLabel = this._computeLabelVisibility(this.app, this.indicatorType);
+    }
+
+    if (changedProperties.has('byEntity') || changedProperties.has('editableBool')) {
+      this.dualReportingEnabled = this._computeDualReportingEnabled(this.byEntity, this.editableBool);
+    }
+
+    if (changedProperties.has('byEntity')) {
+      this.reportingEntityPercentageMap = this._computeReportingEntityPercentageMap(this.byEntity);
     }
   }
 
@@ -334,7 +377,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
     return editable === 1;
   }
 
-  _computeLabelVisibility(app: string, indicatorType: string) {
+  _computeLabelVisibility(app?: string, indicatorType?: string) {
     return !(String(app) === 'ip-reporting' && String(indicatorType) === 'number');
   }
 
@@ -366,6 +409,10 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
   }
 
   _triggerModalRefit(e: CustomEvent) {
+    if (e.detail.value && !isJsonStrMatch(this.formattedData, e.detail.value)) {
+      this.formattedData = e.detail.value;
+    }
+
     e.stopPropagation();
     if (!this.editableBool) {
       return;
@@ -375,7 +422,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
 
   _computeMapping(editableBool: boolean, formattedData: any, mapping: any[]) {
     if (!formattedData) {
-      return;
+      return [];
     }
 
     const reportedOn = formattedData.disaggregation_reported_on;
@@ -388,9 +435,12 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
   }
 
   _computeViewData(data: any, totals: any) {
+    console.log('_computeViewData', data, totals);
+
     if (!data) {
       return {};
     }
+
     return {
       ...data,
       disaggregation: {

@@ -6,6 +6,7 @@ import Constants from '../constants';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 export const createClusterEntitiesUsers = [Constants.PRP_ROLE.CLUSTER_IMO, Constants.PRP_ROLE.CLUSTER_SYSTEM_ADMIN];
 
@@ -255,6 +256,7 @@ export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement))
     }
     if (changedProperties.has('params')) {
       this.permissions = this._computePermissions(this.params);
+      fireEvent(this, 'permissions-changed', {value: this.permissions});
     }
   }
 
@@ -311,13 +313,7 @@ export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement))
       : [];
   }
 
-  _computeParams(
-    prpRoles: any[],
-    imoClusters: any[],
-    partner: any,
-    workspace: string,
-    responsePlan: any
-  ) {
+  _computeParams(prpRoles: any[], imoClusters: any[], partner: any, workspace: string, responsePlan: any) {
     return {
       prpRoles: prpRoles,
       imoClusters: imoClusters,

@@ -55,8 +55,8 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
           (row) => html`
             <disaggregation-table-row
               .data="${row}"
-              .levelReported="${this.data.level_reported}"
-              .indicatorType="${this.data.display_type}"
+              .levelReported="${this.data?.level_reported}"
+              .indicatorType="${this.data?.display_type}"
               row-type="middleRow"
               .editable="${this.editable}"
             ></disaggregation-table-row>
@@ -65,8 +65,8 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
 
         <disaggregation-table-row
           .data="${this.totalsForDisplay}"
-          .levelReported="${this.data.level_reported}"
-          .indicatorType="${this.data.display_type}"
+          .levelReported="${this.data?.level_reported}"
+          .indicatorType="${this.data?.display_type}"
           row-type="totalsRow"
         ></disaggregation-table-row>
       </table>
@@ -115,7 +115,7 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
       data: columnData,
       total: {
         key: '', // unused,
-        data: data.disaggregation['()']
+        data: data?.disaggregation?.['()']
       }
     };
   }

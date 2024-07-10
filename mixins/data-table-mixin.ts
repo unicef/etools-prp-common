@@ -1,6 +1,8 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import {property} from 'lit/decorators.js';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {store} from '../../redux/store';
 
 function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
@@ -18,6 +20,11 @@ function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
 
       this.queryParams = {...this.queryParams, ...change};
+
+      EtoolsRouter.updateAppLocation(
+        store.getState().app.routeDetails.path,
+        EtoolsRouter.encodeQueryParams(this.queryParams)
+      );
     }
 
     _colapseExpandedDetails() {
@@ -38,6 +45,11 @@ function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
       setTimeout(() => {
         this._pageNumberInitialized = true;
       });
+
+      EtoolsRouter.updateAppLocation(
+        store.getState().app.routeDetails.path,
+        EtoolsRouter.encodeQueryParams(this.queryParams)
+      );
     }
   }
 

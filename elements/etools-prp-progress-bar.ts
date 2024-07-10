@@ -14,13 +14,8 @@ import {progressBarStyles} from '../styles/progress-bar-styles';
 export class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
   render() {
     return html`
-      ${progressBarStyles}
-      <style>
-        .percentage {
-          vertical-align: middle;
-          line-height: 15px;
-        }
-      </style>
+     
+      helllo
       <paper-progress .value="${this.percentage}"></paper-progress>
       <span class="percentage">${this.percentage}%</span>
     `;
@@ -39,17 +34,19 @@ export class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
     super.updated(changedProperties);
 
     if (changedProperties.has('number')) {
-      this.percentage = this._computePercentage(this.number);
+      this.percentage = this._computePercentage();
     }
   }
 
-  _computePercentage(num: string) {
-    if (num === 'N/A') {
+  _computePercentage() {
+    if (this.number === 'N/A') {
       return 'N/A';
     }
 
     // round to two decimal places, more info here: https://stackoverflow.com/a/29494612
-    return this.displayType === 'percentage' ? Math.round(Number(num)) : Math.round(Number(num) * 100 * 1e2) / 1e2;
+    return this.displayType === 'percentage'
+      ? Math.round(Number(this.number))
+      : Math.round(Number(this.number) * 100 * 1e2) / 1e2;
   }
 }
 

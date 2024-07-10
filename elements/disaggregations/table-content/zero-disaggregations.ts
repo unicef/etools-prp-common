@@ -12,6 +12,9 @@ class ZeroDisaggregations extends LitElement {
   data!: any;
 
   @property({type: Object})
+  mapping!: any;
+
+  @property({type: Object})
   totalRow!: any;
 
   static styles = [
@@ -27,8 +30,8 @@ class ZeroDisaggregations extends LitElement {
       ${disaggregationTableStyles}
       <disaggregation-table-row
         .data="${this.totalRow}"
-        .levelReported="${this.data.level_reported}"
-        .indicatorType="${this.data.display_type}"
+        .levelReported="${this.data?.level_reported}"
+        .indicatorType="${this.data?.display_type}"
         row-type="totalsRow"
         .editable="${this.editable}"
       ></disaggregation-table-row>
@@ -37,17 +40,19 @@ class ZeroDisaggregations extends LitElement {
 
   updated(changedProperties) {
     super.updated(changedProperties);
-    if (changedProperties.has('data')) {
+    if (changedProperties.has('mapping') || changedProperties.has('data')) {
+      console.log('this.data', this.data);
       this.totalRow = this._determineTotalRow(this.data);
     }
   }
 
   _determineTotalRow(data: any) {
+    console.log('datadata', data);
     return {
       title: 'total',
       total: {
         key: '()',
-        data: data.disaggregation['()']
+        data: data?.disaggregation?.['()']
       }
     };
   }
