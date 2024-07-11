@@ -61,6 +61,7 @@ function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _computeBaseUrl(workspace?: string, app?: string) {
       if (workspace && app) {        
+        //@dci, baseUrl it's stored on redux now, use it from there, this mixin will be removed
         this._baseUrl = `/${BASE_PATH}/${workspace}/${app}`;
       }
     }
