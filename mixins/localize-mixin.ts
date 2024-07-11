@@ -3,7 +3,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setL11NResources} from '../../redux/actions';
 import IntlMessageFormat from 'intl-messageformat';
 import {LitElement} from 'lit';
-import {property, state} from 'lit/decorators.js';
+import {property} from 'lit/decorators.js';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 import {connect} from 'pwa-helpers';

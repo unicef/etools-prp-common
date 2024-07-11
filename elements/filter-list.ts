@@ -1,7 +1,7 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-button/paper-button';
-import '@unicef-polymer/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@polymer/iron-flex-layout/iron-flex-layout';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {RootState} from '../../typings/redux.types';

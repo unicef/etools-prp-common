@@ -6,7 +6,7 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-button/paper-button';
-import '@unicef-polymer/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import ModalMixin from '../../mixins/modal-mixin';
 import LocalizeMixin from '../../mixins/localize-mixin';
 import { buttonsStyles } from '../../styles/buttons-styles';

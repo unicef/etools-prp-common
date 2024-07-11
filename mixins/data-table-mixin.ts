@@ -6,20 +6,14 @@ import {store} from '../../redux/store';
 
 function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
-    @property({type: Object}) queryParams = {};
-    @property({type: Boolean}) _pageNumberInitialized = false;
+    @property({type: Object}) queryParams = {};   
     @property({type: Array}) openedDetails = [];
 
     _pageSizeChanged(e: CustomEvent) {
-      const change: any = {
-        page_size: e.detail.value
-      };
 
-      if (this._pageNumberInitialized) {
-        change.page = 1;
-      }
-
-      this.queryParams = {...this.queryParams, ...change};
+      this.paginator = {...this.paginator, page_size: e.detail.value};      
+      this.queryParams = {...this.queryParams, page_size: this.paginator.page_size};
+      this.requestUpdate();
 
       EtoolsRouter.updateAppLocation(
         store.getState().app.routeDetails.path,
@@ -40,12 +34,10 @@ function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
     _pageNumberChanged(e: CustomEvent) {
       this._colapseExpandedDetails();
 
-      this.queryParams = {...this.queryParams, page: e.detail.value};
-
-      setTimeout(() => {
-        this._pageNumberInitialized = true;
-      });
-
+      this.paginator = {...this.paginator, page: e.detail.value};
+      this.queryParams = {...this.queryParams, page: this.paginator.page};
+      this.requestUpdate();
+      
       EtoolsRouter.updateAppLocation(
         store.getState().app.routeDetails.path,
         EtoolsRouter.encodeQueryParams(this.queryParams)

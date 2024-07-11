@@ -9,3 +9,11 @@ export const waitForIronOverlayToClose = (timeout: number) => {
 export const getCurrentPath = () => {
   return store.getState()?.app?.routeDetails?.path;
 };
+
+
+export const buildUrl = (baseUrl: string, tail: string) => {
+  if (tail.length && tail[0] !== '/') {
+    tail = '/' + tail;
+  }
+  return baseUrl + tail;
+}
