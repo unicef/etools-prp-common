@@ -13,9 +13,7 @@ import {progressBarStyles} from '../styles/progress-bar-styles';
 @customElement('etools-prp-progress-bar')
 export class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
   render() {
-    return html`
-     
-      helllo
+    return html` ${progressBarStyles}         
       <paper-progress .value="${this.percentage}"></paper-progress>
       <span class="percentage">${this.percentage}%</span>
     `;
