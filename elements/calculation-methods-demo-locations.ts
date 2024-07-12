@@ -1,10 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/paper-styles/typography';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './etools-prp-number';
-import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
 
 /**
@@ -13,32 +10,16 @@ import {modalStyles} from '../styles/modal-styles';
  */
 @customElement('calculation-methods-demo-locations')
 export class CalculationMethodsDemoLocations extends LitElement {
+  static get styles() {
+    return [layoutStyles];
+  }
+
   render() {
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <style include="iron-flex-alignment iron-flex-reverse">
+      ${modalStyles}
+      <style>
         :host {
           display: block;
-
-          --app-grid-columns: 3;
-          --app-grid-gutter: 25px;
-          --app-grid-item-height: auto;
-
-          --paper-dialog: {
-            width: 750px;
-          }
-        }
-
-        .flex-2 {
-          @apply --layout-flex-2;
-        }
-
-        .app-grid {
-          padding: 0;
-          margin: 0;
-          /* ugly - until I found out how to remove right margin from app grid */
-          margin-right: -25px;
-          list-style: none;
         }
 
         li:last-of-type {
@@ -46,30 +27,29 @@ export class CalculationMethodsDemoLocations extends LitElement {
         }
 
         .content-box {
-          padding: 25px;
+          padding: 20px;
           background: var(--paper-grey-200);
         }
 
         .bold-text {
           font-weight: bold;
           font-size: 1.17em;
-        }
+        }       
       </style>
 
-      <ul class="app-grid">
+      <div class="row">
         ${(this.totals || []).map(
           (item: any) =>
-            html` <li>
-              <div class="content-box">
+            html`
+              <div class="col-12 content-box">
                 <div class="bold-text">Location ${item.id}</div>
-                <div class="layout horizontal justified">
+                <div class="layout-vertical">
                   <div>Reporting period</div>
                   <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
                 </div>
-              </div>
-            </li>`
+              </div>`
         )}
-      </ul>
+      </div>
     `;
   }
 

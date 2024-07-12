@@ -1,40 +1,25 @@
-import {LitElement, html} from 'lit';
+import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/paper-styles/typography';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './etools-prp-number';
-import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
 
 /**
  * @polymer
  * @customElement
  */
-@customElement('calculation-methods-demo-period')
+@customElement('calculation-methods-demo-periods')
 export class CalculationMethodsDemoPeriods extends LitElement {
+  static get styles() {
+    return [layoutStyles];
+  }
+
   render() {
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
+      ${modalStyles}
+      <style>
         :host {
           display: block;
-
-          --app-grid-columns: 2;
-          --app-grid-gutter: 25px;
-          --app-grid-item-height: auto;
-
-          --paper-dialog: {
-            width: 750px;
-          }
-        }
-
-        .app-grid {
-          padding: 0;
-          margin: 0;
-          /* ugly - until I found out how to remove right margin from app grid */
-          margin-right: -25px;
-          list-style: none;
         }
 
         li:last-of-type {
@@ -42,39 +27,51 @@ export class CalculationMethodsDemoPeriods extends LitElement {
         }
 
         .content-box {
-          padding: 25px;
+          padding: 20px;
           background: var(--paper-grey-200);
         }
 
         .bold-text {
           font-weight: bold;
           font-size: 1.17em;
+        }       
+        .space-bt {  
+          justify-content: space-between !important;
         }
       </style>
 
-      <ul class="app-grid">
-        <ul class="app-grid">
+        <div class="row">
           ${(this.totals || []).map(
             (item: any) =>
               html`
-                <li>
-                  <div class="content-box">
-                    <div class="bold-text">Reporting period ${item.id}</div>
-                    <div class="layout horizontal justified">
-                      <div>progress in reporting period</div>
-                      <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
-                    </div>
+                  <div class="col-6 content-box">
+                    ${item ? html`
+                      <div class="bold-text">Reporting period ${item.id}</div>
+                      <div class="layout-horizontal space-bt">
+                        <div>progress in reporting period</div>
+                        <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
+                      </div>`: html``
+                    }
                   </div>
-                </li>
               `
           )}
-        </ul>
-      </ul>
+        </div>
     `;
   }
 
   @property({type: Array})
   totals!: any[];
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('totals') && this.totals) {      
+      if(this.totals.length % 2 !== 0) {
+        this.totals.push(null);
+        this.requestUpdate();
+      }
+    }
+  }
 }
 
 

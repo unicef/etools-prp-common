@@ -1,10 +1,10 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@polymer/paper-button/paper-button';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/app-layout/app-grid/app-grid-style';
+import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
+import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import '@polymer/paper-styles/typography';
 import ModalMixin from '../mixins/modal-mixin';
 import UtilsMixin from '../mixins/utils-mixin';
@@ -22,19 +22,21 @@ import {modalStyles} from '../styles/modal-styles';
  */
 @customElement('calculation-methods-demo-modal')
 export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
+  static get styles() {
+    return [layoutStyles];
+  }
+
   render() {
     return html`
       ${buttonsStyles} ${modalStyles}
-      <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
+      <style >
         :host {
-          display: block;
-          --paper-dialog: {
-            width: 750px;
-          }
+          display: block;        
         }
 
         .content-box {
-          padding: 25px;
+          padding: 20px;
+          margin: 0 10px;
           background: var(--paper-grey-200);
         }
 
@@ -53,74 +55,77 @@ export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElemen
         .total-label {
           margin-right: 50px;
         }
+        .m-10 {
+          margin: 0 10px;
+        } 
+        calculation-methods-demo-locations,
+        calculation-methods-demo-periods {
+          margin: 0 25px;
+        }
+        .pl-12 { 
+          padding-inline-start: 12px;
+        }
       </style>
 
-      <paper-dialog id="calculation-methods-demo-modal-dialog" modal ?opened="${this.opened}">
-        <div class="header layout horizontal justified">
-          <h2>Calculation method across ${this.domain}</h2>
+      <etools-dialog
+        no-padding
+        keep-dialog-open
+        size="md"
+        dialog-title="Calculation method across ${this.domain}"
+      >
+        <div class="container-dialog">
+              <div class="content-box">
+                <labelled-item label="Sample indicator">
+                  <span class="bold-text">
+                    # of children aged 6-59 months affected by severe acute malnutrition who are admitted into treatment.
+                  </span>
+                </labelled-item>
 
-          <paper-icon-button class="self-center" @click="close" icon="icons:close"> </paper-icon-button>
-        </div>
+                <labelled-item label="Guidance on measurement (for each reporting period)">
+                  <span>
+                    Quality standard: requires agreed treatment protocol and duration (usually 2 mo); Measurement/reporting
+                    clarification: measures newly admitted cases for an ongoing service, therefore requires agreement to
+                    consistently report NEW admissions for an agreed reporting period (set dates) to avoid double counting.
+                  </span>
+                </labelled-item>
+              </div>
 
-        <br />
+              <br />
 
-        <paper-dialog-scrollable>
-          <div class="content-box">
-            <labelled-item label="Sample indicator">
-              <span class="bold-text">
-                # of children aged 6-59 months affected by severe acute malnutrition who are admitted into treatment.
-              </span>
-            </labelled-item>
+              <labelled-item
+                class="pl-12"
+                label="Choose calculation method to read description
+              and observe the impact on data presented below:"
+              >
+               <etools-radio-group @sl-change="${this._onRadioChange}" .value="${this.selectedType}">
+                  <sl-radio value="sum">SUM</sl-radio>
+                  <sl-radio value="max">MAX</sl-radio>
+                  <sl-radio value="avg">AVG</sl-radio>
+                </etools-radio-group>
+                <div>${this.description}</div>
+              </labelled-item>
 
-            <labelled-item label="Guidance on measurement (for each reporting period)">
-              <span>
-                Quality standard: requires agreed treatment protocol and duration (usually 2 mo); Measurement/reporting
-                clarification: measures newly admitted cases for an ongoing service, therefore requires agreement to
-                consistently report NEW admissions for an agreed reporting period (set dates) to avoid double counting.
-              </span>
-            </labelled-item>
+              <br />
+              ${this._equals(this.domain, 'locations')
+                ? html` <calculation-methods-demo-locations .totals="${this.locationTotals}">
+                  </calculation-methods-demo-locations>`
+                : ``}
+              ${this._equals(this.domain, 'reporting periods')
+                ? html`
+              <calculation-methods-demo-periods .totals="${this.locationTotals}">
+                </calculation-methods-demo-locations>`
+                : ``}
+
+              <div class="content-box right-align m-10">
+                  <div class="total-label bold-text">Total progress:</div>
+                  <div class="total-box bold-text">
+                    <etools-prp-number .value="${this.finalTotal}"></etools-prp-number>
+                  </div>
+              </div>
+
+              <br />           
           </div>
-
-          <br />
-
-          <labelled-item
-            label="Choose calculation method to read description
-          and observe the impact on data presented below:"
-          >
-            <paper-radio-group on-paper-radio-group-changed="_onRadioChange" selected=${this.selectedType}>
-              <paper-radio-button name="sum">SUM</paper-radio-button>
-              <paper-radio-button name="max">MAX</paper-radio-button>
-              <paper-radio-button name="avg">AVG</paper-radio-button>
-            </paper-radio-group>
-            <div>${this.description}</div>
-          </labelled-item>
-
-          <br />
-          ${this._equals(this.domain, 'locations')
-            ? html` <calculation-methods-demo-locations .totals=${this.locationTotals}>
-              </calculation-methods-demo-locations>`
-            : ``}
-          ${this._equals(this.domain, 'reporting periods')
-            ? html`
-          <calculation-methods-demo-periods .totals=${this.locationTotals}>
-            </calculation-methods-demo-locations>`
-            : ``}
-
-          <div class="content-box layout horizontal justified center-center">
-            <div class="flex-2"></div>
-            <div class="total-label bold-text">Total progress:</div>
-            <div class="total-box bold-text">
-              <etools-prp-number .value=${this.finalTotal}></etools-prp-number>
-            </div>
-          </div>
-
-          <br />
-        </paper-dialog-scrollable>
-
-        <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" dialog-dismiss raised> Close </paper-button>
-        </div>
-      </paper-dialog>
+      </etools-dialog>
     `;
   }
 
@@ -198,6 +203,13 @@ export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElemen
   @property({type: String})
   description!: string;
 
+  set dialogData(data: any) {   
+    const {domain, items}: any = data;
+
+    this.domain = domain;
+    this.items - items;
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -257,7 +269,7 @@ export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElemen
   }
 
   _onRadioChange(e: CustomEvent) {
-    this.selectedType = (e.target! as any).selected;
+    this.selectedType = (e.target! as any).value;
   }
 
   _totalSum(data: any[]) {

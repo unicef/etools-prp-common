@@ -1,11 +1,10 @@
 import {LitElement, html} from 'lit';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-button/paper-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import './calculation-methods-demo-modal';
-import {CalculationMethodsDemoModalEl} from './calculation-methods-demo-modal';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import LocalizeMixin from '../mixins/localize-mixin';
-import {buttonsStyles} from '../styles/buttons-styles';
 import {tableStyles} from '../styles/table-styles';
 import {customElement} from 'lit/decorators.js';
 
@@ -16,10 +15,14 @@ import {customElement} from 'lit/decorators.js';
  */
 @customElement('calculation-methods-info-bar')
 export class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
+  static get styles() {
+    return [layoutStyles];
+  }
+
   render() {
     return html`
-      ${buttonsStyles} ${tableStyles}
-      <style include="data-table-styles iron-flex iron-flex-alignment iron-flex-reverse">
+      ${tableStyles}
+      <style>
         :host {
           display: block;
           background: #fcfcfc;
@@ -27,50 +30,58 @@ export class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
           margin-bottom: 25px;
         }
 
-        iron-icon {
+        etools-icon {
           color: var(--paper-grey-600);
+          margin-right: 5px;
         }
 
         span {
           color: var(--paper-grey-600);
         }
-
-        iron-icon {
-          margin-right: 5px;
-        }
-
+        
         .buttons {
           margin: 1em 0;
         }
+        .space-bt {  
+          justify-content: space-between !important;
+        }
       </style>
-      <div class="layout horizontal justified center-aligned">
-        <div class="layout horizontal center-center">
-          <iron-icon icon="icons:info"></iron-icon>
+      <div class="layout-horizontal center-align space-bt">
+        <div class="layout-horizontal center-align">          
+           <etools-icon id="information-icon" name="info"></etools-icon>
           <span>${this.localize('to_help_you_decide')}:</span>
         </div>
         <div>
-          <paper-button id="locations" @click="_openLocationsModal" class="btn-primary">
+          <etools-button id="locations" variant="text" @click="${this._openLocationsModal}">
             ${this.localize('across_locations')}
-          </paper-button>
+          </etools-button>
 
-          <paper-button id="periods" @click="_openPeriodsModal" class="btn-primary">
+          <etools-button id="periods"  variant="text" @click="${this._openPeriodsModal}">
             ${this.localize('across_reporting_periods')}
-          </paper-button>
+          </etools-button>
         </div>
-      </div>
-      <calculation-methods-demo-modal id="locations-modal" domain="locations" items="3">
-      </calculation-methods-demo-modal>
-      <calculation-methods-demo-modal id="periods-modal" domain="reporting periods" items="2">
-      </calculation-methods-demo-modal>
+      </div>      
     `;
   }
 
   _openLocationsModal() {
-    (this.shadowRoot!.querySelector('#locations-modal') as CalculationMethodsDemoModalEl).open();
+    openDialog({
+      dialog: 'calculation-methods-demo-modal',
+      dialogData: {
+        domain: 'locations',
+        items: 3
+      }
+    });
   }
 
-  _openPeriodsModal() {
-    (this.shadowRoot!.querySelector('#periods-modal') as CalculationMethodsDemoModalEl).open();
+  _openPeriodsModal() {   
+    openDialog({
+      dialog: 'calculation-methods-demo-modal',
+      dialogData: {
+        domain: 'reporting periods',
+        items: 2
+      }
+    });
   }
 }
 
