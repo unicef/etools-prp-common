@@ -2,7 +2,7 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
-import '@polymer/iron-flex-layout/iron-flex-layout';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import LocalizeMixin from '../mixins/localize-mixin';
 import {RootState} from '../../typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
@@ -18,18 +18,19 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
  */
 @customElement('filter-list')
 export class FilterList extends LocalizeMixin(connect(store)(LitElement)) {
+  static get styles() { 
+    return [layoutStyles];
+  }
+
   render() {
     return html`
-      <style include="iron-flex">
+      <style>
         :host {
           background-color: #f9f9f9;
           display: block;
           position: relative;
-        }
-
-        div#action {
-          @apply --layout-horizontal;
-          @apply --layout-end-justified;
+          padding-inline-start: 15px;
+          padding-inline-end: 15px;
         }
 
         paper-button {
@@ -42,7 +43,7 @@ export class FilterList extends LocalizeMixin(connect(store)(LitElement)) {
 
       ${this.hideClear
         ? ``
-        : html`<div id="action">
+        : html`<div id="action" class="right-align">
             <paper-button @click="${this._clearFilters}">${this.localize('clear')}</paper-button>
           </div>`}
 

@@ -4,7 +4,7 @@ import {connect} from 'pwa-helpers';
 import '@polymer/paper-styles/typography';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 import LocalizeMixin from '../mixins/localize-mixin';
 import RoutingMixin from '../mixins/routing-mixin';
@@ -21,13 +21,16 @@ import {RootState} from '../../typings/redux.types';
  */
 @customElement('page-header')
 export class PageHeader extends LocalizeMixin(RoutingMixin(connect(store)(LitElement))) {
+  static get styles() { 
+    return [layoutStyles]
+  }
+
   render() {
     return html`
       ${sharedStyles}
-      <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      <style>
         :host {
           --header-gutter: 25px;
-
           display: block;
           padding: var(--header-gutter);
 
@@ -43,8 +46,10 @@ export class PageHeader extends LocalizeMixin(RoutingMixin(connect(store)(LitEle
           position: relative;
         }
         .title h1 {
-          @apply --paper-font-title;
-          @apply --truncate;
+          font-size: 20px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-wrap: ellipsis;
           max-width: 100%;
           margin: 0;
         }
@@ -63,12 +68,12 @@ export class PageHeader extends LocalizeMixin(RoutingMixin(connect(store)(LitEle
         }
       </style>
 
-      <div class="layout horizontal baseline">
+      <div class="layout-horizontal align-items-center">
         <div class="title flex">
           <div class="above-title">
             <slot name="above-title"></slot>
           </div>
-          <div class="layout horizontal center">
+          <div class="layout-horizontal align-items-center">
             ${this.back
               ? html`<a href="${this.backUrl}" class="back-button">
                   <paper-icon-button icon="chevron-left"></paper-icon-button>

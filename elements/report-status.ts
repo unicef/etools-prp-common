@@ -27,6 +27,7 @@ export class ReportStatus extends LocalizeMixin(connect(store)(LitElement)) {
           vertical-align: middle;
           position: relative;
           top: -3px;
+          padding-inline-end: 6px;
         }
         status-badge {
           width: 16px;
