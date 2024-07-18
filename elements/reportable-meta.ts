@@ -89,12 +89,12 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
                 .value="${this.data.overall_status}"
                 @sl-change="${this._handleInput}"
               >
-                <sl-radio value="Met">${this._computeMetLabel(this.completed, this.localize)}</sl-radio>
+                <sl-radio value="Met">${this._computeMetLabel(this.completed)}</sl-radio>
                 ${this.completed
                   ? ``
                   : html`<sl-radio value="OnT">${this.localize('on_track')}</sl-radio>
                       <sl-radio value="NoP">${this.localize('no_progress')}</sl-radio>`}
-                <sl-radio value="Con">${this._computeConstrainedLabel(this.completed, this.localize)}</sl-radio>
+                <sl-radio value="Con">${this._computeConstrainedLabel(this.completed)}</sl-radio>
                 ${this.allowNoStatus ? html`<sl-radio value="NoS">${this.localize('no_status')}</sl-radio>` : ``}
               </etools-radio-group>
             `}
@@ -136,7 +136,7 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
   data!: any;
 
   @property({type: Object})
-  localData!: any;
+  localData: any = {};
 
   @property({type: Boolean, reflect: true})
   allowNoStatus = false;
@@ -160,7 +160,7 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
     super.updated(changedProperties);
 
     if (changedProperties.has('toggle') || changedProperties.has('localize')) {
-      this.localizedToggle = this._localizeToggle(this.toggle, this.localize);
+      this.localizedToggle = this._localizeToggle(this.toggle);
     }
     if (changedProperties.has('data')) {
       this.refreshData = this._computeRefreshData(this.data?.id);
@@ -216,26 +216,26 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
     this.requestUpdate();
   }
 
-  _computeMetLabel(completed: boolean, localize: any) {
+  _computeMetLabel(completed: boolean) {
     if (completed) {
-      return localize('met_results');
+      return this.localize('met_results');
     }
-    return localize('met');
+    return this.localize('met');
   }
 
-  _computeConstrainedLabel(completed: boolean, localize: any) {
+  _computeConstrainedLabel(completed: boolean) {
     if (completed) {
-      return localize('constrained_partially');
+      return this.localize('constrained_partially');
     }
-    return localize('constrained');
+    return this.localize('constrained');
   }
 
-  _localizeToggle(toggle: string, localize: any) {
-    return localize(toggle.toLowerCase());
+  _localizeToggle(toggle: string) {
+    return this.localize(toggle.toLowerCase());
   }
 
   _localDataChanged(change: any) {
-    if (change.path.split('.').length < 2) {
+    if (change.path?.split('.').length < 2) {
       return;
     }
 
@@ -256,8 +256,6 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
 
   connectedCallback() {
     super.connectedCallback();
-
-    this.localData = {};
   }
 
   disconnectedCallback() {

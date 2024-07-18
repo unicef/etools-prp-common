@@ -58,8 +58,8 @@ export class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(Mo
         </div>
         <paper-dialog-scrollable>
           <h3>
-            ${this._equals(this.data.report_type, 'PR') ? html`${this.localize('you_are_about_to_delete')}` : ``}
-            ${this._equals(this.data.report_type, 'IR') ? html`${this.localize('you_are_about_to_location')}` : ``}
+            ${this._equals(this.data?.report_type, 'PR') ? html`${this.localize('you_are_about_to_delete')}` : ``}
+            ${this._equals(this.data?.report_type, 'IR') ? html`${this.localize('you_are_about_to_location')}` : ``}
           </h3>
         </paper-dialog-scrollable>
 
@@ -77,7 +77,7 @@ export class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(Mo
   }
 
   @property({type: Object})
-  data!: any;
+  data: any = {};
 
   @property({type: Boolean})
   busy = false;
