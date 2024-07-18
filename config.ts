@@ -1,3 +1,5 @@
+export const SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY = 'etoolsAppSmallMenuIsActive';
+
 function getBasePath() {
   return document.getElementsByTagName('base')[0].href;
 }

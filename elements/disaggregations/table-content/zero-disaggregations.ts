@@ -41,13 +41,11 @@ class ZeroDisaggregations extends LitElement {
   updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has('mapping') || changedProperties.has('data')) {
-      console.log('this.data', this.data);
       this.totalRow = this._determineTotalRow(this.data);
     }
   }
 
   _determineTotalRow(data: any) {
-    console.log('datadata', data);
     return {
       title: 'total',
       total: {

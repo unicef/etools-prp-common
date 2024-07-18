@@ -236,7 +236,6 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
     super.updated(changedProperties);
 
     if (changedProperties.has('formattedData')) {
-      console.log('formattedData', this.formattedData);
       this._cloneData(this.formattedData);
       this._resetFields();
     }
@@ -435,8 +434,6 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
   }
 
   _computeViewData(data: any, totals: any) {
-    console.log('_computeViewData', data, totals);
-
     if (!data) {
       return {};
     }
