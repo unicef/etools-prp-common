@@ -1,3 +1,12 @@
+const LANGUAGES = [
+  {value: 'en', display_name: 'English'},
+  {value: 'ar', display_name: 'Arabic'},
+  {value: 'pt', display_name: 'Portuguese'},
+  {value: 'fr', display_name: 'French'},
+  {value: 'es', display_name: 'Spanish'},
+  {value: 'ru', display_name: 'Russian'}
+];
+
 const PRP_ROLE = {
   ALL: 'ALL',
   IP_AUTHORIZED_OFFICER: 'IP_AUTHORIZED_OFFICER',
@@ -184,6 +193,8 @@ const Constants = {
   SET_CURRENCIES: 'SET_CURRENCIES',
 
   PRP_ROLE: PRP_ROLE,
+
+  LANGUAGES: LANGUAGES,
 
   PARTNER_ROLES: [PRP_ROLE.CLUSTER_VIEWER, PRP_ROLE.CLUSTER_COORDINATOR, PRP_ROLE.CLUSTER_MEMBER],
 

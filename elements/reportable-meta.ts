@@ -9,7 +9,7 @@ import {RefreshReportModalEl} from './refresh-report-modal';
 import './refresh-report-modal';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../mixins/utils-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
@@ -20,10 +20,9 @@ import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools
  * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
  */
 @customElement('reportable-meta')
-export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
+export class ReportableMeta extends UtilsMixin(LitElement) {
   render() {
     return html`
       ${buttonsStyles}
@@ -76,11 +75,11 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
 
       ${this.canRefresh
         ? html`<etools-button id="refresh-button" variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
-            ${this.localize('refresh')}
+            ${translate('REFRESH')}
           </etools-button>`
         : ``}
 
-      <labelled-item .label="${this.localize('overall_status')}">
+      <labelled-item .label="${translate('OVERALL_STATUS')}">
         ${this._equals(this.mode, 'view')
           ? html`<report-status .final="${this.completed}" .status="${this.data.overall_status}"></report-status>`
           : html`
@@ -92,15 +91,15 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
                 <sl-radio value="Met">${this._computeMetLabel(this.completed)}</sl-radio>
                 ${this.completed
                   ? ``
-                  : html`<sl-radio value="OnT">${this.localize('on_track')}</sl-radio>
-                      <sl-radio value="NoP">${this.localize('no_progress')}</sl-radio>`}
+                  : html`<sl-radio value="OnT">${translate('ON_TRACK')}</sl-radio>
+                      <sl-radio value="NoP">${translate('NO_PROGRESS')}</sl-radio>`}
                 <sl-radio value="Con">${this._computeConstrainedLabel(this.completed)}</sl-radio>
-                ${this.allowNoStatus ? html`<sl-radio value="NoS">${this.localize('no_status')}</sl-radio>` : ``}
+                ${this.allowNoStatus ? html`<sl-radio value="NoS">${translate('NO_STATUS')}</sl-radio>` : ``}
               </etools-radio-group>
             `}
       </labelled-item>
 
-      <labelled-item id="labelled-narrative" .label="${this.localize('narrative_assessment')}">
+      <labelled-item id="labelled-narrative" .label="${translate('NARRATIVE_ASSESSMENT')}">
         ${this._equals(this.mode, 'view')
           ? html`${this.data.narrative_assessment}`
           : html`
@@ -159,7 +158,7 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('toggle') || changedProperties.has('localize')) {
+    if (changedProperties.has('toggle')) {
       this.localizedToggle = this._localizeToggle(this.toggle);
     }
     if (changedProperties.has('data')) {
@@ -218,20 +217,20 @@ export class ReportableMeta extends LocalizeMixin(UtilsMixin(LitElement)) {
 
   _computeMetLabel(completed: boolean) {
     if (completed) {
-      return this.localize('met_results');
+      return translate('MET_RESULTS');
     }
-    return this.localize('met');
+    return translate('MET');
   }
 
   _computeConstrainedLabel(completed: boolean) {
     if (completed) {
-      return this.localize('constrained_partially');
+      return translate('CONSTRAINED_PARTIALLY');
     }
-    return this.localize('constrained');
+    return translate('CONSTRAINED');
   }
 
   _localizeToggle(toggle: string) {
-    return this.localize(toggle.toLowerCase());
+    return translate(toggle.toLowerCase()) as any as string;
   }
 
   _localDataChanged(change: any) {

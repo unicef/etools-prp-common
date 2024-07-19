@@ -2,7 +2,7 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {get as getTranslation} from 'lit-translate';
 import {buttonsStyles} from '../styles/buttons-styles';
 
 /**
@@ -10,10 +10,9 @@ import {buttonsStyles} from '../styles/buttons-styles';
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
  */
 @customElement('error-modal')
-export class ErrorModal extends LocalizeMixin(UtilsMixin(LitElement)) {
+export class ErrorModal extends UtilsMixin(LitElement) {
   render() {
     return html`
       ${buttonsStyles}
@@ -55,8 +54,8 @@ export class ErrorModal extends LocalizeMixin(UtilsMixin(LitElement)) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('errors') || changedProperties.has('localize')) {
-      this.localizedErrors = this._localizeErrors(this.errors, this.localize);
+    if (changedProperties.has('errors')) {
+      this.localizedErrors = this._localizeErrors(this.errors);
     }
   }
 
@@ -77,7 +76,7 @@ export class ErrorModal extends LocalizeMixin(UtilsMixin(LitElement)) {
     return this._result;
   }
 
-  _localizeErrors(errors: string[], localize: any) {
+  _localizeErrors(errors: string[]) {
     if (!errors || errors.length === 0) {
       return [];
     }
@@ -85,16 +84,16 @@ export class ErrorModal extends LocalizeMixin(UtilsMixin(LitElement)) {
     const localizedErrors = errors.map(function (error) {
       switch (error) {
         case 'You have not selected overall status for one of Outputs':
-          return localize('not_selected_overall_status');
+          return getTranslation('not_selected_overall_status');
         case 'You have not completed Partner Contribution To Date field on Other Info tab.':
-          return localize('not_completed_partner_contribution');
+          return getTranslation('not_completed_partner_contribution');
         case 'You have not completed Challenges / bottlenecks in the reporting period field on Other Info tab.':
-          return localize('not_completed_challenges_bottlenecks');
+          return getTranslation('not_completed_challenges_bottlenecks');
         case 'You have not completed Proposed way forward field on Other Info tab.':
-          return localize('not_completed_proposed_way');
+          return getTranslation('not_completed_proposed_way');
         case 'You have not completed all indicator location data across all indicator reports for this progress' +
           ' report.':
-          return localize('not_completed_indicator_location');
+          return getTranslation('not_completed_indicator_location');
         default:
           return error;
       }

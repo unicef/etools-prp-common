@@ -1,14 +1,14 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
-import LocalizeMixin from '../../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import './disaggregation-table-cell-number';
 import './disaggregation-table-cell-percentage';
 import './disaggregation-table-cell-ratio';
 
 @customElement('disaggregation-table-row')
-class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(LitElement)) {
+class DisaggregationTableRow extends UtilsMixin(LitElement) {
   @property({type: Object})
   data!: any;
 

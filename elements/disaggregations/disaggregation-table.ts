@@ -1,12 +1,12 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
-import LocalizeMixin from '../../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixin';
-import { disaggregationTableStyles } from '../../styles/disaggregation-table-styles';
+import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import Endpoints from '../../endpoints';
-import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import { disaggregationsUpdateForLocation } from '../../../redux/actions/disaggregations';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {disaggregationsUpdateForLocation} from '../../../redux/actions/disaggregations';
 import {EtoolsPrpAjaxEl} from '../etools-prp-ajax';
 import '../etools-prp-ajax';
 import './table-content/three-disaggregations';
@@ -15,12 +15,12 @@ import './table-content/one-disaggregation';
 import './table-content/zero-disaggregations';
 import './disaggregation-switches';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
-import { store } from '../../../redux/store';
+import {store} from '../../../redux/store';
 import {RootState} from '../../../typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 @customElement('disaggregation-table')
-class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(UtilsMixin(LitElement))) {
+class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitElement)) {
   @property({type: Object})
   data!: any;
 
@@ -163,7 +163,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
 
         ${this.viewLabel
           ? html`<dl class="data-key">
-              <dt>${this.localize('label')} -</dt>
+              <dt>${translate('LABEL')} -</dt>
               ${this.data?.display_type === 'number'
                 ? html`<dd>${this._withDefault(this.labels?.label)}</dd>`
                 : html`<dd>
@@ -175,7 +175,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(LocalizeMixin(Utils
 
         <div class="layout horizontal justified">
           <div class="flex">
-            ${this.dualReportingEnabled ? html`<h4>${this.localize('progress_against_cluster_target')}:</h4>` : ''}
+            ${this.dualReportingEnabled ? html`<h4>${translate('PROGRESS_AGAINST_CLUSTER_TARGET')}:</h4>` : ''}
 
             <table class="vertical layout">
               ${this.formattedMapping?.length === 0

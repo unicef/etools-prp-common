@@ -4,17 +4,16 @@ import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import './calculation-methods-demo-modal';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {tableStyles} from '../styles/table-styles';
 import {customElement} from 'lit/decorators.js';
 
 /**
  * @polymer
  * @customElement
- * @appliesMixin LocalizeMixin
  */
 @customElement('calculation-methods-info-bar')
-export class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
+export class CalculationMethodsInfoBar extends LitElement {
   static get styles() {
     return [layoutStyles];
   }
@@ -38,29 +37,29 @@ export class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
         span {
           color: var(--paper-grey-600);
         }
-        
+
         .buttons {
           margin: 1em 0;
         }
-        .space-bt {  
+        .space-bt {
           justify-content: space-between !important;
         }
       </style>
       <div class="layout-horizontal center-align space-bt">
-        <div class="layout-horizontal center-align">          
-           <etools-icon id="information-icon" name="info"></etools-icon>
-          <span>${this.localize('to_help_you_decide')}:</span>
+        <div class="layout-horizontal center-align">
+          <etools-icon id="information-icon" name="info"></etools-icon>
+          <span>${translate('TO_HELP_YOU_DECIDE')}:</span>
         </div>
         <div>
           <etools-button id="locations" variant="text" @click="${this._openLocationsModal}">
-            ${this.localize('across_locations')}
+            ${translate('ACROSS_LOCATIONS')}
           </etools-button>
 
-          <etools-button id="periods"  variant="text" @click="${this._openPeriodsModal}">
-            ${this.localize('across_reporting_periods')}
+          <etools-button id="periods" variant="text" @click="${this._openPeriodsModal}">
+            ${translate('ACROSS_REPORTING_PERIODS')}
           </etools-button>
         </div>
-      </div>      
+      </div>
     `;
   }
 
@@ -74,7 +73,7 @@ export class CalculationMethodsInfoBar extends LocalizeMixin(LitElement) {
     });
   }
 
-  _openPeriodsModal() {   
+  _openPeriodsModal() {
     openDialog({
       dialog: 'calculation-methods-demo-modal',
       dialogData: {

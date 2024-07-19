@@ -26,7 +26,7 @@ import '../elements/report-status';
 import './pull-modal';
 import {PullModalEl} from './pull-modal';
 import UtilsMixin from '../mixins/utils-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
@@ -40,10 +40,9 @@ import {store} from '../../redux/store';
  * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
  */
 @customElement('indicator-details')
-export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(LitElement))) {
+export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
   render() {
     if (!this.dataLoaded) {
       return;
@@ -222,7 +221,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
               ${this.showPullDataFromHR(this.isHfIndicator, this.mode)
                 ? html`
                     <div class="tab-header layout horizontal justified">
-                      <div class="self-center">${this.localize('for_this_indicator')}</div>
+                      <div class="self-center">${translate('FOR_THIS_INDICATOR')}</div>
                       <div>
                         <etools-button
                           variant="primary"
@@ -230,7 +229,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                           @click="${this._openPullModal}"
                           ?disabled="${this.disablePull}"
                         >
-                          ${this.localize('pull_data')}
+                          ${translate('PULL_DATA')}
                         </etools-button>
                       </div>
                     </div>
@@ -243,7 +242,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                 <div id="tabs-list-container">
                   <div class="tabs-header-container">
                     <div class="header">
-                      <h3 class="locations-heading">${this.localize('data_for_locations')}</h3>
+                      <h3 class="locations-heading">${translate('DATA_FOR_LOCATIONS')}</h3>
 
                       <etools-icon-button class="print-btn" name="icons:print"> </etools-icon-button>
                     </div>
@@ -253,7 +252,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                         ? html`
                             <dl class="printme" style="margin: 0;">
                               <dt style="display: inline;">
-                                ${this._singularLocalized('programme_documents', this.localize)}:
+                                ${this._singularLocalized('programme_documents')}:
                               </dt>
                               <dd style="display: inline; margin: 0;">${this.currentPd.title}</dd>
                             </dl>
@@ -262,16 +261,14 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                       ${this.indicatorName
                         ? html`
                             <dl class="printme" style="margin: 0;">
-                              <dt style="display: inline;">${this.localize('indicator')}:</dt>
+                              <dt style="display: inline;">${translate('INDICATOR')}:</dt>
                               <dd style="display: inline; margin: 0;">${this.indicatorName}</dd>
                             </dl>
                           `
                         : ``}
                       ${this.indicatorStatus
                         ? html`
-                            <span class="printme" style="margin-right: .5em;"
-                              >${this.localize('indicator_status')}:</span
-                            >
+                            <span class="printme" style="margin-right: .5em;">${translate('INDICATOR_STATUS')}:</span>
                             <report-status
                               class="printme"
                               .status="${this.indicatorStatus}"
@@ -306,7 +303,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                           ${this._canEnterData(this.computedMode, topLevelLocation.byEntity[0].is_locked)
                             ? html`
                                 <div class="tab-header layout horizontal justified">
-                                  <div class="self-center">${this.localize('enter_data_location')}</div>
+                                  <div class="self-center">${translate('ENTER_DATA_LOCATION')}</div>
                                   <div>
                                     <paper-button
                                       class="btn-primary"
@@ -314,7 +311,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                                       @click="${this._openModal}"
                                       raised
                                     >
-                                      ${this.localize('enter_data')}
+                                      ${translate('ENTER_DATA')}
                                     </paper-button>
                                   </div>
                                 </div>
@@ -331,8 +328,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                                 (location: any) =>
                                   html`<paper-tab
                                     >${this._localizeLowerCased(
-                                      location.reporting_entity.title,
-                                      this.localize
+                                      location.reporting_entity.title
                                     )}</paper-tab
                                   >`
                               )}
@@ -348,7 +344,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                                   <div class="item">
                                     <div hidden aria-hidden="true">
                                       <dl class="printme">
-                                        <dt style="display: inline;">${this.localize('location')}:</dt>
+                                        <dt style="display: inline;">${translate('LOCATION')}:</dt>
                                         <dd style="display: inline; margin: 0;">
                                           ${location.location.name} - ${location.reporting_entity.title}
                                         </dd>
@@ -358,10 +354,9 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                                     <dl>
                                       ${this._equals(location.display_type, 'number')
                                         ? html` <dt>
-                                              ${this.localize('location_progress_against')}
+                                              ${translate('LOCATION_PROGRESS_AGAINST')}
                                               ${this._localizeLowerCased(
-                                                location.reporting_entity.title,
-                                                this.localize
+                                                location.reporting_entity.title
                                               )}:
                                             </dt>
                                             <dd>
@@ -369,21 +364,21 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                                                 .value="${location.location_progress.v}"
                                               ></etools-prp-number>
                                             </dd>
-                                            <dt>${this.localize('previous_location_progress')}:</dt>
+                                            <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
                                               <etools-prp-number
                                                 .value="${location.previous_location_progress.v}"
                                               ></etools-prp-number>
                                             </dd>`
                                         : html`
-                                            <dt>${this.localize('location_progress')}:</dt>
+                                            <dt>${translate('LOCATION_PROGRESS')}:</dt>
                                             <dd>
                                               ${this._formatIndicatorValue(
                                                 location.display_type,
                                                 location.location_progress.c
                                               )}
                                             </dd>
-                                            <dt>${this.localize('previous_location_progress')}:</dt>
+                                            <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
                                               ${this._formatIndicatorValue(
                                                 location.display_type,
@@ -427,7 +422,7 @@ export class IndicatorDetails extends connect(store)(LocalizeMixin(UtilsMixin(Li
                                   </div>
                                   <div class="layout vertical end-justified">
                                     <dl class="location-progress">
-                                      <dt>${this.localize('location_progress')}</dt>
+                                      <dt>${translate('LOCATION_PROGRESS')}</dt>
                                       <dd>
                                         ${this._equals(topLevelLocation.byEntity[0].display_type, 'number')
                                           ? html`<etools-prp-number

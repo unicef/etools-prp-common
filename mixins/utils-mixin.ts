@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import Settings from '../settings';
-import LocalizeMixin from '../../etools-prp-common/mixins/localize-mixin';
+import {get as getTranslation} from 'lit-translate';
 import dayjs from 'dayjs';
 
 const pdListStatuses: any = {
@@ -37,11 +37,11 @@ const buildQuery = (chunks: any[]): string => {
  * @mixinFunction
  */
 function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
-  class UtilsClass extends LocalizeMixin(baseClass) {
+  class UtilsClass extends baseClass {
     getReportName(type: string, index: number) {
-      const typeLocalized = this.localize(type.toLowerCase());
+      const typeLocalized = getTranslation(type.toLowerCase());
       if (typeLocalized) {
-        return this.localize(type.toLowerCase()).split(' ')[0] + (index + 1);
+        return getTranslation(type.toLowerCase()).split(' ')[0] + (index + 1);
       }
       return type;
     }
@@ -54,25 +54,25 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.shadowRoot?.querySelectorAll(selector).forEach(fn);
     }
 
-    _toLowerCaseLocalized(text: string, localize: any) {
-      const localizedText = localize(text);
+    _toLowerCaseLocalized(text: string) {
+      const localizedText = getTranslation(text);
       if (localizedText) {
         return localizedText.toLowerCase();
       }
       return text;
     }
 
-    _localizeLowerCased(text: string, localize: any) {
-      return text ? localize(text.split(' ').join('_').toLowerCase()) : '';
+    _localizeLowerCased(text: string) {
+      return text ? getTranslation(text.split(' ').join('_').toLowerCase()) : '';
     }
 
-    _singularLocalized(text: string, localize: any) {
-      return localize(text).substring(0, text.length - 1);
+    _singularLocalized(text: string) {
+      return getTranslation(text).substring(0, text.length - 1);
     }
 
     _withDefault(value: any, defaultValue: any = '...') {
-      if (pdListStatuses[value] !== undefined && this.localize) {
-        return this.localize(pdListStatuses[value]);
+      if (pdListStatuses[value] !== undefined) {
+        return getTranslation(pdListStatuses[value]);
       }
 
       return value == null ? defaultValue : value;
@@ -94,9 +94,9 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return Number(val);
     }
 
-    _capitalizeFirstLetter(text: string, localize?: (x: string) => string) {
-      if (localize) {
-        return localize(text);
+    _capitalizeFirstLetter(text: string, translate?: boolean) {
+      if (translate) {
+        return getTranslation(text);
       }
       if (text) {
         return text[0].toUpperCase() + text.substring(1);

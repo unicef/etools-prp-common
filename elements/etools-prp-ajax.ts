@@ -5,7 +5,7 @@ import {IronAjaxElement} from '@polymer/iron-ajax/iron-ajax';
 import UtilsMixin from '../mixins/utils-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setToken, resetToken} from '../../redux/actions';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {connect} from 'pwa-helpers';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
@@ -14,10 +14,9 @@ import {RootState} from '../../typings/redux.types';
  * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
  */
 @customElement('etools-prp-ajax')
-class EtoolsPrpAjax extends LocalizeMixin(UtilsMixin(connect(store)(LitElement))) {
+class EtoolsPrpAjax extends UtilsMixin(connect(store)(LitElement)) {
   render() {
     return html`
       <iron-ajax
@@ -162,7 +161,7 @@ class EtoolsPrpAjax extends LocalizeMixin(UtilsMixin(connect(store)(LitElement))
 
     if (this.lastError && this.lastError.status === 500) {
       fireEvent(this, 'toast', {
-        text: this.localize('an_error_occurred'),
+        text: translate('AN_ERROR_OCCURRED'),
         showCloseBtn: true
       });
     }

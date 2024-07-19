@@ -3,10 +3,10 @@ import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import './user-profile-dialog';
 import UtilsMixin from '../../mixins/utils-mixin';
-import LocalizeMixin from '../../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 
 @customElement('profile-dropdown')
-export class ProfileDropdown extends LocalizeMixin(UtilsMixin(LitElement)) {
+export class ProfileDropdown extends UtilsMixin(LitElement) {
   @property({type: String, reflect: true})
   dropdownOpened = '';
 
@@ -67,11 +67,11 @@ export class ProfileDropdown extends LocalizeMixin(UtilsMixin(LitElement)) {
         <div class="paper-material dropdown-content" elevation="5" id="user-dropdown">
           <div class="item" @click=${this._openModal}>
             <paper-icon-button id="accountProfile" icon="account-circle"></paper-icon-button>
-            ${this.localize('profile')}
+            ${translate('PROFILE')}
           </div>
           <div class="item" @click=${this._logout}>
             <paper-icon-button id="powerSettings" icon="power-settings-new"></paper-icon-button>
-            ${this.localize('sign_out')}
+            ${translate('SIGN_OUT')}
           </div>
         </div>
       </iron-collapse>

@@ -8,17 +8,17 @@ import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import ModalMixin from '../../mixins/modal-mixin';
-import LocalizeMixin from '../../mixins/localize-mixin';
-import { buttonsStyles } from '../../styles/buttons-styles';
-import { modalStyles } from '../../styles/modal-styles';
+import {translate} from 'lit-translate';
+import {buttonsStyles} from '../../styles/buttons-styles';
+import {modalStyles} from '../../styles/modal-styles';
 import '../confirm-box';
 import './disaggregation-table';
-import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import { DisaggregationTableEl } from './disaggregation-table';
-import { ConfirmBoxEl } from '../confirm-box';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {DisaggregationTableEl} from './disaggregation-table';
+import {ConfirmBoxEl} from '../confirm-box';
 
 @customElement('disaggregation-modal')
-class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
+class DisaggregationModal extends ModalMixin(LitElement) {
   @property({type: String})
   reportingPeriod!: string;
 
@@ -46,10 +46,10 @@ class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
       ${buttonsStyles} ${modalStyles}
       <paper-dialog id="dialog" modal .opened="${this.opened}">
         <div class="header layout horizontal justified">
-          <h2>${this.localize('enter_data')}</h2>
+          <h2>${translate('ENTER_DATA')}</h2>
 
           <div class="layout horizontal">
-            <p>${this.localize('reporting_period')}: ${this.reportingPeriod}</p>
+            <p>${translate('REPORTING_PERIOD')}: ${this.reportingPeriod}</p>
 
             <paper-icon-button class="self-center" @click="${this.close}" icon="icons:close"></paper-icon-button>
           </div>
@@ -61,8 +61,8 @@ class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" @click="${this._save}" raised>${this.localize('save')}</paper-button>
-          <paper-button class="btn-cancel" @click="${this.close}">${this.localize('cancel')}</paper-button>
+          <paper-button class="btn-primary" @click="${this._save}" raised>${translate('SAVE')}</paper-button>
+          <paper-button class="btn-cancel" @click="${this.close}">${translate('CANCEL')}</paper-button>
         </div>
 
         <confirm-box id="confirm"></confirm-box>
@@ -87,7 +87,7 @@ class DisaggregationModal extends LocalizeMixin(ModalMixin(LitElement)) {
           console.log(_err);
           this.updatePending = false;
           fireEvent(this, 'toast', {
-            text: this.localize('error_verify_entered_data'),
+            text: translate('ERROR_VERIFY_ENTERED_DATA'),
             showCloseBtn: true
           });
         });

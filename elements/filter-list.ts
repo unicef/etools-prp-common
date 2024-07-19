@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {RootState} from '../../typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {connect} from 'pwa-helpers';
@@ -17,8 +17,8 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
  * @customElement
  */
 @customElement('filter-list')
-export class FilterList extends LocalizeMixin(connect(store)(LitElement)) {
-  static get styles() { 
+export class FilterList extends connect(store)(LitElement) {
+  static get styles() {
     return [layoutStyles];
   }
 
@@ -44,7 +44,7 @@ export class FilterList extends LocalizeMixin(connect(store)(LitElement)) {
       ${this.hideClear
         ? ``
         : html`<div id="action" class="right-align">
-            <paper-button @click="${this._clearFilters}">${this.localize('clear')}</paper-button>
+            <paper-button @click="${this._clearFilters}">${translate('CLEAR')}</paper-button>
           </div>`}
 
       <etools-loading ?active="${this.loading}"></etools-loading>

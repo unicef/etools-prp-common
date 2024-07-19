@@ -5,8 +5,6 @@ import '@polymer/paper-styles/typography';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-
-import LocalizeMixin from '../mixins/localize-mixin';
 import RoutingMixin from '../mixins/routing-mixin';
 import {sharedStyles} from '../styles/shared-styles';
 import {store} from '../../redux/store';
@@ -16,13 +14,12 @@ import {RootState} from '../../typings/redux.types';
  * @polymer
  * @customElement
  * @mixinFunction
- * @appliesMixin LocalizeMixin
  * @appliesMixin RoutingMixin
  */
 @customElement('page-header')
-export class PageHeader extends LocalizeMixin(RoutingMixin(connect(store)(LitElement))) {
-  static get styles() { 
-    return [layoutStyles]
+export class PageHeader extends RoutingMixin(connect(store)(LitElement)) {
+  static get styles() {
+    return [layoutStyles];
   }
 
   render() {

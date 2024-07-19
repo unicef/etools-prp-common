@@ -2,14 +2,14 @@ import { html, css, LitElement } from 'lit';
 import { property, customElement, state } from 'lit/decorators.js';
 import '@polymer/paper-checkbox/paper-checkbox'; //TODO remove
 import UtilsMixin from '../../mixins/utils-mixin';
-import LocalizeMixin from '../../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import '../message-box';
-import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import { debounce } from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 @customElement('disaggregation-switches')
-class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixin(LitElement))) {
+class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement)) {
   @property({type: Object})
   mapping!: any;
 
@@ -62,7 +62,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LocalizeMixin(UtilsMixi
       ${this.editableBool
         ? html`
             <div class="container">
-              <h4>${this.localize('enter_data_by_disaggregation')}</h4>
+              <h4>${translate('ENTER_DATA_BY_DISAGGREGATION')}</h4>
               ${(this.mapping || []).map(
                 (field) => html`
                   <paper-checkbox

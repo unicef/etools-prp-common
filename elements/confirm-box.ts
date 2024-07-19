@@ -11,7 +11,6 @@ import {buttonsStyles} from '../styles/buttons-styles';
  * @polymer
  * @customElement
  * @mixinFunction
- * @appliesMixin LocalizeMixin
  */
 @customElement('confirm-box')
 export class ConfirmBox extends LitElement {

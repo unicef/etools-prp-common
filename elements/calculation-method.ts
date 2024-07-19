@@ -3,17 +3,15 @@ import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
-import LocalizeMixin from '../mixins/localize-mixin';
 import UtilsMixin from '../mixins/utils-mixin';
 import {store} from '../../redux/store';
 
 /**
  * @polymer
- * @appliesMixin LocalizeMixin
  * @appliesMixin UtilsBehavior
  */
 @customElement('calculation-method')
-export class CalculationMethod extends connect(store)(UtilsMixin(LocalizeMixin(LitElement))) {
+export class CalculationMethod extends connect(store)(UtilsMixin(LitElement)) {
   render() {
     return html`
       <style>
@@ -39,12 +37,12 @@ export class CalculationMethod extends connect(store)(UtilsMixin(LocalizeMixin(L
       </style>
 
       ${this.readonly
-        ? html`<span class="read-only-label">${this._localizeLowerCased(this.readOnlyLabel, this.localize)}</span>`
+        ? html`<span class="read-only-label">${this._localizeLowerCased(this.readOnlyLabel)}</span>`
         : html`<etools-radio-group .value="${this.value}">
       ${(this.choices || []).map(
         (item: any) =>
           html`<sl-radio class="${this.disabled ? 'readonly' : ''}" name="${item.id}">
-            ${this._localizeLowerCased(item.title, this.localize)}</sl-radio
+            ${this._localizeLowerCased(item.title)}</sl-radio
           >`
       )}
         </<etools-radio-group>`}

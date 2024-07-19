@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 import {connect} from 'pwa-helpers';
 import {customElement, property} from 'lit/decorators.js';
 import '../elements/status-badge';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 
@@ -10,10 +10,9 @@ import {RootState} from '../../typings/redux.types';
  * @polymer
  * @customElement
  * @mixinFunction
- * @appliesMixin LocalizeMixin
  */
 @customElement('report-status')
-export class ReportStatus extends LocalizeMixin(connect(store)(LitElement)) {
+export class ReportStatus extends connect(store)(LitElement) {
   render() {
     return html`
       <style>
@@ -50,7 +49,7 @@ export class ReportStatus extends LocalizeMixin(connect(store)(LitElement)) {
   type!: string;
 
   @property({type: String})
-  label!: string;
+  label?: string;
 
   @property({type: Boolean})
   final = false;
@@ -77,8 +76,7 @@ export class ReportStatus extends LocalizeMixin(connect(store)(LitElement)) {
       changedProperties.has('status') ||
       changedProperties.has('final') ||
       changedProperties.has('app') ||
-      changedProperties.has('reportType') ||
-      changedProperties.has('localize')
+      changedProperties.has('reportType')
     ) {
       this.label = this._computeLabel(this.status, this.final, this.app, this.reportType);
     }
@@ -115,39 +113,43 @@ export class ReportStatus extends LocalizeMixin(connect(store)(LitElement)) {
   _computeLabel(status: string, final: boolean, app: string, reportType: string) {
     switch (status) {
       case '1':
-        return this.localize('nothing_due');
+        return translate('NOTHING_DUE') as any as string;
       case '2':
       case 'Ove':
-        return this.localize('overdue');
+        return translate('OVERDUE') as any as string;
       case '3':
       case 'Due':
-        return this.localize('due');
+        return translate('DUE') as any as string;
       case 'Sub':
-        return this.localize('submitted');
+        return translate('SUBMITTED') as any as string;
       case 'Rej':
-        return this.localize('rejected');
+        return translate('REJECTED') as any as string;
       case 'Met':
-        return final ? this.localize('met_results') : this.localize('met');
+        return final ? (translate('MET_RESULTS') as any as string) : (translate('MET') as any as string);
       case 'OnT':
-        return this.localize('on_track');
+        return translate('ON_TRACK') as any as string;
       case 'NoP':
-        return this.localize('no_progress');
+        return translate('NO_PROGRESS') as any as string;
       case 'Con':
-        return final ? this.localize('constrained_partially') : this.localize('constrained');
+        return final
+          ? (translate('CONSTRAINED_PARTIALLY') as any as string)
+          : (translate('CONSTRAINED') as any as string);
       case 'Ong':
-        return this.localize('ongoing');
+        return translate('ONGOING') as any as string;
       case 'Pla':
-        return this.localize('planned');
+        return translate('PLANNED') as any as string;
       case 'Com':
-        return this.localize('completed');
+        return translate('COMPLETED') as any as string;
       case 'NoS':
-        return this.localize('no_status');
+        return translate('NO_STATUS') as any as string;
       case 'Sen':
-        return this.localize('sent_back');
+        return translate('SENT_BACK') as any as string;
       case 'Not':
-        return this.localize('not_yet_due');
+        return translate('NOT_YET_DUE') as any as string;
       case 'Acc':
-        return app === 'ip-reporting' && reportType !== 'HR' ? this.localize('accepted') : this.localize('received');
+        return app === 'ip-reporting' && reportType !== 'HR'
+          ? (translate('ACCEPTED') as any as string)
+          : (translate('RECEIVED') as any as string);
     }
   }
 }

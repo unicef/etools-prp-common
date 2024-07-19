@@ -9,7 +9,7 @@ import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
 import RoutingMixin from '../mixins/routing-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import './error-modal';
 import './etools-prp-number';
 import './etools-prp-ajax';
@@ -23,10 +23,9 @@ import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
  * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  * @appliesMixin RoutingMixin
- * @appliesMixin LocalizeMixin
  */
 @customElement('refresh-report-modal')
-export class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixin(LitElement)))) {
+export class RefreshReportModal extends RoutingMixin(UtilsMixin(ModalMixin(LitElement))) {
   render() {
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -52,23 +51,23 @@ export class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(Mo
 
       <paper-dialog modal ?opened="${this.opened}">
         <div class="header layout horizontal justified">
-          <h2>${this.localize('are_you_sure')}?</h2>
+          <h2>${translate('ARE_YOU_SURE')}?</h2>
 
           <etools-icon-button class="self-center" @click="${this.close}" name="icons:close"> </etools-icon-button>
         </div>
         <paper-dialog-scrollable>
           <h3>
-            ${this._equals(this.data?.report_type, 'PR') ? html`${this.localize('you_are_about_to_delete')}` : ``}
-            ${this._equals(this.data?.report_type, 'IR') ? html`${this.localize('you_are_about_to_location')}` : ``}
+            ${this._equals(this.data?.report_type, 'PR') ? html`${translate('YOU_ARE_ABOUT_TO_DELETE')}` : ``}
+            ${this._equals(this.data?.report_type, 'IR') ? html`${translate('YOU_ARE_ABOUT_TO_LOCATION')}` : ``}
           </h3>
         </paper-dialog-scrollable>
 
         <div class="buttons layout horizontal-reverse">
           <etools-button variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
-            ${this.localize('refresh')}
+            ${translate('REFRESH')}
           </etools-button>
           <etools-button variant="primary" @click="${this._cancel}" ?disabled="${this.busy}">
-            ${this.localize('cancel')}
+            ${translate('CANCEL')}
           </etools-button>
         </div>
       </paper-dialog>

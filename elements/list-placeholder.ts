@@ -1,10 +1,10 @@
 // @ts-nocheck
 import { LitElement, html } from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 
 @customElement('list-placeholder')
-export class ListPlaceholder extends LocalizeMixin(LitElement) {
+export class ListPlaceholder extends LitElement {
   render() {
     return html`
       <style>
@@ -53,7 +53,7 @@ export class ListPlaceholder extends LocalizeMixin(LitElement) {
   }
 
   getMessageToDisplay() {
-    return this.message ? this.message : this.localize('no_results_found');
+    return this.message ? this.message : translate('NO_RESULTS_FOUND');
   }
 }
 

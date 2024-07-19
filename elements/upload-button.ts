@@ -12,7 +12,7 @@ import '@polymer/paper-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-file';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import './etools-prp-ajax';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 import './error-box';
@@ -29,7 +29,7 @@ import {PaperDialogElement} from '@polymer/paper-dialog/paper-dialog';
  * @appliesMixin UtilsMixin
  */
 @customElement('upload-button')
-export class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement))) {
+export class UploadButton extends ModalMixin(UtilsMixin(LitElement)) {
   render() {
     return html`
       ${buttonsStyles} ${modalStyles}
@@ -105,12 +105,12 @@ export class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('opened')) {
       this._setDefaults(this.opened);
     }
   }
-  
+
   _openModal() {
     (this.shadowRoot!.querySelector('#dialog') as PaperDialogElement).open();
   }
@@ -136,7 +136,7 @@ export class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement
         this.pending = false;
         this.close();
         fireEvent(this, 'toast', {
-          text: this.localize('file_uploaded'),
+          text: translate('FILE_UPLOADED'),
           showCloseBtn: true
         });
         fireEvent(this, 'file-uploaded');
@@ -154,7 +154,7 @@ export class UploadButton extends ModalMixin(LocalizeMixin(UtilsMixin(LitElement
 
     this.files = [];
     this.errors = {};
-    this.pending =  false;
+    this.pending = false;
   }
 }
 
