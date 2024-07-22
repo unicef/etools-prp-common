@@ -5,6 +5,7 @@ import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import './labelled-item';
 import './report-status';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {RefreshReportModalEl} from './refresh-report-modal';
 import './refresh-report-modal';
 import '@polymer/app-layout/app-grid/app-grid-style';
@@ -23,7 +24,11 @@ import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools
  */
 @customElement('reportable-meta')
 export class ReportableMeta extends UtilsMixin(LitElement) {
-  render() {
+  static get styles() {
+    return [layoutStyles];
+  }
+
+  public render() {
     return html`
       ${buttonsStyles}
       <style>

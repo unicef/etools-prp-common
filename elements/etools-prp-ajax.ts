@@ -5,7 +5,7 @@ import {IronAjaxElement} from '@polymer/iron-ajax/iron-ajax';
 import UtilsMixin from '../mixins/utils-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setToken, resetToken} from '../../redux/actions';
-import {translate} from 'lit-translate';
+import {get as getTranslation} from 'lit-translate';
 import {connect} from 'pwa-helpers';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
@@ -161,7 +161,7 @@ class EtoolsPrpAjax extends UtilsMixin(connect(store)(LitElement)) {
 
     if (this.lastError && this.lastError.status === 500) {
       fireEvent(this, 'toast', {
-        text: translate('AN_ERROR_OCCURRED'),
+        text: getTranslation('AN_ERROR_OCCURRED'),
         showCloseBtn: true
       });
     }

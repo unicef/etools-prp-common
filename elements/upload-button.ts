@@ -12,7 +12,7 @@ import '@polymer/paper-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-file';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
-import {translate} from 'lit-translate';
+import {get as getTranslation} from 'lit-translate';
 import './etools-prp-ajax';
 import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 import './error-box';
@@ -136,7 +136,7 @@ export class UploadButton extends ModalMixin(UtilsMixin(LitElement)) {
         this.pending = false;
         this.close();
         fireEvent(this, 'toast', {
-          text: translate('FILE_UPLOADED'),
+          text: getTranslation('FILE_UPLOADED'),
           showCloseBtn: true
         });
         fireEvent(this, 'file-uploaded');

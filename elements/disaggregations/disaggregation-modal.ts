@@ -8,7 +8,7 @@ import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import ModalMixin from '../../mixins/modal-mixin';
-import {translate} from 'lit-translate';
+import {translate, get as getTranslation} from 'lit-translate';
 import {buttonsStyles} from '../../styles/buttons-styles';
 import {modalStyles} from '../../styles/modal-styles';
 import '../confirm-box';
@@ -87,7 +87,7 @@ class DisaggregationModal extends ModalMixin(LitElement) {
           console.log(_err);
           this.updatePending = false;
           fireEvent(this, 'toast', {
-            text: translate('ERROR_VERIFY_ENTERED_DATA'),
+            text: getTranslation('ERROR_VERIFY_ENTERED_DATA'),
             showCloseBtn: true
           });
         });
