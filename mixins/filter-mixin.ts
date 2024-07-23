@@ -5,7 +5,6 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 function FilterMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class FilterClass extends baseClass {
-    static _debounceDelay = 400;
     @property({type: String})
     label!: string;
     @property({type: String})

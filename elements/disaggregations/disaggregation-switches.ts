@@ -1,6 +1,6 @@
 import { html, css, LitElement } from 'lit';
 import { property, customElement, state } from 'lit/decorators.js';
-import '@polymer/paper-checkbox/paper-checkbox'; //TODO remove
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from 'lit-translate';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
@@ -48,7 +48,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
       line-height: 1;
     }
 
-    paper-checkbox:not(:first-of-type) {
+    etools-checkbox:not(:first-of-type) {
       margin-left: 24px;
     }
 
@@ -65,13 +65,13 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
               <h4>${translate('ENTER_DATA_BY_DISAGGREGATION')}</h4>
               ${(this.mapping || []).map(
                 (field) => html`
-                  <paper-checkbox
+                  <etools-checkbox
                     id="${field.id}"
-                    .checked="${this._computeChecked(field.id)}"
-                    @change="${this.fieldValueChanged}"
+                    ?checked="${this._computeChecked(field.id)}"
+                    @sl-change="${this.fieldValueChanged}"
                   >
                     ${this._formatFieldName(field.name)}
-                  </paper-checkbox>
+                  </etools-checkbox>
                 `
               )}
               ${this.warning

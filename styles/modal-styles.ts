@@ -34,10 +34,6 @@ export const modalStyles = html` <style>
     margin-bottom: 20px !important;
   }
 
-  datepicker-lite {
-    position: relative;
-  }
-
   paper-textarea {
     --paper-input-container-input: {
       display: block;
