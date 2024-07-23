@@ -13,13 +13,12 @@ import '@unicef-polymer/etools-unicef/src/etools-upload/etools-file';
 import UtilsMixin from '../mixins/utils-mixin';
 import ModalMixin from '../mixins/modal-mixin';
 import {get as getTranslation} from 'lit-translate';
-import './etools-prp-ajax';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 import './error-box';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {PaperDialogElement} from '@polymer/paper-dialog/paper-dialog';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
  * @polymer
@@ -47,8 +46,6 @@ export class UploadButton extends ModalMixin(UtilsMixin(LitElement)) {
           margin: 16px 0;
         }
       </style>
-
-      <etools-prp-ajax id="upload" method="post" .url="${this.url}" body="${this.payload}"> </etools-prp-ajax>
 
       <paper-button class="btn-primary" @click="_openModal">
         <iron-icon icon="icons:file-upload"></iron-icon>
@@ -125,13 +122,13 @@ export class UploadButton extends ModalMixin(UtilsMixin(LitElement)) {
     const data = new FormData();
     data.append('file', file.raw, file.file_name);
 
-    const upload = this.shadowRoot!.querySelector('#upload') as EtoolsPrpAjaxEl;
-    upload!.body = data;
-
     this.pending = true;
 
-    upload!
-      .thunk()()
+    sendRequest({
+      method: 'POST',
+      endpoint: {url: this.url},
+      body: data
+    })
       .then(() => {
         this.pending = false;
         this.close();

@@ -12,10 +12,9 @@ import RoutingMixin from '../mixins/routing-mixin';
 import {translate} from 'lit-translate';
 import './error-modal';
 import './etools-prp-number';
-import './etools-prp-ajax';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
  * @polymer
@@ -39,15 +38,6 @@ export class RefreshReportModal extends RoutingMixin(UtilsMixin(ModalMixin(LitEl
       </style>
 
       <iron-location .path="${this.path}"> </iron-location>
-
-      <etools-prp-ajax
-        id="refreshReport"
-        .url="${this.refreshUrl}"
-        .body="${this.data}"
-        method="post"
-        content-type="application/json"
-      >
-      </etools-prp-ajax>
 
       <paper-dialog modal ?opened="${this.opened}">
         <div class="header layout horizontal justified">
@@ -84,8 +74,11 @@ export class RefreshReportModal extends RoutingMixin(UtilsMixin(ModalMixin(LitEl
   _refresh() {
     this.busy = true;
 
-    const refreshThunk = (this.shadowRoot!.getElementById('refreshReport') as EtoolsPrpAjaxEl).thunk();
-    refreshThunk()
+    sendRequest({
+      method: 'POST',
+      endpoint: {url: this.refreshUrl},
+      body: this.data
+    })
       .then(() => {
         window.location.reload();
       })

@@ -7,8 +7,6 @@ import {disaggregationTableStyles} from '../../styles/disaggregation-table-style
 import Endpoints from '../../endpoints';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {disaggregationsUpdateForLocation} from '../../../redux/actions/disaggregations';
-import {EtoolsPrpAjaxEl} from '../etools-prp-ajax';
-import '../etools-prp-ajax';
 import './table-content/three-disaggregations';
 import './table-content/two-disaggregations';
 import './table-content/one-disaggregation';
@@ -18,6 +16,7 @@ import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import {store} from '../../../redux/store';
 import {RootState} from '../../../typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 @customElement('disaggregation-table')
 class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitElement)) {
@@ -142,15 +141,6 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
   render() {
     return html`
       ${disaggregationTableStyles}
-      <etools-prp-ajax
-        id="update"
-        .url="${this.updateUrl}"
-        .body="${this.localData}"
-        content-type="application/json"
-        method="put"
-      >
-      </etools-prp-ajax>
-
       <div>
         <disaggregation-switches
           .data="${this.data}"
@@ -396,8 +386,11 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
       return Promise.reject();
     }
 
-    const updateThunk = (this.shadowRoot!.querySelector('#update') as EtoolsPrpAjaxEl).thunk();
-    (this.shadowRoot!.querySelector('#update') as EtoolsPrpAjaxEl).abort();
+    const updateThunk = sendRequest({
+      method: 'PUT',
+      endpoint: {url: this.updateUrl},
+      body: this.localData
+    });
 
     return store
       .dispatch(disaggregationsUpdateForLocation(updateThunk, String(this.indicatorId), this.formattedData.location.id))

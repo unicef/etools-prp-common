@@ -7,9 +7,9 @@ import '@polymer/paper-item/paper-item';
 import RoutingMixin from '../mixins/routing-mixin';
 import {setWorkspace} from '../../redux/actions';
 import Endpoints from '../endpoints';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
  * @polymer
@@ -73,15 +73,6 @@ export class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) 
           min-height: 48px;
         }
       </style>
-
-      <etools-prp-ajax
-        id="changeworkspace"
-        method="post"
-        .url="${this.changeworkspaceUrl}"
-        .body="${this.workspaceData}"
-        content-type="application/json"
-      >
-      </etools-prp-ajax>
 
       <paper-dropdown-menu label="${this.workspace?.name}" noink no-label-float>
         <paper-listbox
@@ -153,8 +144,11 @@ export class WorkspaceDropdown extends connect(store)(RoutingMixin(LitElement)) 
     }
 
     this.workspaceData = {workspace: workspace.id};
-    const thunk = (this.shadowRoot!.getElementById('changeworkspace') as EtoolsPrpAjaxEl).thunk();
-    thunk()
+    sendRequest({
+      method: 'POST',
+      endpoint: {url: this.changeworkspaceUrl},
+      body: this.workspaceData
+    })
       .then(() => {
         store.dispatch(setWorkspace(newCode));
       })

@@ -15,7 +15,6 @@ import '@polymer/app-layout/app-grid/app-grid-style';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
 
-import './etools-prp-ajax';
 import '../elements/etools-prp-number';
 import './status-badge';
 import '../elements/etools-prp-printer';
@@ -33,8 +32,8 @@ import {buttonsStyles} from '../styles/buttons-styles';
 import {disaggregationsFetch} from '../../redux/actions/disaggregations';
 import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
 import {RootState} from '../../typings/redux.types';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 import {store} from '../../redux/store';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
  * @polymer
@@ -212,9 +211,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
         }
       </style>
 
-      <etools-prp-ajax id="disaggregations" .url="${this.disaggregationsUrl}" .params="${this.params}">
-      </etools-prp-ajax>
-
       ${this.dataLoaded
         ? html`
             <div>
@@ -251,9 +247,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                       ${this.currentPd.title
                         ? html`
                             <dl class="printme" style="margin: 0;">
-                              <dt style="display: inline;">
-                                ${this._singularLocalized('programme_documents')}:
-                              </dt>
+                              <dt style="display: inline;">${this._singularLocalized('programme_documents')}:</dt>
                               <dd style="display: inline; margin: 0;">${this.currentPd.title}</dd>
                             </dl>
                           `
@@ -327,9 +321,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                               ${(topLevelLocation.byEntity || []).map(
                                 (location: any) =>
                                   html`<paper-tab
-                                    >${this._localizeLowerCased(
-                                      location.reporting_entity.title
-                                    )}</paper-tab
+                                    >${this._localizeLowerCased(location.reporting_entity.title)}</paper-tab
                                   >`
                               )}
                             </paper-tabs>
@@ -355,9 +347,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                       ${this._equals(location.display_type, 'number')
                                         ? html` <dt>
                                               ${translate('LOCATION_PROGRESS_AGAINST')}
-                                              ${this._localizeLowerCased(
-                                                location.reporting_entity.title
-                                              )}:
+                                              ${this._localizeLowerCased(location.reporting_entity.title)}:
                                             </dt>
                                             <dd>
                                               <etools-prp-number
@@ -603,11 +593,16 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
   }
 
   _fetchData() {
-    const disaggregationsThunk = (this.shadowRoot!.getElementById('disaggregations') as EtoolsPrpAjaxEl).thunk();
-    // Cancel the pending request, if any
-    (this.shadowRoot!.getElementById('disaggregations') as EtoolsPrpAjaxEl).abort();
-
-    return store.dispatch(disaggregationsFetch(disaggregationsThunk, String(this.indicatorId)));
+    return store.dispatch(
+      disaggregationsFetch(
+        sendRequest({
+          method: 'GET',
+          endpoint: {url: this.disaggregationsUrl},
+          params: this.params
+        }),
+        String(this.indicatorId)
+      )
+    );
   }
 
   init() {

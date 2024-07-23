@@ -21,15 +21,14 @@ import './project-status';
 import './page-body';
 import './list-placeholder';
 import './status-badge';
-import './etools-prp-ajax';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
 import {tableStyles} from '../styles/table-styles';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {modalStyles} from '../styles/modal-styles';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
  * @polymer
@@ -82,17 +81,6 @@ export class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))
         @permissions-changed="${(e) => (this.permissions = e.detail.value)}"
       >
       </etools-prp-permissions>
-
-      <etools-prp-ajax id="pullReports" .url="${this.pullUrl}"> </etools-prp-ajax>
-
-      <etools-prp-ajax
-        id="pull"
-        .url="${this.pullUrl}"
-        method="post"
-        .body="${this.postBody}"
-        content-type="application/json"
-      >
-      </etools-prp-ajax>
 
       <paper-dialog id="dialog" modal ?opened="${this.opened}">
         <div class="header layout horizontal justified">
@@ -210,8 +198,11 @@ export class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))
   }
 
   _save() {
-    (this.shadowRoot!.getElementById('pull') as EtoolsPrpAjaxEl)
-      .thunk()()
+    sendRequest({
+      method: 'POST',
+      endpoint: {url: this.pullUrl},
+      body: this.postBody
+    })
       .then(() => {
         this.close();
         fireEvent(this, 'locations-updated');
@@ -230,17 +221,17 @@ export class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))
   }
 
   open() {
-    (this.shadowRoot!.getElementById('pullReports') as EtoolsPrpAjaxEl).abort();
-
-    const thunk = (this.shadowRoot!.getElementById('pullReports') as EtoolsPrpAjaxEl).thunk();
-    thunk()
+    sendRequest({
+      method: 'GET',
+      endpoint: {url: this.pullUrl}
+    })
       .then((res: any) => {
-        this.data = {reports: res.data};
+        this.data = {reports: res};
         this.opened = true;
       })
       .catch((err: any) => {
         fireEvent(this, 'toast', {
-          text: err.data.non_field_errors[0],
+          text: err.non_field_errors[0],
           showCloseBtn: true
         });
       });
