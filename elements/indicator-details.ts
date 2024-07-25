@@ -10,7 +10,6 @@ import '@polymer/iron-flex-layout/iron-flex-layout';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-icons/maps-icons';
-import '@polymer/paper-button/paper-button';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
@@ -88,7 +87,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
           background: var(--paper-grey-100);
         }
 
-        .tab-header paper-button {
+        .tab-header etools-button {
           margin: 0;
         }
 
@@ -240,7 +239,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                     <div class="header">
                       <h3 class="locations-heading">${translate('DATA_FOR_LOCATIONS')}</h3>
 
-                      <etools-icon-button class="print-btn" name="icons:print"> </etools-icon-button>
+                      <etools-icon-button class="print-btn" name="print"> </etools-icon-button>
                     </div>
 
                     <div hidden aria-hidden="true">
@@ -299,14 +298,13 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                 <div class="tab-header layout horizontal justified">
                                   <div class="self-center">${translate('ENTER_DATA_LOCATION')}</div>
                                   <div>
-                                    <paper-button
-                                      class="btn-primary"
+                                    <etools-button
+                                      variant="primary"
                                       modal-index="${topLevelLocationIndex}"
                                       @click="${() => this._openModal(topLevelLocationIndex)}"
-                                      raised
                                     >
                                       ${translate('ENTER_DATA')}
-                                    </paper-button>
+                                    </etools-button>
                                   </div>
                                 </div>
                               `
@@ -682,7 +680,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
   }
 
   _updateModals(e: CustomEvent, id: string) {
-
     if (!id) {
       return;
     }

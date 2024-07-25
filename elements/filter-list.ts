@@ -1,6 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {translate} from 'lit-translate';
@@ -33,7 +32,7 @@ export class FilterList extends connect(store)(LitElement) {
           padding-inline-end: 15px;
         }
 
-        paper-button {
+        etools-button {
           margin: 0 10px;
           text-transform: uppercase;
         }
@@ -44,7 +43,7 @@ export class FilterList extends connect(store)(LitElement) {
       ${this.hideClear
         ? ``
         : html`<div id="action" class="right-align">
-            <paper-button @click="${this._clearFilters}">${translate('CLEAR')}</paper-button>
+            <etools-button @click="${this._clearFilters}">${translate('CLEAR')}</etools-button>
           </div>`}
 
       <etools-loading ?active="${this.loading}"></etools-loading>

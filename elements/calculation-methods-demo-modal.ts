@@ -2,7 +2,6 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import '@polymer/paper-styles/typography';
