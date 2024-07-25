@@ -23,7 +23,6 @@ import './disaggregations/disaggregation-modal';
 import {DisaggregationModalEl} from './disaggregations/disaggregation-modal';
 import '../elements/report-status';
 import './pull-modal';
-import {PullModalEl} from './pull-modal';
 import UtilsMixin from '../mixins/utils-mixin';
 import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -34,6 +33,7 @@ import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
 import {RootState} from '../../typings/redux.types';
 import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @polymer
@@ -347,17 +347,17 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                       ${this._equals(location.display_type, 'number')
                                         ? html` <dt>
                                               ${translate('LOCATION_PROGRESS_AGAINST')}
-                                              ${this._localizeLowerCased(location.reporting_entity.title)}:
+                                              ${this._localizeLowerCased(location.reporting_entity?.title)}:
                                             </dt>
                                             <dd>
                                               <etools-prp-number
-                                                .value="${location.location_progress.v}"
+                                                .value="${location.location_progress?.v}"
                                               ></etools-prp-number>
                                             </dd>
                                             <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
                                               <etools-prp-number
-                                                .value="${location.previous_location_progress.v}"
+                                                .value="${location.previous_location_progress?.v}"
                                               ></etools-prp-number>
                                             </dd>`
                                         : html`
@@ -365,14 +365,14 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                             <dd>
                                               ${this._formatIndicatorValue(
                                                 location.display_type,
-                                                location.location_progress.c
+                                                location.location_progress?.c
                                               )}
                                             </dd>
                                             <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
                                               ${this._formatIndicatorValue(
                                                 location.display_type,
-                                                location.previous_location_progress.c
+                                                location.previous_location_progress?.c
                                               )}
                                             </dd>
                                           `}
@@ -454,15 +454,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
             </etools-prp-printer>
           `
         : ``}
-
-      <pull-modal
-        id="pull-modal-${this.indicatorId}"
-        indicator-name="${this.indicatorName}"
-        .reporting-period="${this.reportingPeriod}"
-        .indicator-id="${this.indicatorId}"
-        .report-id="${this.reportId}"
-      >
-      </pull-modal>
 
       <etools-loading ?active="${this.loading}"></etools-loading>
     `;
@@ -610,6 +601,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
       if (this.initialized) {
         return;
       }
+
       this.initialized = true;
       this._fetchData()
         // @ts-ignore
@@ -677,8 +669,16 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     (this.shadowRoot!.querySelector('#modal-' + (e.target as any).modalIndex) as DisaggregationModalEl).open();
   }
 
-  _openPullModal(e: CustomEvent) {
-    (this.shadowRoot!.querySelector('#pull-modal-' + (e.target as any).modalIndex) as PullModalEl).open();
+  _openPullModal() {
+    openDialog({
+      dialog: 'pull-modal',
+      dialogData: {
+        indicatorName: this.indicatorName,
+        reportingPeriod: this.reportingPeriod,
+        indicatorId: this.indicatorId,
+        reportId: this.reportId
+      }
+    });
   }
 
   _updateModals(e: CustomEvent, data: any) {
@@ -782,7 +782,8 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     super.connectedCallback();
 
     this.opened = {};
-    this.init(); //@dci function was not called ???
+    // this.init(); //@dci function was not called ???
+    // This is called on when expanding row only.
     this._addEventListeners();
   }
 
