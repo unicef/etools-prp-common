@@ -29,20 +29,6 @@ class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     :host {
       display: block;
     }
-
-    paper-input {
-      --paper-input-container: {
-        padding: 0;
-      }
-
-      --paper-input-container-input: {
-        font-size: 13px;
-      }
-
-      --paper-input-container-input-webkit-spinner: {
-        display: none;
-      }
-    }
   `;
 
   render() {

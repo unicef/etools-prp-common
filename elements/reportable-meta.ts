@@ -13,7 +13,6 @@ import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
-import {PaperInputElement} from '@polymer/paper-input/paper-input';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
@@ -34,10 +33,6 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
       <style>
         :host {
           display: block;
-
-          --paper-input-container-disabled: {
-            opacity: 0.67;
-          }
         }
 
         labelled-item {
@@ -55,7 +50,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
           flex-direction: row;
         }
 
-        paper-input {
+        etools-input {
           width: 100%;
           padding-right: 18px;
         }
@@ -177,7 +172,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
 
   _handleInput(event: CustomEvent) {
     let field = event.target as any;
-    const narrativeTextInput = this.shadowRoot!.querySelector('#narrative_assessment') as PaperInputElement;
+    const narrativeTextInput = this.shadowRoot!.querySelector('#narrative_assessment') as any; // PaperInputElement
 
     if (narrativeTextInput && this.toggle === 'Edit' && field.id === 'toggle-button') {
       narrativeTextInput.disabled = false;
@@ -191,7 +186,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
         return node.id === 'labelled-narrative';
       });
       if (parent) {
-        field = parent.querySelector('paper-input');
+        field = parent.querySelector('etools-input');
       }
     }
 
