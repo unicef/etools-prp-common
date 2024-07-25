@@ -302,7 +302,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                     <paper-button
                                       class="btn-primary"
                                       modal-index="${topLevelLocationIndex}"
-                                      @click="${this._openModal}"
+                                      @click="${() => this._openModal(topLevelLocationIndex)}"
                                       raised
                                     >
                                       ${translate('ENTER_DATA')}
@@ -394,8 +394,9 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                           ? html`
                               <disaggregation-modal
                                 id="modal-${topLevelLocationIndex}"
-                                .reporting-period="${this.reportingPeriod}"
-                                on-opened-changed="${this._updateModals}"
+                                .reportingPeriod="${this.reportingPeriod}"
+                                @disaggregation-modal-opened-changed="${(e) =>
+                                  this._updateModals(e, `modal-${topLevelLocationIndex}`)}"
                               >
                                 <div slot="meta" class="layout horizontal justified">
                                   <div>
@@ -664,8 +665,8 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     return overrideMode || mode;
   }
 
-  _openModal(e: CustomEvent) {
-    (this.shadowRoot!.querySelector('#modal-' + (e.target as any).modalIndex) as DisaggregationModalEl).open();
+  _openModal(index) {
+    (this.shadowRoot!.querySelector('#modal-' + index) as DisaggregationModalEl).open();
   }
 
   _openPullModal() {
@@ -680,15 +681,14 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     });
   }
 
-  _updateModals(e: CustomEvent, data: any) {
-    const id = (e.target as any).id;
+  _updateModals(e: CustomEvent, id: string) {
 
     if (!id) {
       return;
     }
 
     const change: any = {};
-    change[id] = data.value;
+    change[id] = e.detail.opened;
 
     this.opened = Object.assign({}, this.opened, change);
   }

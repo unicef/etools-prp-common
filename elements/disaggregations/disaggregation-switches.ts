@@ -7,6 +7,7 @@ import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import '../message-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 @customElement('disaggregation-switches')
 class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement)) {
@@ -129,10 +130,23 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   }
 
   _confirmIntent(field: any) {
-    return new Promise((resolve, reject) => {
-      const deferred = this._deferred();
-      fireEvent(this, 'disaggregation-modal-confirm', deferred);
-      deferred.promise.then(resolve).catch(() => reject(field));
+    return new Promise(async (resolve, reject) => {
+      const confirmed = await openDialog({
+        dialog: 'are-you-sure',
+        dialogData: {
+          content: 'Changing disaggregation will cause your previous data to be lost. Do you want to continue?',
+          confirmBtnText: translate('CONTINUE'),
+          cancelBtnText: translate('CANCEL')
+        }
+      }).then(({confirmed}) => {
+        return confirmed;
+      });
+
+      if (confirmed) {
+        return resolve(field);
+      } else {
+        return reject(field);
+      }
     });
   }
 

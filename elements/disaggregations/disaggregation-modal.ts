@@ -1,38 +1,28 @@
 import { html, css, LitElement } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-button/paper-button';
+import {property, customElement} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
-import ModalMixin from '../../mixins/modal-mixin';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import {translate, get as getTranslation} from 'lit-translate';
-import {buttonsStyles} from '../../styles/buttons-styles';
-import {modalStyles} from '../../styles/modal-styles';
-import '../confirm-box';
 import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {DisaggregationTableEl} from './disaggregation-table';
-import {ConfirmBoxEl} from '../confirm-box';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 
 @customElement('disaggregation-modal')
-class DisaggregationModal extends ModalMixin(LitElement) {
+class DisaggregationModal extends LitElement {
   @property({type: String})
   reportingPeriod!: string;
 
   @property({type: Boolean})
   updatePending = false;
 
+  @property({type: Boolean})
+  opened = false;
+
   static styles = [
     css`
       :host {
         display: block;
-      }
-
-      paper-dialog {
-        width: 700px;
       }
 
       ::slotted([slot='disaggregation-table']) {
@@ -43,32 +33,26 @@ class DisaggregationModal extends ModalMixin(LitElement) {
 
   render() {
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <paper-dialog id="dialog" modal .opened="${this.opened}">
-        <div class="header layout horizontal justified">
-          <h2>${translate('ENTER_DATA')}</h2>
+      <etools-dialog
+        keep-dialog-open
+        size="lg"
+        ?opened=${this.opened}
+        @close=${() => (this.opened = false)}
+        dialog-title="${translate('ENTER_DATA')} - ${translate('REPORTING_PERIOD')}: ${this.reportingPeriod}"
+        .okBtnText="${translate('SAVE')}"
+        @etools-dialog-opened="${() => {
+          fireEvent(this, 'disaggregation-modal-opened-changed', {opened: true});
+        }}"
+        @etools-dialog-closed="${() => {
+          fireEvent(this, 'disaggregation-modal-opened-changed', {opened: false});
+        }}"
+        @confirm-btn-clicked="${this._save}"
+      >
+        <slot name="meta"></slot>
+        <slot name="disaggregation-table" class="table"></slot>
 
-          <div class="layout horizontal">
-            <p>${translate('REPORTING_PERIOD')}: ${this.reportingPeriod}</p>
-
-            <paper-icon-button class="self-center" @click="${this.close}" icon="icons:close"></paper-icon-button>
-          </div>
-        </div>
-
-        <paper-dialog-scrollable>
-          <slot name="meta"></slot>
-          <slot name="disaggregation-table" class="table"></slot>
-        </paper-dialog-scrollable>
-
-        <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" @click="${this._save}" raised>${translate('SAVE')}</paper-button>
-          <paper-button class="btn-cancel" @click="${this.close}">${translate('CANCEL')}</paper-button>
-        </div>
-
-        <confirm-box id="confirm"></confirm-box>
-
-        <etools-loading .active="${this.updatePending}"></etools-loading>
-      </paper-dialog>
+        <etools-loading ?active="${this.updatePending}"></etools-loading>
+      </etools-dialog>
     `;
   }
 
@@ -81,52 +65,21 @@ class DisaggregationModal extends ModalMixin(LitElement) {
         .save()
         .then(() => {
           this.updatePending = false;
-          this.close();
+          fireEvent(this, 'dialog-closed', {confirmed: true});
         })
-        .catch((_err: any) => {
-          console.log(_err);
+        .catch((err: any) => {
+          console.log(err);
           this.updatePending = false;
           fireEvent(this, 'toast', {
-            text: getTranslation('ERROR_VERIFY_ENTERED_DATA'),
+            text: err.response?.non_field_errors?.[0] || getTranslation('ERROR_VERIFY_ENTERED_DATA'),
             showCloseBtn: true
           });
         });
     }
   }
 
-  _confirm(e: CustomEvent) {
-    e.stopPropagation();
-
-    const confirmBox = this.shadowRoot!.getElementById('confirm') as ConfirmBoxEl;
-    confirmBox.run({
-      body: 'Changing disaggregation will cause your previous data to be lost. Do you want to continue?',
-      result: e.detail
-    });
-  }
-
-  _addEventListeners() {
-    this._boundClose = this.close.bind(this);
-    this.addEventListener('dialog-iron-overlay-closed', this._boundClose);
-    this._boundAdjustPosition = this.adjustPosition.bind(this);
-    this.addEventListener('disaggregation-modal-refit', this._boundAdjustPosition as any);
-    this._boundConfirm = this._confirm.bind(this);
-    this.addEventListener('disaggregation-modal-confirm', this._boundConfirm as any);
-  }
-
-  _removeEventListeners() {
-    this.removeEventListener('dialog-iron-overlay-closed', this._boundClose);
-    this.removeEventListener('disaggregation-modal-refit', this._boundAdjustPosition as any);
-    this.removeEventListener('disaggregation-modal-confirm', this._boundConfirm as any);
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._addEventListeners();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._removeEventListeners();
+  open() {
+    this.opened = true;
   }
 }
 
