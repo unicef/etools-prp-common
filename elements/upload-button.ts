@@ -1,23 +1,10 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-button/paper-button';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-file';
 import UtilsMixin from '../mixins/utils-mixin';
-import ModalMixin from '../mixins/modal-mixin';
 import {get as getTranslation} from 'lit-translate';
 import './error-box';
-import {buttonsStyles} from '../styles/buttons-styles';
-import {modalStyles} from '../styles/modal-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {PaperDialogElement} from '@polymer/paper-dialog/paper-dialog';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
@@ -28,77 +15,63 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
  * @appliesMixin UtilsMixin
  */
 @customElement('upload-button')
-export class UploadButton extends ModalMixin(UtilsMixin(LitElement)) {
+export class UploadButton extends UtilsMixin(LitElement) {
+  @property({type: String, attribute: 'url'})
+  url!: string;
+
+  @property({type: Array})
+  files: any[] = [];
+
+  @property({type: Boolean})
+  pending!: boolean;
+
+  @property({type: Boolean})
+  opened = false;
+
+  @property({type: String, attribute: 'modal-title'})
+  modalTitle!: string;
+
   render() {
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <style include="iron-flex iron-flex-alignment iron-flex-reverse">
-        :host {
-          --etools-file-main-btn-color: var(--theme-primary-color);
-
-          --paper-dialog: {
-            width: 400px;
-            margin: 0;
-          }
-        }
-
+      <style>
         .row {
           margin: 16px 0;
         }
       </style>
 
-      <paper-button class="btn-primary" @click="_openModal">
-        <iron-icon icon="icons:file-upload"></iron-icon>
+      <etools-button class="btn-primary" @click="${this._openModal}">
+        <etools-icon name="file-upload"></etools-icon>
         <slot></slot>
-      </paper-button>
+      </etools-button>
 
-      <paper-dialog id="dialog" modal ?opened="${this.opened}">
-        <div class="header layout horizontal justified">
-          <h2>
-            <slot>${this.modalTitle}</slot>
-          </h2>
-
-          <paper-icon-button class="self-center" @click="close" icon="icons:close"> </paper-icon-button>
-        </div>
-
-        <paper-dialog-scrollable>
-          ${this.opened
-            ? html`<error-box errors="${this.errors}"></error-box>
-                <div class="row">
-                  <etools-file
-                    files="${this.files}"
-                    label="Template file"
-                    ?disabled="${this.pending}"
-                    accept=".xlsx, .xls"
-                    required
-                  >
-                  </etools-file>
-                </div>`
-            : ``}
-        </paper-dialog-scrollable>
-
-        <div class="buttons layout horizontal-reverse">
-          <paper-button @click="_save" class="btn-primary" raised> Save </paper-button>
-
-          <paper-button @click="close"> Cancel </paper-button>
-        </div>
+      <etools-dialog
+        id="dialog"
+        keep-dialog-open
+        @close=${() => (this.opened = false)}
+        ?opened=${this.opened}
+        @confirm-btn-clicked="${this._save}"
+        size="md"
+        dialog-title="${this.modalTitle}"
+      >
+        ${this.opened
+          ? html`<error-box errors="${this.errors}"></error-box>
+              <div class="row">
+                <etools-file
+                  ?showFilesContainer="${true}"
+                  .files="${this.files}"
+                  .label="Template file"
+                  ?disabled="${this.pending}"
+                  .accept=".xlsx, .xls"
+                  required
+                >
+                </etools-file>
+              </div>`
+          : ``}
 
         <etools-loading ?active="${this.pending}"></etools-loading>
-      </paper-dialog>
+      </etools-dialog>
     `;
   }
-
-  @property({type: String})
-  url!: string;
-
-  @property({type: Array})
-  files!: any[];
-
-  @property({type: Boolean})
-  pending!: boolean;
-
-  @property({type: String})
-  modalTitle!: string;
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
@@ -109,11 +82,11 @@ export class UploadButton extends ModalMixin(UtilsMixin(LitElement)) {
   }
 
   _openModal() {
-    (this.shadowRoot!.querySelector('#dialog') as PaperDialogElement).open();
+    this.opened = true;
   }
 
   _save() {
-    const file = this.get('files.0');
+    const file = this.files?.[0];
 
     if (!file) {
       return;
@@ -131,7 +104,7 @@ export class UploadButton extends ModalMixin(UtilsMixin(LitElement)) {
     })
       .then(() => {
         this.pending = false;
-        this.close();
+        this.opened = false;
         fireEvent(this, 'toast', {
           text: getTranslation('FILE_UPLOADED'),
           showCloseBtn: true
