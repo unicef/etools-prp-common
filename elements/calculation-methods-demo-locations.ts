@@ -5,7 +5,6 @@ import './etools-prp-number';
 import {modalStyles} from '../styles/modal-styles';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('calculation-methods-demo-locations')

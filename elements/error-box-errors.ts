@@ -2,7 +2,6 @@ import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('error-box-errors')

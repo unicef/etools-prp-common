@@ -4,7 +4,6 @@ import {get as getTranslation, translate} from 'lit-translate';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin

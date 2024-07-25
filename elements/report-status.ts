@@ -7,7 +7,6 @@ import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  */

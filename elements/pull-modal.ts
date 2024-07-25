@@ -21,7 +21,6 @@ import {RootState} from '../../typings/redux.types';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
  * @appliesMixin ModalMixin

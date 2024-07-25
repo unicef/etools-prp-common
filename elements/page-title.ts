@@ -2,7 +2,6 @@ import {LitElement, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('page-title')

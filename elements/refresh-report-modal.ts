@@ -9,7 +9,6 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin

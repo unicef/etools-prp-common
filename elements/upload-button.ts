@@ -8,7 +8,6 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin ModalMixin

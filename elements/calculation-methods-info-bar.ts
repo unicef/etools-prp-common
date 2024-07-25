@@ -9,7 +9,6 @@ import {tableStyles} from '../styles/table-styles';
 import {customElement} from 'lit/decorators.js';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('calculation-methods-info-bar')

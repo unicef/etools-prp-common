@@ -187,7 +187,6 @@ export const permissions = {
   ]
 };
 /**
- * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
  */
