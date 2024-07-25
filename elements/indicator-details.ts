@@ -581,6 +581,11 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     if (changedProperties.has('reportStatus')) {
       this.disablePull = this._computeDisablePull(this.reportStatus);
     }
+    if (changedProperties.has('locationData')) {
+      if (this.locationData.length) {
+        this.loading = false;
+      }
+    }
   }
 
   _fetchData() {
@@ -612,12 +617,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
         .catch((_err) => {
           // TODO: error handling
         });
-    }
-  }
-
-  onLocationRendered(e: CustomEvent) {
-    if (this.locationData.length === e.detail.value) {
-      this.loading = false;
     }
   }
 

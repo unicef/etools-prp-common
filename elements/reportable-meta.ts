@@ -6,7 +6,6 @@ import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import './labelled-item';
 import './report-status';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import {RefreshReportModalEl} from './refresh-report-modal';
 import './refresh-report-modal';
 import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../mixins/utils-mixin';
@@ -16,6 +15,7 @@ import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {PaperInputElement} from '@polymer/paper-input/paper-input';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @polymer
@@ -122,8 +122,6 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
               </div>
             `}
       </labelled-item>
-      <refresh-report-modal id="refresh" .data="${this.refreshData}" .refresh-url="${this.refreshUrl}">
-      </refresh-report-modal>
     `;
   }
 
@@ -255,7 +253,13 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
   }
 
   _refresh() {
-    (this.shadowRoot!.getElementById('refresh') as RefreshReportModalEl).open();
+    openDialog({
+      dialog: 'refresh-report-modal',
+      dialogData: {
+        refreshData: this.refreshData,
+        refreshUrl: this.refreshUrl
+      }
+    });
   }
 
   connectedCallback() {
@@ -277,8 +281,6 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
       if (paperButton && paperButton.textContent!.trim() === 'Save') {
         this.localData.narrative_assessment = (labelledItem[1].querySelector('etools-input') as EtoolsInput).value;
       }
-
-      (this.shadowRoot!.getElementById('refresh') as RefreshReportModalEl).close();
     }
   }
 }
