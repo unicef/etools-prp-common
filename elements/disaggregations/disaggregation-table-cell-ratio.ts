@@ -81,8 +81,8 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
             ></disaggregation-field>
           </div>
           <div class="computed-value">
-            <etools-prp-number .value="${this.localData.v}"></etools-prp-number> /
-            <etools-prp-number .value="${this.localData.d}"></etools-prp-number>
+            <etools-prp-number .value="${this.localData?.v}"></etools-prp-number> /
+            <etools-prp-number .value="${this.localData?.d}"></etools-prp-number>
           </div>
         </div>
         <div slot="non-editable" class="app-grid">
@@ -104,9 +104,6 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('data')) {
-      this._cloneData(this.data);
-    }
     if (changedProperties.has('coords')) {
       this._bindValidation(this.coords);
     }

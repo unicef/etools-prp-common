@@ -42,12 +42,6 @@ class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
       </disaggregation-table-cell>
     `;
   }
-
-  connectedCallback() {
-    super.connectedCallback();
-    const nullData = this._clone(this.data);
-    this.data = nullData;
-  }
 }
 
 export { DisaggregationTableCellNumber as DisaggregationTableCellNumberEl };

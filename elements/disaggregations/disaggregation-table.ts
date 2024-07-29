@@ -19,7 +19,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 @customElement('disaggregation-table')
-class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitElement)) {
+export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitElement)) {
   @property({type: Object})
   data!: any;
 
@@ -129,6 +129,9 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
         white-space: nowrap;
         background-color: var(--paper-grey-100);
       }
+      .justified {
+        justify-content: space-between;
+      }
     `
   ];
 
@@ -157,11 +160,11 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
             </dl>`
           : ''}
 
-        <div class="layout horizontal justified">
+        <div class="layout-horizontal justified">
           <div class="flex">
             ${this.dualReportingEnabled ? html`<h4>${translate('PROGRESS_AGAINST_CLUSTER_TARGET')}:</h4>` : ''}
 
-            <table class="vertical layout">
+            <table class="vertical-layout">
               ${this.formattedMapping?.length === 0
                 ? html`<zero-disaggregations
                     .data="${this.viewData}"
@@ -198,8 +201,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
   }
 
   connectedCallback() {
-    super.connectedCallback();
-    this._addEventListeners();
+    super.connectedCallback();    
     if (!this.totals) {
       this.totals = {};
     }
@@ -219,8 +221,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('formattedData')) {
-      this._cloneData(this.formattedData);
+    if (changedProperties.has('formattedData')) {      
       this._resetFields();
     }
 
@@ -232,20 +233,27 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
       changedProperties.has('editableBool') ||
       changedProperties.has('formattedData') ||
       changedProperties.has('mapping')
-    ) {
+    ) {     
       this.formattedMapping = this._computeMapping(this.editableBool, this.formattedData, this.mapping);
     }
 
     if (changedProperties.has('formattedData') || changedProperties.has('totals')) {
-      this.viewData = this._computeViewData(this.formattedData, this.totals);
+      this.viewData = this._computeViewData(this.formattedData, this.totals);    
     }
 
-    if (changedProperties.has('editable')) {
+    if (changedProperties.has('formattedData') && this.editableBool) {
+      this.localData = this._clone(this.formattedData);
+      this.totals = this._clone(this.formattedData.disaggregation);
+    }
+
+    if (changedProperties.has('editable')) {      
       this.editableBool = this._computeEditableBool(this.editable);
+      this._addEventListeners();
     }
 
-    if (changedProperties.has('data')) {
+    if (changedProperties.has('data')) {      
       this.indicatorType = this._computeIndicatorType(this.data);
+      this.formattedData = this._clone(this.data);   
     }
 
     if (changedProperties.has('app') || changedProperties.has('indicatorType')) {
@@ -293,28 +301,26 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
     const value = e.detail.value;
     let totals;
 
-    const newValue = {
+    if (!this.localData.disaggregation)  {
+      this.localData.disaggregation = {};
+    }
+    if (!this.totals)  {
+      this.totals = {};
+    }
+
+    const newValue = Object.assign ({
       c: null,
       d: null,
-      v: null,
-      ...this.localData.disaggregation[key],
-      ...value
-    };
+      v: null
+    },
+      this.localData.disaggregation[key],
+      value
+    );
 
     e.stopPropagation();
-
-    this.localData = {
-      ...this.localData,
-      disaggregation: {
-        ...this.localData.disaggregation,
-        [key]: newValue
-      }
-    };
-
-    this.totals = {
-      ...this.totals,
-      [key]: newValue
-    };
+    
+    this.localData.disaggregation[key] = newValue;
+    this.totals[key] = newValue;   
 
     switch (this.formattedData.level_reported) {
       case 1:
@@ -364,7 +370,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
     return !(String(app) === 'ip-reporting' && String(indicatorType) === 'number');
   }
 
-  save() {
+  save() {    
     if (!this.editable) {
       return Promise.reject();
     }
@@ -388,13 +394,20 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
 
     return store
       .dispatch(disaggregationsUpdateForLocation(updateThunk, String(this.indicatorId), this.formattedData.location.id))
-      .then((value) => {
+      .then(() => {
         fireEvent(this, 'locations-updated');
-        return value;
+        this.dispatchEvent(
+          new CustomEvent('locations-updated', {
+            detail: {},
+            bubbles: true,
+            composed: true
+          })
+        );
+        return true;
       });
   }
 
-  _triggerModalRefit(e: CustomEvent) {
+  _triggerModalRefit(e: CustomEvent) {   
     if (e.detail.value && !isJsonStrMatch(this.formattedData, e.detail.value)) {
       this.formattedData = e.detail.value;
     }
@@ -425,13 +438,17 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
       return {};
     }
 
-    return {
-      ...data,
-      disaggregation: {
-        ...data.disaggregation,
-        ...totals
-      }
-    };
+    return Object.assign({}, data, {
+      disaggregation: Object.assign({}, data.disaggregation, totals)
+    });
+
+    // return {
+    //   ...data,
+    //   disaggregation: {
+    //     ...data.disaggregation,
+    //     ...totals
+    //   }
+    // };
   }
 
   _computeDualReportingEnabled(byEntity: any[], editableBool: boolean) {
@@ -448,7 +465,7 @@ class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitEleme
   }
 
   _initPercentageMap(localData: any, map: any[]) {
-    if (!map.length) {
+    if (!map.length || isJsonStrMatch(this.localData?.reporting_entity_percentage_map, map)) {
       return;
     }
 

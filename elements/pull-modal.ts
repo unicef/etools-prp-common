@@ -8,7 +8,6 @@ import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-ro
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-header';
 import UtilsMixin from '../mixins/utils-mixin';
 import './etools-prp-permissions';
-import './confirm-box';
 import './project-status';
 import './page-body';
 import './list-placeholder';
@@ -141,8 +140,6 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
             will be overwritten.
           </p>
         </div>
-
-        <confirm-box id="confirm"></confirm-box>
 
         <etools-loading ?active="${this.updatePending}"></etools-loading>
       </etools-dialog>

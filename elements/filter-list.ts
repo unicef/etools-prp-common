@@ -71,6 +71,9 @@ export class FilterList extends connect(store)(LitElement) {
   @property({type: Boolean})
   hideClear = false;
 
+  @property({type: Object})
+  routeDetails?: any;
+
   stateChanged(state: RootState) {
     if (
       state.app?.routeDetails?.queryParams &&

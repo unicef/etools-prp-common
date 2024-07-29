@@ -115,9 +115,7 @@ class DisaggregationTableCellPercentage extends LitElement {
 
   updated(changedProperties) {
     super.updated(changedProperties);
-    if (changedProperties.has('data')) {
-      this._cloneData(this.data);
-    }
+    
     if (changedProperties.has('coords')) {
       this._bindValidation(this.coords);
     }
