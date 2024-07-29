@@ -112,7 +112,7 @@ export class PullModal extends connect(store)(ModalMixin(UtilsMixin(LitElement))
             </etools-data-table-column>
           </etools-data-table-header>
 
-          ${(this.data.reports || []).amp(
+          ${(this.data?.reports || []).map(
             (report: any) => html`
               <etools-data-table-row no-collapse>
                 <div slot="row-data">

@@ -32,7 +32,7 @@ class ZeroDisaggregations extends LitElement {
         .data="${this.totalRow}"
         .levelReported="${this.data?.level_reported}"
         .indicatorType="${this.data?.display_type}"
-        row-type="totalsRow"
+        rowType="totalsRow"
         .editable="${this.editable}"
       ></disaggregation-table-row>
     `;

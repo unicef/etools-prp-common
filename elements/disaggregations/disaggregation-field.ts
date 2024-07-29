@@ -1,4 +1,4 @@
-import { html, css, LitElement } from 'lit';
+import { html, css, LitElement, PropertyValues } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
@@ -6,7 +6,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
 @customElement('disaggregation-field')
-class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
+export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   @property({type: String})
   key!: string;
 
@@ -65,8 +65,14 @@ class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    (this.shadowRoot!.getElementById('field') as EtoolsInput).validate();
-    fireEvent(this, 'register-field', this);
+     
+  }
+
+  protected firstUpdated(changedProperties: PropertyValues): void {
+    super.firstUpdated(changedProperties);
+
+   // this.validate();
+   // fireEvent(this, 'register-field', this);
   }
 
   validate() {

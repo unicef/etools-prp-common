@@ -1,13 +1,13 @@
 import { html, css, LitElement } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+
+
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-button/paper-button';
-import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
-import ModalMixin from '../../mixins/modal-mixin';
+
+
 import {translate, get as getTranslation} from 'lit-translate';
 import {buttonsStyles} from '../../styles/buttons-styles';
 import {modalStyles} from '../../styles/modal-styles';
@@ -16,14 +16,47 @@ import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {DisaggregationTableEl} from './disaggregation-table';
 import {ConfirmBoxEl} from '../confirm-box';
+import UtilsMixin from '../../mixins/utils-mixin';
 
 @customElement('disaggregation-modal')
-class DisaggregationModal extends ModalMixin(LitElement) {
+export class DisaggregationModal extends UtilsMixin(LitElement) {
   @property({type: String})
   reportingPeriod!: string;
 
   @property({type: Boolean})
   updatePending = false;
+
+  @property({type: Boolean})
+  hasPD = false;
+
+  @property({type: Object})
+  topLevelLocation!: any;
+
+  @property({type: Object})
+  currentPd!: any;
+
+  @property({type: String})
+  indicatorName!: string;
+
+  @property({type: Object})
+  disaggregations!: any;
+
+  @property({type: Number})
+  indicatorId!: number;
+
+  set dialogData(data: any) {
+    if (!data) {
+      return;
+    }
+    const {indicatorName, currentPd, topLevelLocation, reportingPeriod, disaggregations, indicatorId}: any = data;
+    this.indicatorName = indicatorName;
+    this.currentPd = currentPd;
+    this.hasPD = !!Object.keys(currentPd).length;
+    this.topLevelLocation = topLevelLocation;
+    this.reportingPeriod = reportingPeriod;
+    this.disaggregations = disaggregations;
+    this.indicatorId = indicatorId;
+  }
 
   static styles = [
     css`
@@ -43,37 +76,72 @@ class DisaggregationModal extends ModalMixin(LitElement) {
 
   render() {
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <paper-dialog id="dialog" modal .opened="${this.opened}">
-        <div class="header layout horizontal justified">
-          <h2>${translate('ENTER_DATA')}</h2>
+      ${buttonsStyles} ${modalStyles}      
+      <etools-dialog
+        id="addUserDialog"
+        size="md"
+        opened
+        dialog-title="${translate('ENTER_DATA')} ${translate('REPORTING_PERIOD')}: ${this.reportingPeriod}"
+        ok-btn-text="${translate('SAVE')}"
+        cancel-btn-text=${translate('CANCEL')}
+        keep-dialog-open
+        @confirm-btn-clicked="${this._save}"
+        @close="${() => this.onClose()}"
+        ?show-spinner="${this.updatePending}"
+      >
+        <div class="container-dialog">
 
-          <div class="layout horizontal">
-            <p>${translate('REPORTING_PERIOD')}: ${this.reportingPeriod}</p>
+          <div>
+              <h3>${this.indicatorName}</h3>
+              <p class="location">
+                <iron-icon icon="maps:place"></iron-icon>
+                ${this.topLevelLocation?.name}
+              </p>
+              ${this.hasPD
+                ? html`<p class="current-pd">
+                    ${this.currentPd.agreement} | ${this.currentPd.title}
+                  </p>`
+                : ``}
+            </div>
+            <div class="layout-vertical end-justified">
+              <dl class="location-progress">
+                <dt>${translate('LOCATION_PROGRESS')}</dt>
+                <dd>
+                  ${this.topLevelLocation?.byEntity[0].display_type ==  'number'
+                    ? html`<etools-prp-number
+                        .value="${this.topLevelLocation?.byEntity[0].location_progress.v}"
+                      ></etools-prp-number>`
+                    : html`<span
+                        >${this._formatIndicatorValue(
+                          this.topLevelLocation?.byEntity[0].display_type,
+                          this.topLevelLocation?.byEntity[0].location_progress.c,
+                          1
+                        )}</span
+                      >`}
+                </dd>
+              </dl>
+            </div>
 
-            <paper-icon-button class="self-center" @click="${this.close}" icon="icons:close"></paper-icon-button>
-          </div>
+            <disaggregation-table
+              slot="disaggregation-table"
+              .data="${this.topLevelLocation.byEntity[0]}"
+              .byEntity="${this.topLevelLocation.byEntity}"
+              .mapping="${this.disaggregations.disagg_lookup_map}"
+              .labels="${this.disaggregations.labels}"
+              .indicatorId="${this.indicatorId}"
+              editable="1"
+            >
+            </disaggregation-table>
+
+
+          <confirm-box id="confirm"></confirm-box>
         </div>
-
-        <paper-dialog-scrollable>
-          <slot name="meta"></slot>
-          <slot name="disaggregation-table" class="table"></slot>
-        </paper-dialog-scrollable>
-
-        <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" @click="${this._save}" raised>${translate('SAVE')}</paper-button>
-          <paper-button class="btn-cancel" @click="${this.close}">${translate('CANCEL')}</paper-button>
-        </div>
-
-        <confirm-box id="confirm"></confirm-box>
-
-        <etools-loading .active="${this.updatePending}"></etools-loading>
-      </paper-dialog>
+      </etools-dialog>
     `;
   }
 
   _save() {
-    const tableElem = this.querySelector('disaggregation-table');
+    const tableElem = this.shadowRoot!.querySelector('disaggregation-table');
     if (tableElem) {
       this.updatePending = true;
 
@@ -81,7 +149,7 @@ class DisaggregationModal extends ModalMixin(LitElement) {
         .save()
         .then(() => {
           this.updatePending = false;
-          this.close();
+          this.onClose();
         })
         .catch((_err: any) => {
           console.log(_err);
@@ -104,30 +172,10 @@ class DisaggregationModal extends ModalMixin(LitElement) {
     });
   }
 
-  _addEventListeners() {
-    this._boundClose = this.close.bind(this);
-    this.addEventListener('dialog-iron-overlay-closed', this._boundClose);
-    this._boundAdjustPosition = this.adjustPosition.bind(this);
-    this.addEventListener('disaggregation-modal-refit', this._boundAdjustPosition as any);
-    this._boundConfirm = this._confirm.bind(this);
-    this.addEventListener('disaggregation-modal-confirm', this._boundConfirm as any);
+  onClose(): void {
+    fireEvent(this, 'dialog-closed', {confirmed: false});
   }
 
-  _removeEventListeners() {
-    this.removeEventListener('dialog-iron-overlay-closed', this._boundClose);
-    this.removeEventListener('disaggregation-modal-refit', this._boundAdjustPosition as any);
-    this.removeEventListener('disaggregation-modal-confirm', this._boundConfirm as any);
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._addEventListeners();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._removeEventListeners();
-  }
 }
 
 export { DisaggregationModal as DisaggregationModalEl };
