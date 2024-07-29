@@ -3,7 +3,6 @@ import {customElement, property} from 'lit/decorators.js';
 import numeral from 'numeral';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('numeral-js')

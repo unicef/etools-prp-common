@@ -3,8 +3,7 @@ import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 // import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
-/**
- * @polymer
+/** 
  * @customElement
  */
 @customElement('status-badge')

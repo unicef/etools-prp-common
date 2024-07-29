@@ -13,14 +13,12 @@ import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-icons/maps-icons';
 
-
 import '../elements/etools-prp-number';
 import './status-badge';
 import '../elements/etools-prp-printer';
 import './disaggregations/disaggregation-modal';
 import '../elements/report-status';
 import './pull-modal';
-import {PullModalEl} from './pull-modal';
 import UtilsMixin from '../mixins/utils-mixin';
 import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -31,7 +29,7 @@ import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
 import {RootState} from '../../typings/redux.types';
 import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
-import { openDialog } from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @polymer
@@ -90,7 +88,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
           background: var(--paper-grey-100);
         }
 
-        .tab-header paper-button {
+        .tab-header etools-button {
           margin: 0;
         }
 
@@ -245,7 +243,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                     <div class="header">
                       <h3 class="locations-heading">${translate('DATA_FOR_LOCATIONS')}</h3>
 
-                      <etools-icon-button class="print-btn" name="icons:print"> </etools-icon-button>
+                      <etools-icon-button class="print-btn" name="print"> </etools-icon-button>
                     </div>
 
                     <div hidden aria-hidden="true">
@@ -304,13 +302,12 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                 <div class="tab-header layout-horizontal justified">
                                   <div class="center-align">${translate('ENTER_DATA_LOCATION')}</div>
                                   <div>
-                                     <etools-button
-                                        variant="primary"
-                                        modalIndex="${topLevelLocationIndex}"
-                                        @click="${() => this._openModal(topLevelLocationIndex)}"
-                                      >
-                                        ${translate('ENTER_DATA')}
-                                      </etools-button>                                    
+                                    <etools-button
+                                      variant="primary"
+                                      @click="${() => this._openModal(topLevelLocationIndex)}"
+                                    >
+                                      ${translate('ENTER_DATA')}
+                                    </etools-button>
                                   </div>
                                 </div>
                               `
@@ -354,17 +351,17 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                       ${this._equals(location.display_type, 'number')
                                         ? html` <dt>
                                               ${translate('LOCATION_PROGRESS_AGAINST')}
-                                              ${this._localizeLowerCased(location.reporting_entity.title)}:
+                                              ${this._localizeLowerCased(location.reporting_entity?.title)}:
                                             </dt>
                                             <dd>
                                               <etools-prp-number
-                                                .value="${location.location_progress.v}"
+                                                .value="${location.location_progress?.v}"
                                               ></etools-prp-number>
                                             </dd>
                                             <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
                                               <etools-prp-number
-                                                .value="${location.previous_location_progress.v}"
+                                                .value="${location.previous_location_progress?.v}"
                                               ></etools-prp-number>
                                             </dd>`
                                         : html`
@@ -372,14 +369,14 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                             <dd>
                                               ${this._formatIndicatorValue(
                                                 location.display_type,
-                                                location.location_progress.c
+                                                location.location_progress?.c
                                               )}
                                             </dd>
                                             <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
                                               ${this._formatIndicatorValue(
                                                 location.display_type,
-                                                location.previous_location_progress.c
+                                                location.previous_location_progress?.c
                                               )}
                                             </dd>
                                           `}
@@ -406,16 +403,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
             </etools-prp-printer>
           `
         : ``}
-
-      <pull-modal
-        id="pull-modal-${this.indicatorId}"
-        .indicatorName="${this.indicatorName}"
-        .reportingPeriod="${this.reportingPeriod}"
-        .indicatorId="${this.indicatorId}"
-        .reportId="${this.reportId}"
-        @locations-updated="${(e: CustomEvent) => this._onLocationsUpdated(e)}"
-      >
-      </pull-modal>
 
       <etools-loading ?active="${this.loading}"></etools-loading>
     `;
@@ -567,6 +554,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
       if (this.initialized) {
         return;
       }
+
       this.initialized = true;
       this._fetchData()
         // @ts-ignore
@@ -583,13 +571,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
 
   onSelectedTopLevelLocationTabChanged(e: CustomEvent) {
     this.topLevelLocationSelected = e.detail.name;
-  }
-
-
-  onLocationRendered(e: CustomEvent) {
-    if (this.locationData.length === e.detail.value) {
-      this.loading = false;
-    }
   }
 
   _computeDisaggregationsUrl(reportableId: string) {
@@ -657,19 +638,25 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     //(this.shadowRoot!.querySelector('#modal-' + (e.target as any).modalIndex) as DisaggregationModalEl).open();
   }
 
-  _openPullModal(e: CustomEvent) {
-    (this.shadowRoot!.querySelector('#pull-modal-' + (e.target as any).modalIndex) as PullModalEl).open();
+  _openPullModal() {
+    openDialog({
+      dialog: 'pull-modal',
+      dialogData: {
+        indicatorName: this.indicatorName,
+        reportingPeriod: this.reportingPeriod,
+        indicatorId: this.indicatorId,
+        reportId: this.reportId
+      }
+    });
   }
 
-  _updateModals(e: CustomEvent, data: any) {
-    const id = (e.target as any).id;
-
+  _updateModals(e: CustomEvent, id: string) {
     if (!id) {
       return;
     }
 
     const change: any = {};
-    change[id] = data.value;
+    change[id] = e.detail.opened;
 
     this.opened = Object.assign({}, this.opened, change);
   }

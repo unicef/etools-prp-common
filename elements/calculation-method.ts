@@ -7,7 +7,6 @@ import UtilsMixin from '../mixins/utils-mixin';
 import {store} from '../../redux/store';
 
 /**
- * @polymer
  * @appliesMixin UtilsBehavior
  */
 @customElement('calculation-method')

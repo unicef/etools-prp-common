@@ -4,7 +4,6 @@ import Constants from '../constants';
 import '../elements/numeral-js';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('etools-prp-number')

@@ -4,7 +4,6 @@ import {customElement, property} from 'lit/decorators.js';
 import {sharedStyles} from '../styles/shared-styles';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('labelled-item')

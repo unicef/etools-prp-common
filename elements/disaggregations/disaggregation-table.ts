@@ -79,12 +79,6 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
 
   static styles = [
     css`
-      :host {
-        --paper-input-container: {
-          padding: 0;
-        }
-      }
-
       disaggregation-switches {
         margin-bottom: 1em;
       }
@@ -122,7 +116,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
         margin-bottom: 5px;
       }
 
-      .percentage-map paper-input {
+      .percentage-map etools-input {
         width: 60px;
         padding: 0;
         margin: 0 5px;

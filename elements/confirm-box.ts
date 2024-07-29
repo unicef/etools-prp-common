@@ -1,6 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-button/paper-button';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-icon/iron-icon';
@@ -62,9 +61,9 @@ export class ConfirmBox extends LitElement {
                 <p>${this.config.body}</p>
               </div>
               <div class="layout horizontal-reverse">
-                <paper-button class="btn-primary" @click="_ok"> ${this.config.okLabel} </paper-button>
+                <etools-button class="btn-primary" @click="${this._ok}"> ${this.config.okLabel} </etools-button>
 
-                <paper-button @click="_cancel"> ${this.config.cancelLabel} </paper-button>
+                <etools-button @click="${this._cancel}"> ${this.config.cancelLabel} </etools-button>
               </div>
             </div>
           </div>`

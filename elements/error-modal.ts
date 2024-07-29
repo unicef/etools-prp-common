@@ -1,41 +1,29 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
-import UtilsMixin from '../mixins/utils-mixin';
-import {get as getTranslation} from 'lit-translate';
-import {buttonsStyles} from '../styles/buttons-styles';
+import {get as getTranslation, translate} from 'lit-translate';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
 @customElement('error-modal')
-export class ErrorModal extends UtilsMixin(LitElement) {
+export class ErrorModal extends LitElement {
   render() {
     return html`
-      ${buttonsStyles}
-      <style include="iron-flex iron-flex-reverse iron-flex-alignment">
-        :host {
-          --paper-dialog: {
-            width: 500px;
-            padding: 24px;
-            margin: 0;
-          }
+      <style>
+        etools-dialog {
+          --divider-color: transparent;
         }
       </style>
-
-      <paper-dialog modal .opened="${this.opened}">
+      <etools-dialog dialog-title="${translate('ERROR')}" hide-confirm-btn .cancelBtnText="${translate('CLOSE')}">
         <div>
           <ul>
-            ${(this.localizeedErrors || []).map((localizedError: any) => html`<li>${localizedError}</li>`)}
+            ${(this.localizedErrors || []).map((localizedError: any) => html`<li>${localizedError}</li>`)}
           </ul>
-          <div class="layout horizontal-reverse">
-            <paper-button class="btn-primary" dialog-dismiss> Close </paper-button>
-          </div>
         </div>
-      </paper-dialog>
+      </etools-dialog>
     `;
   }
 
@@ -45,12 +33,6 @@ export class ErrorModal extends UtilsMixin(LitElement) {
   @property({type: Array})
   localizedErrors!: any[];
 
-  @property({type: Boolean})
-  opened = false;
-
-  @property({type: Object})
-  _result!: any;
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -59,21 +41,10 @@ export class ErrorModal extends UtilsMixin(LitElement) {
     }
   }
 
-  open(errors: string[]) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
+  set dialogData(data: any) {
+    const {errors}: any = data;
 
     this.errors = errors;
-    this.opened = true;
-
-    this._result = new Promise((resolve) => {
-      self.addEventListener('opened-changed', function onOpenedChanged() {
-        self.removeEventListener('opened-changed', onOpenedChanged);
-        resolve(true);
-      });
-    });
-
-    return this._result;
   }
 
   _localizeErrors(errors: string[]) {
@@ -100,11 +71,6 @@ export class ErrorModal extends UtilsMixin(LitElement) {
     });
 
     return localizedErrors;
-  }
-
-  close() {
-    this.errors = [];
-    this.opened = false;
   }
 }
 

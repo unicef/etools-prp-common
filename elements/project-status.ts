@@ -4,7 +4,6 @@ import './status-badge';
 import UtilsMixin from '../mixins/utils-mixin';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
