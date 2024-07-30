@@ -12,7 +12,6 @@ import {getCurrentPath} from '../utils/util';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('filter-list')

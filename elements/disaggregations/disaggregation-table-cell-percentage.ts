@@ -1,13 +1,12 @@
 import {html, css, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
-import '@polymer/app-layout/app-grid/app-grid-style';
 import '../../elements/etools-prp-number';
 import './disaggregation-field';
 import {DisaggregationFieldEl} from './disaggregation-field';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import '@polymer/iron-meta/iron-meta';
-import {IronMeta} from '@polymer/iron-meta/iron-meta';
+// import '@polymer/iron-meta/iron-meta';
+// import {IronMeta} from '@polymer/iron-meta/iron-meta'; // TODO check what is does
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
 @customElement('disaggregation-table-cell-percentage')
@@ -115,7 +114,7 @@ class DisaggregationTableCellPercentage extends LitElement {
 
   updated(changedProperties) {
     super.updated(changedProperties);
-    
+
     if (changedProperties.has('coords')) {
       this._bindValidation(this.coords);
     }
@@ -181,11 +180,11 @@ class DisaggregationTableCellPercentage extends LitElement {
       }
     };
 
-    new IronMeta({
-      type: validator.validatorType,
-      key: validator.validatorName,
-      value: validator
-    });
+    // new IronMeta({
+    //   type: validator.validatorType,
+    //   key: validator.validatorName,
+    //   value: validator
+    // });
 
     this.vName = vName;
   }

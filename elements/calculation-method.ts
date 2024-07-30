@@ -18,11 +18,11 @@ export class CalculationMethod extends connect(store)(UtilsMixin(LitElement)) {
           display: block;
         }
 
-        paper-radio-group {
+        etools-radio-group {
           margin-left: -12px;
         }
 
-        paper-radio-button,
+        sl-radio,
         .read-only-label {
           text-transform: uppercase;
         }

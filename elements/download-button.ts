@@ -4,7 +4,6 @@ import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 /**
- * @polymer
  * @customElement
  */
 @customElement('download-button')

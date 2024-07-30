@@ -21,8 +21,7 @@ export class ErrorBoxErrors extends LitElement {
       </style>
 
       <ul>
-        ${this.errors ||
-        [].map(
+        ${(this.errors || []).map(
           (error: any) => html`
             <li>
               ${error.field ? html`<span>${error.field}:</span>` : ``}

@@ -1,12 +1,10 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import '@polymer/iron-icon/iron-icon';
 import UtilsMixin from '../mixins/utils-mixin';
 import './error-box-errors';
-
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
@@ -15,8 +13,8 @@ import './error-box-errors';
 export class ErrorBox extends UtilsMixin(LitElement) {
   render() {
     return html`
-      <style include="iron-flex iron-flex-alignment iron-flex-reverse">
-        #box {
+      <style>
+        ${layoutStyles} #box {
           background: var(--paper-grey-300);
           padding: 10px;
           color: var(--error-color);
@@ -26,18 +24,18 @@ export class ErrorBox extends UtilsMixin(LitElement) {
           margin-bottom: 1em;
         }
 
-        iron-icon {
+        etools-icon {
           margin-right: 5px;
         }
       </style>
 
       <div id="box" ?hidden="${this._hidden}">
-        <div class="header layout-horizontal center">
-          <iron-icon icon="icons:error"></iron-icon>
+        <div class="header layout-horizontal align-items-center">
+          <etools-icon name="icons:error"></etools-icon>
           <span>Error(s) occurred. Please check the list to save the form.</span>
         </div>
 
-        <error-box-errors errors="${this.mappedErrors}"> </error-box-errors>
+        <error-box-errors .errors="${this.mappedErrors}"> </error-box-errors>
       </div>
     `;
   }

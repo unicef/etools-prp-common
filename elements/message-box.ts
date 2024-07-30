@@ -1,18 +1,16 @@
 import {LitElement, html} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
- * @polymer
  * @customElement
  */
 @customElement('message-box')
 export class MessageBox extends LitElement {
-   render() {
-    return html` <style include="iron-flex iron-flex-alignment">
-        :host {
+  render() {
+    return html` <style>
+        ${layoutStyles} :host {
           display: block;
         }
 
@@ -39,14 +37,13 @@ export class MessageBox extends LitElement {
           margin-right: 15px;
         }
 
-        iron-icon {
-          width: 20px;
-          height: 20px;
+        etools-icon {
+          --etools-icon-font-size: var(--etools-font-size-20, 20px);
         }
       </style>
-      <div class="message-box message-box--${this.type} layout-horizontal">
+      <div class="message-box message-box--${this.type} layout-horizontal align-items-center">
         <div class="icon-wrapper self-center">
-          <iron-icon icon="icons:info"></iron-icon>
+          <etools-icon name="info"></etools-icon>
         </div>
         <div class="self-center">
           <slot></slot>

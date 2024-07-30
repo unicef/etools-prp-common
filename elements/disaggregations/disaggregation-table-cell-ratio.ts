@@ -7,7 +7,7 @@ import './disaggregation-field';
 import '../../elements/etools-prp-number';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import { IronMeta } from '@polymer/iron-meta/iron-meta'; // TODO remove
+// import { IronMeta } from '@polymer/iron-meta/iron-meta'; // TODO check what is does
 
 @customElement('disaggregation-table-cell-ratio')
 class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
@@ -156,11 +156,12 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
       }
     };
 
-    new IronMeta({
-      type: validator.validatorType,
-      key: validator.validatorName,
-      value: validator
-    });
+    // What is this for?
+    // new IronMeta({
+    //   type: validator.validatorType,
+    //   key: validator.validatorName,
+    //   value: validator
+    // });
 
     this.vName = vName;
   }

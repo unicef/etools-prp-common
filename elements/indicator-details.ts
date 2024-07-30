@@ -3,15 +3,13 @@ import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@shoelace-style/shoelace/dist/components/menu-item/menu-item';
 import '@shoelace-style/shoelace/dist/components/menu/menu';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-icons/maps-icons';
 
 import '../elements/etools-prp-number';
 import './status-badge';
@@ -32,7 +30,6 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
  */
@@ -166,7 +163,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
           font-weight: bold;
         }
 
-        .location iron-icon {
+        .location etools-icon {
           margin-left: -3px;
           color: var(--theme-primary-color);
         }
@@ -212,7 +209,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                 ? html`
                     <div class="tab-header layout-horizontal justified">
                       <div class="center-align">${translate('FOR_THIS_INDICATOR')}</div>
-                      <div>                       
+                      <div>
                         <etools-button
                           variant="primary"
                           modal-index="${this.indicatorId}"
@@ -273,8 +270,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                   <sl-menu id="tabs-list">
                     ${(this.locationData || []).map(
                       (topLevelLocation: any, topLevelLocationIndex: number) => html`
-                        <!-- on-rendered-item-count-changed="onLocationRendered" -->
-                        <sl-menu-item id="tab-item"  @click="${() => this.selected = topLevelLocationIndex}">
+                        <sl-menu-item id="tab-item" @click="${() => (this.selected = topLevelLocationIndex)}">
                           <status-badge .type="${this._computeLocationStatus(topLevelLocation)}"></status-badge>
                           ${topLevelLocation.name}
                         </sl-menu-item>
@@ -312,10 +308,11 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                             >
                               ${(topLevelLocation.byEntity || []).map(
                                 (location: any, index: number) =>
-                                  html`<sl-tab 
+                                  html`<sl-tab
                                     slot="nav"
                                     panel="tab_${location.id}"
-                                    ?active="${this.topLevelLocationSelected === `tab_${index}`}">
+                                    ?active="${this.topLevelLocationSelected === `tab_${index}`}"
+                                  >
                                     ${this._localizeLowerCased(location.reporting_entity.title)}
                                   </sl-tab>`
                               )}

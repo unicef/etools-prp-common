@@ -7,7 +7,6 @@ import './labelled-item';
 import './report-status';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './refresh-report-modal';
-import '@polymer/app-layout/app-grid/app-grid-style';
 import UtilsMixin from '../mixins/utils-mixin';
 import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -17,7 +16,7 @@ import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
+
  * @customElement
  * @appliesMixin UtilsMixin
  */
@@ -55,7 +54,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
           padding-right: 18px;
         }
 
-        paper-radio-group {
+        etools-radio-group {
           margin-left: -12px;
         }
 

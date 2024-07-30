@@ -4,17 +4,13 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
-import '@polymer/paper-styles/typography';
 import ModalMixin from '../mixins/modal-mixin';
 import UtilsMixin from '../mixins/utils-mixin';
 import './calculation-methods-demo-locations';
 import './calculation-methods-demo-periods';
 import './etools-prp-number';
-import {buttonsStyles} from '../styles/buttons-styles';
-import {modalStyles} from '../styles/modal-styles';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
@@ -27,10 +23,9 @@ export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElemen
 
   render() {
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <style >
+      <style>
         :host {
-          display: block;        
+          display: block;
         }
 
         .content-box {
@@ -56,74 +51,69 @@ export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElemen
         }
         .m-10 {
           margin: 0 10px;
-        } 
+        }
         calculation-methods-demo-locations,
         calculation-methods-demo-periods {
           margin: 0 25px;
         }
-        .pl-12 { 
+        .pl-12 {
           padding-inline-start: 12px;
         }
       </style>
 
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        dialog-title="Calculation method across ${this.domain}"
-      >
+      <etools-dialog no-padding keep-dialog-open size="md" dialog-title="Calculation method across ${this.domain}">
         <div class="container-dialog">
-              <div class="content-box">
-                <labelled-item label="Sample indicator">
-                  <span class="bold-text">
-                    # of children aged 6-59 months affected by severe acute malnutrition who are admitted into treatment.
-                  </span>
-                </labelled-item>
+          <div class="content-box">
+            <labelled-item label="Sample indicator">
+              <span class="bold-text">
+                # of children aged 6-59 months affected by severe acute malnutrition who are admitted into treatment.
+              </span>
+            </labelled-item>
 
-                <labelled-item label="Guidance on measurement (for each reporting period)">
-                  <span>
-                    Quality standard: requires agreed treatment protocol and duration (usually 2 mo); Measurement/reporting
-                    clarification: measures newly admitted cases for an ongoing service, therefore requires agreement to
-                    consistently report NEW admissions for an agreed reporting period (set dates) to avoid double counting.
-                  </span>
-                </labelled-item>
-              </div>
+            <labelled-item label="Guidance on measurement (for each reporting period)">
+              <span>
+                Quality standard: requires agreed treatment protocol and duration (usually 2 mo); Measurement/reporting
+                clarification: measures newly admitted cases for an ongoing service, therefore requires agreement to
+                consistently report NEW admissions for an agreed reporting period (set dates) to avoid double counting.
+              </span>
+            </labelled-item>
+          </div>
 
-              <br />
+          <br />
 
-              <labelled-item
-                class="pl-12"
-                label="Choose calculation method to read description
+          <labelled-item
+            class="pl-12"
+            label="Choose calculation method to read description
               and observe the impact on data presented below:"
-              >
-               <etools-radio-group @sl-change="${this._onRadioChange}" .value="${this.selectedType}">
-                  <sl-radio value="sum">SUM</sl-radio>
-                  <sl-radio value="max">MAX</sl-radio>
-                  <sl-radio value="avg">AVG</sl-radio>
-                </etools-radio-group>
-                <div>${this.description}</div>
-              </labelled-item>
+          >
+            <etools-radio-group @sl-change="${this._onRadioChange}" .value="${this.selectedType}">
+              <sl-radio value="sum">SUM</sl-radio>
+              <sl-radio value="max">MAX</sl-radio>
+              <sl-radio value="avg">AVG</sl-radio>
+            </etools-radio-group>
+            <div>${this.description}</div>
+          </labelled-item>
 
-              <br />
-              ${this._equals(this.domain, 'locations')
-                ? html` <calculation-methods-demo-locations .totals="${this.locationTotals}">
-                  </calculation-methods-demo-locations>`
-                : ``}
-              ${this._equals(this.domain, 'reporting periods')
-                ? html`
+          <br />
+          ${this._equals(this.domain, 'locations')
+            ? html` <calculation-methods-demo-locations .totals="${this.locationTotals}">
+              </calculation-methods-demo-locations>`
+            : ``}
+          ${this._equals(this.domain, 'reporting periods')
+            ? html`
               <calculation-methods-demo-periods .totals="${this.locationTotals}">
                 </calculation-methods-demo-locations>`
-                : ``}
+            : ``}
 
-              <div class="content-box right-align m-10">
-                  <div class="total-label bold-text">Total progress:</div>
-                  <div class="total-box bold-text">
-                    <etools-prp-number .value="${this.finalTotal}"></etools-prp-number>
-                  </div>
-              </div>
-
-              <br />           
+          <div class="content-box right-align m-10">
+            <div class="total-label bold-text">Total progress:</div>
+            <div class="total-box bold-text">
+              <etools-prp-number .value="${this.finalTotal}"></etools-prp-number>
+            </div>
           </div>
+
+          <br />
+        </div>
       </etools-dialog>
     `;
   }
@@ -202,7 +192,7 @@ export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElemen
   @property({type: String})
   description!: string;
 
-  set dialogData(data: any) {   
+  set dialogData(data: any) {
     const {domain, items}: any = data;
 
     this.domain = domain;

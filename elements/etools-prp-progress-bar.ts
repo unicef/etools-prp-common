@@ -5,7 +5,6 @@ import {progressBarStyles} from '../styles/progress-bar-styles';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin

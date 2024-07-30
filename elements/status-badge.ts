@@ -1,9 +1,9 @@
 
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-// import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
-/** 
+/**
  * @customElement
  */
 @customElement('status-badge')
@@ -14,13 +14,11 @@ class StatusBadge extends LitElement {
           display: inline-block;
           vertical-align: top;
 
-          --iron-icon-height: var(--status-badge-size, 16px);
-          --iron-icon-width: var(--status-badge-size, 16px);
-
           margin-right: 4px;
         }
-        :host iron-icon {
+        :host etools-icon {
           line-height: 1;
+          --etools-icon-font-size: var(--status-badge-size, var(--etools-font-size-16, 16px));
         }
       </style>
 

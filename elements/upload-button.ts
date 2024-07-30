@@ -6,6 +6,7 @@ import {get as getTranslation} from 'lit-translate';
 import './error-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
 /**
  * @customElement
@@ -53,7 +54,7 @@ export class UploadButton extends UtilsMixin(LitElement) {
         dialog-title="${this.modalTitle}"
       >
         ${this.opened
-          ? html`<error-box errors="${this.errors}"></error-box>
+          ? html`<error-box .errors="${this.errors}"></error-box>
               <div class="row">
                 <etools-file
                   ?showFilesContainer="${true}"

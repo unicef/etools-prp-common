@@ -1,9 +1,7 @@
 import { LitElement, PropertyValues, html } from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
-import '@polymer/paper-styles/typography';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import RoutingMixin from '../mixins/routing-mixin';
 import {sharedStyles} from '../styles/shared-styles';
@@ -11,7 +9,6 @@ import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin RoutingMixin
@@ -33,14 +30,14 @@ export class PageHeader extends RoutingMixin(connect(store)(LitElement)) {
 
           background: white;
           box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.1);
-
-          --paper-icon-button: {
-            color: #666;
-          }
+        }
+        etools-icon-button {
+          color: #666;
         }
         .title {
           min-width: 0;
           position: relative;
+          flex: 1;
         }
         .title h1 {
           font-size: 20px;
@@ -65,7 +62,7 @@ export class PageHeader extends RoutingMixin(connect(store)(LitElement)) {
         }
       </style>
 
-      <div class="layout-horizontal align-items-center">
+      <div class="layout-horizontal">
         <div class="title flex">
           <div class="above-title">
             <slot name="above-title"></slot>
@@ -73,7 +70,7 @@ export class PageHeader extends RoutingMixin(connect(store)(LitElement)) {
           <div class="layout-horizontal align-items-center">
             ${this.back
               ? html`<a href="${this.backUrl}" class="back-button">
-                  <paper-icon-button icon="chevron-left"></paper-icon-button>
+                  <etools-icon-button name="chevron-left"></etools-icon-button>
                 </a>`
               : ``}
             <h1>${this.title}<slot name="in-title"></slot></h1>

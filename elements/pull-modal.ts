@@ -5,6 +5,7 @@ import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-column';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-row';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-header';
 import UtilsMixin from '../mixins/utils-mixin';
 import './etools-prp-permissions';
@@ -83,7 +84,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
           margin: 20px;
         }
 
-        .overwrite-notification iron-icon {
+        .overwrite-notification etools-icon {
           top: 10px;
           margin: 12px;
         }
