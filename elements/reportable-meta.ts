@@ -133,7 +133,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
   data!: any;
 
   @property({type: Object})
-  localData: any = {};
+  localData!: any;
 
   @property({type: Boolean, reflect: true})
   allowNoStatus = false;
