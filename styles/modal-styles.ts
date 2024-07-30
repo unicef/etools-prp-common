@@ -15,7 +15,7 @@ export const modalStyles = html` <style>
     line-height: 48px;
   }
 
-  .header paper-icon-button {
+  .header etools-icon-button {
     margin: 0 -13px 0 20px;
     color: white;
   }

@@ -133,10 +133,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
           padding: 0px 16px;
         }
 
-        #tabs-list #tab-item.iron-selected {
-          background-color: var(--theme-secondary-color-d);
-        }
-
         #pages-container {
           width: 70%;
           height: inherit;
