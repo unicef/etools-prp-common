@@ -41,7 +41,7 @@ export class ReportStatus extends connect(store)(LitElement) {
   @property({type: String})
   status!: string;
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'no-label'})
   noLabel = false;
 
   @property({type: String})

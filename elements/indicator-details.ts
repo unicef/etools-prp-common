@@ -48,21 +48,12 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     }
     return html`
       ${buttonsStyles}
-      <style include="iron-flex iron-flex-alignment app-grid-style">
+      <style>
         :host {
           display: block;
           width: 100%;
           min-height: 150px;
           position: relative;
-
-          --app-grid-columns: 2;
-          --app-grid-gutter: 25px;
-          --app-grid-item-height: auto;
-
-          --paper-tabs: {
-            padding-left: 12px;
-            border-bottom: 1px solid var(--paper-grey-300);
-          }
         }
 
         .header {
@@ -94,7 +85,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
 
         .table-container {
           max-height: 500px;
-          padding-bottom: 25px;
+          padding: 25px;
           overflow: inherit;
         }
 
@@ -336,7 +327,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                           ${(topLevelLocation.byEntity || []).map(
                             (location: any, index: number) => html`
                               <div name="tab_${index}" ?hidden="${this.topLevelLocationSelected !== `tab_${index}`}">
-                                <div class="table-container app-grid">
+                                <div class="table-container ">
                                   <div class="item">
                                     <div hidden aria-hidden="true">
                                       <dl class="printme">
@@ -386,7 +377,6 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                       .data="${location}"
                                       .mapping="${this.disaggregations.disagg_lookup_map}"
                                       .labels="${this.disaggregations.labels}"
-                                      @locations-updated="${this._onLocationsUpdated}"
                                     >
                                     </disaggregation-table>
                                   </div>
@@ -628,14 +618,11 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
         disaggregations: this.disaggregations,
         indicatorId: this.indicatorId
       }
-    }).then(({confirmed, response}) => {
-      if (!confirmed || !response) {
-        return null;
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this._onLocationsUpdated();
       }
-      return null;
     });
-
-    //(this.shadowRoot!.querySelector('#modal-' + (e.target as any).modalIndex) as DisaggregationModalEl).open();
   }
 
   _openPullModal() {
@@ -673,8 +660,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     return !!Object.keys(currentPD).length;
   }
 
-  _onLocationsUpdated(_e: CustomEvent) {   
-    //e.stopPropagation();
+  _onLocationsUpdated() {
     this._fetchData();
     this.updatedIndicatorId = this.indicatorId;
     fireEvent(this, 'refresh-report', String(this.indicatorId));

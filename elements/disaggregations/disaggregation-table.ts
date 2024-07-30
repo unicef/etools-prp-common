@@ -7,6 +7,7 @@ import {disaggregationTableStyles} from '../../styles/disaggregation-table-style
 import Endpoints from '../../endpoints';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {disaggregationsUpdateForLocation} from '../../../redux/actions/disaggregations';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './table-content/three-disaggregations';
 import './table-content/two-disaggregations';
 import './table-content/one-disaggregation';
@@ -77,7 +78,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
   @property({type: Number})
   indicatorId!: number;
 
-  static styles = [
+  static styles = [layoutStyles,
     css`
       disaggregation-switches {
         margin-bottom: 1em;
@@ -132,6 +133,10 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
       .justified {
         justify-content: space-between;
       }
+      .flex {
+        flex: 1;
+      }
+
     `
   ];
 
@@ -164,7 +169,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
           <div class="flex">
             ${this.dualReportingEnabled ? html`<h4>${translate('PROGRESS_AGAINST_CLUSTER_TARGET')}:</h4>` : ''}
 
-            <table class="vertical-layout">
+            <table class="layout-vertical">
               ${this.formattedMapping?.length === 0
                 ? html`<zero-disaggregations
                     .data="${this.viewData}"

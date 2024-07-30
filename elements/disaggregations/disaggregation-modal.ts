@@ -113,7 +113,7 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
         .save()
         .then(() => {
           this.updatePending = false;
-          this.onClose();
+          this.onClose(true);
         })
         .catch((err: any) => {
           console.log(err);
@@ -126,8 +126,8 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
     }
   }
 
-  onClose(): void {
-    fireEvent(this, 'dialog-closed', {confirmed: false});
+  onClose(confirmed = false): void {
+    fireEvent(this, 'dialog-closed', {confirmed: confirmed});
   }
 }
 

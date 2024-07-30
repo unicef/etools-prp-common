@@ -1,10 +1,8 @@
 import {html} from 'lit';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
-import '@polymer/iron-flex-layout/iron-flex-layout';
 import {printStyles} from './print-styles';
 
 export const disaggregationTableStyles = html` ${printStyles}
-  <style include="iron-flex iron-flex-alignment">
+  <style>
     :host {
       display: block;
     }
@@ -48,7 +46,7 @@ export const disaggregationTableStyles = html` ${printStyles}
     /*   Rows   */
     tr {
       display: flex;
-      @apply --layout-center;
+      align-items: center;
       border-bottom: 1px solid white;
     }
 
