@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import {translate, get as getTranslation} from 'lit-translate';
 import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -65,7 +66,7 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
           <div>
             <h3>${this.indicatorName}</h3>
             <p class="location">
-              <iron-icon icon="maps:place"></iron-icon>
+              <etools-icon name="communication:locationOn"></etools-icon>
               ${this.topLevelLocation?.name}
             </p>
             ${this.hasPD ? html`<p class="current-pd">${this.currentPd.agreement} | ${this.currentPd.title}</p>` : ``}
