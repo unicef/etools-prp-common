@@ -44,7 +44,7 @@ export class MessageBox extends LitElement {
           height: 20px;
         }
       </style>
-      <div class="message-box message-box--${this.type} layout horizontal">
+      <div class="message-box message-box--${this.type} layout-horizontal">
         <div class="icon-wrapper self-center">
           <iron-icon icon="icons:info"></iron-icon>
         </div>

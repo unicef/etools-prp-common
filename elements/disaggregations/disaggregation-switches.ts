@@ -8,6 +8,7 @@ import '../message-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 
 @customElement('disaggregation-switches')
 class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement)) {

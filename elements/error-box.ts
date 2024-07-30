@@ -32,7 +32,7 @@ export class ErrorBox extends UtilsMixin(LitElement) {
       </style>
 
       <div id="box" ?hidden="${this._hidden}">
-        <div class="header layout horizontal center">
+        <div class="header layout-horizontal center">
           <iron-icon icon="icons:error"></iron-icon>
           <span>Error(s) occurred. Please check the list to save the form.</span>
         </div>
