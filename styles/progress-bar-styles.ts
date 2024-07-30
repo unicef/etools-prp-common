@@ -8,8 +8,9 @@ export const progressBarStyles = html`
       max-width: 300px;
     }
 
-    paper-progress {
-      --paper-progress-height: var(--etools-prp-progress-bar-height, 15px);
+    sl-progress-bar {
+      --indicator-color: var(--etools-indicator-color, var(--sl-color-primary-600));
+      --height: var(--etools-prp-progress-bar-height, 15px);
       width: 87%;
       margin-right: 3%;
       float: left;

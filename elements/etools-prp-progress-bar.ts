@@ -1,8 +1,8 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-progress/paper-progress';
 import UtilsMixin from '../mixins/utils-mixin';
 import {progressBarStyles} from '../styles/progress-bar-styles';
+import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar';
 
 /**
  * @polymer
@@ -13,8 +13,9 @@ import {progressBarStyles} from '../styles/progress-bar-styles';
 @customElement('etools-prp-progress-bar')
 export class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
   render() {
-    return html` ${progressBarStyles}         
-      <paper-progress .value="${this.percentage}"></paper-progress>
+    return html`
+      ${progressBarStyles}
+      <sl-progress-bar .value="${this.percentage}"></sl-progress-bar>
       <span class="percentage">${this.percentage}%</span>
     `;
   }

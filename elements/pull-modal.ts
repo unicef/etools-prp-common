@@ -133,7 +133,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
           `
         )}
 
-        <div class="layout horizontal justified overwrite-notification">
+        <div class="layout-horizontal justified overwrite-notification">
           <etools-icon name="info"></etools-icon>
           <p>
             In order to keep data intact, aggregated data will be shown as a total progress. Any data provided manually
