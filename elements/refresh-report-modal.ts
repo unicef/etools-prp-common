@@ -10,7 +10,6 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
- * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  * @appliesMixin RoutingMixin
  */

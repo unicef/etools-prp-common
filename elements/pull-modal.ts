@@ -23,7 +23,6 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 /**
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin ModalMixin
  */
 @customElement('pull-modal')
 export class PullModal extends UtilsMixin(connect(store)(LitElement)) {

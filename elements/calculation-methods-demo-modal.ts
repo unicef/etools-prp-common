@@ -4,7 +4,6 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
-import ModalMixin from '../mixins/modal-mixin';
 import UtilsMixin from '../mixins/utils-mixin';
 import './calculation-methods-demo-locations';
 import './calculation-methods-demo-periods';
@@ -12,11 +11,10 @@ import './etools-prp-number';
 
 /**
  * @customElement
- * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  */
 @customElement('calculation-methods-demo-modal')
-export class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(LitElement)) {
+export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
   static get styles() {
     return [layoutStyles];
   }

@@ -31,9 +31,15 @@ export class FilterList extends connect(store)(LitElement) {
           padding-inline-end: 15px;
         }
 
-        etools-button {
-          margin: 0 10px;
+        etools-button::part(base) {
+          margin: 0 15px;
+          margin-bottom: 5px;
           text-transform: uppercase;
+          --sl-button-font-size-medium: var(--etools-font-size-14, 14px);
+          color: #212121;
+        }
+        etools-button::part(label) {
+          font-weight: normal;
         }
       </style>
 
@@ -41,8 +47,8 @@ export class FilterList extends connect(store)(LitElement) {
 
       ${this.hideClear
         ? ``
-        : html`<div id="action" class="right-align">
-            <etools-button @click="${this._clearFilters}">${translate('CLEAR')}</etools-button>
+        : html`<div id="action" class="row right-align">
+            <etools-button variant="text" @click="${this._clearFilters}">${translate('CLEAR')}</etools-button>
           </div>`}
 
       <etools-loading ?active="${this.loading}"></etools-loading>

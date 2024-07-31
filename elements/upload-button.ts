@@ -11,7 +11,6 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 /**
  * @customElement
  * @mixinFunction
- * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  */
 @customElement('upload-button')
