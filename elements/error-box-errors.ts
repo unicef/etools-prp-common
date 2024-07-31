@@ -37,4 +37,3 @@ export class ErrorBoxErrors extends LitElement {
   @property({type: Object})
   errors!: any;
 }
-

@@ -19,4 +19,4 @@ export class PageBody extends LitElement {
   }
 }
 
-export{PageBody as PageBodyEl};
+export {PageBody as PageBodyEl};

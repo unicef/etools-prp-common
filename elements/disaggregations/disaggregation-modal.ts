@@ -1,4 +1,4 @@
-import { html, LitElement } from 'lit';
+import {html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
@@ -132,4 +132,4 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
   }
 }
 
-export { DisaggregationModal as DisaggregationModalEl };
+export {DisaggregationModal as DisaggregationModalEl};

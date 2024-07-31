@@ -1,12 +1,12 @@
-import { html, css, LitElement, PropertyValues } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import {html, css, LitElement, PropertyValues} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
 import './disaggregation-field';
 import '../../elements/etools-prp-number';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import { fireEvent } from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 // import { IronMeta } from '@polymer/iron-meta/iron-meta'; // TODO check what is does
 
 @customElement('disaggregation-table-cell-ratio')
@@ -194,4 +194,4 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
   }
 }
 
-export { DisaggregationTableCellRatio as DisaggregationTableCellRatioEl };
+export {DisaggregationTableCellRatio as DisaggregationTableCellRatioEl};

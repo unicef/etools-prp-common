@@ -5,7 +5,7 @@ import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 /**
  * @mixinFunction
  */
-function SortingMixin<T extends Constructor<LitElement>>( baseClass: T ) {
+function SortingMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class SortingClass extends baseClass {
     _sortOrderChanged(e: CustomEvent) {
       const data = e.detail;

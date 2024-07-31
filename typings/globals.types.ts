@@ -6,7 +6,7 @@ import {LitElement} from 'lit';
  * and whose constructor function accepts an arbitrary number of parameters of any type
  * On the type level, a class can be represented as a newable function
  */
-export type Constructor<_T> = new (...args: any[]) => any;
+export type Constructor<_T> = new (...args: any[]) => any; // eslint-disable-line
 
 export type MixinFunction = <T extends Constructor<LitElement>>(
   baseClass: T

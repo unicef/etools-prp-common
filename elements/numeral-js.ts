@@ -53,7 +53,7 @@ export class NumeralJs extends LitElement {
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('number')) {
       this._numberChanged();
     }

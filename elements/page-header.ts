@@ -1,4 +1,4 @@
-import { LitElement, PropertyValues, html } from 'lit';
+import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';

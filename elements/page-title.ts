@@ -17,7 +17,7 @@ export class PageTitle extends LitElement {
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
-  
+
     if (changedProperties.has('title') || changedProperties.has('divider') || changedProperties.has('baseTitle')) {
       this._setDocumentTitle(this.title, this.divider, this.baseTitle);
     }
@@ -28,4 +28,4 @@ export class PageTitle extends LitElement {
   }
 }
 
-export{PageTitle as PageTitleEl};
+export {PageTitle as PageTitleEl};

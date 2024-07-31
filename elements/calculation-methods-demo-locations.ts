@@ -33,20 +33,19 @@ export class CalculationMethodsDemoLocations extends LitElement {
         .bold-text {
           font-weight: bold;
           font-size: 1.17em;
-        }       
+        }
       </style>
 
       <div class="row">
         ${(this.totals || []).map(
           (item: any) =>
-            html`
-              <div class="col-12 content-box">
-                <div class="bold-text">Location ${item.id}</div>
-                <div class="layout-vertical">
-                  <div>Reporting period</div>
-                  <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
-                </div>
-              </div>`
+            html` <div class="col-12 content-box">
+              <div class="bold-text">Location ${item.id}</div>
+              <div class="layout-vertical">
+                <div>Reporting period</div>
+                <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
+              </div>
+            </div>`
         )}
       </div>
     `;

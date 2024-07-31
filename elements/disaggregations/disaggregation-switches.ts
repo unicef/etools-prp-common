@@ -1,5 +1,5 @@
-import { html, css, LitElement } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import {html, css, LitElement} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from 'lit-translate';
@@ -128,8 +128,8 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   }
 
   _confirmIntent(field: any) {
-    return new Promise(async (resolve, reject) => {
-      const confirmed = await openDialog({
+    return new Promise((resolve, reject) => {
+      openDialog({
         dialog: 'are-you-sure',
         dialogData: {
           content: 'Changing disaggregation will cause your previous data to be lost. Do you want to continue?',
@@ -137,14 +137,12 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
           cancelBtnText: translate('CANCEL')
         }
       }).then(({confirmed}) => {
-        return confirmed;
+        if (confirmed) {
+          return resolve(field);
+        } else {
+          return reject(field);
+        }
       });
-
-      if (confirmed) {
-        return resolve(field);
-      } else {
-        return reject(field);
-      }
     });
   }
 
@@ -185,7 +183,6 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
     this.fieldValueChanged = debounce(this.fieldValueChanged.bind(this), 200);
     this.reportedOn = [];
   }
-
 }
 
-export { DisaggregationSwitches as DisaggregationSwitchesEl };
+export {DisaggregationSwitches as DisaggregationSwitchesEl};

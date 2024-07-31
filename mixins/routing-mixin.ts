@@ -5,15 +5,13 @@ import {property} from 'lit/decorators.js';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 import {connect} from 'pwa-helpers';
-//import {connectStore} from '@unicef-polymer/etools-modules-common/dist/mixins/connect-store-mixin';
-
+// import {connectStore} from '@unicef-polymer/etools-modules-common/dist/mixins/connect-store-mixin';
 
 /**
  * @mixinFunction
  */
 function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class RoutingClass extends connect(store)(baseClass) {
-
     @property({type: String})
     _currentWorkspace?: string;
 
@@ -46,9 +44,9 @@ function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
     updated(changedProperties) {
       super.updated(changedProperties);
 
-      if (changedProperties.has('_currentWorkspace') || changedProperties.has('_currentApp')) {             
-          this._computeBaseUrl(this._currentWorkspace, this._currentApp);
-        }      
+      if (changedProperties.has('_currentWorkspace') || changedProperties.has('_currentApp')) {
+        this._computeBaseUrl(this._currentWorkspace, this._currentApp);
+      }
 
       if (
         changedProperties.has('_currentWorkspace') ||
@@ -60,14 +58,14 @@ function RoutingMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _computeBaseUrl(workspace?: string, app?: string) {
-      if (workspace && app) {        
-        //@dci, baseUrl it's stored on redux now, use it from there, this mixin will be removed
+      if (workspace && app) {
+        // @dci, baseUrl it's stored on redux now, use it from there, this mixin will be removed
         this._baseUrl = `/${BASE_PATH}/${workspace}/${app}`;
       }
     }
 
     _computeBaseUrlCluster(workspace?: string, app?: string, planId?: string) {
-      if (workspace && app && planId) {   
+      if (workspace && app && planId) {
         this._baseUrlCluster = `${this._computeBaseUrl(workspace, app)}/plan/${planId}`;
       }
     }

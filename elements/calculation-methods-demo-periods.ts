@@ -33,28 +33,28 @@ export class CalculationMethodsDemoPeriods extends LitElement {
         .bold-text {
           font-weight: bold;
           font-size: 1.17em;
-        }       
-        .space-bt {  
+        }
+        .space-bt {
           justify-content: space-between !important;
         }
       </style>
 
-        <div class="row">
-          ${(this.totals || []).map(
-            (item: any) =>
-              html`
-                  <div class="col-6 content-box">
-                    ${item ? html`
-                      <div class="bold-text">Reporting period ${item.id}</div>
+      <div class="row">
+        ${(this.totals || []).map(
+          (item: any) =>
+            html`
+              <div class="col-6 content-box">
+                ${item
+                  ? html` <div class="bold-text">Reporting period ${item.id}</div>
                       <div class="layout-horizontal space-bt">
                         <div>progress in reporting period</div>
                         <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
-                      </div>`: html``
-                    }
-                  </div>
-              `
-          )}
-        </div>
+                      </div>`
+                  : html``}
+              </div>
+            `
+        )}
+      </div>
     `;
   }
 
@@ -64,14 +64,13 @@ export class CalculationMethodsDemoPeriods extends LitElement {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('totals') && this.totals) {      
-      if(this.totals.length % 2 !== 0) {
+    if (changedProperties.has('totals') && this.totals) {
+      if (this.totals.length % 2 !== 0) {
         this.totals.push(null);
         this.requestUpdate();
       }
     }
   }
 }
-
 
 export {CalculationMethodsDemoPeriods as CalculationMethodsDemoPeriodsEl};

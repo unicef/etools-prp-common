@@ -1,5 +1,5 @@
-import { html, css, LitElement } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import {html, css, LitElement} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
 import './disaggregation-field';
@@ -44,4 +44,4 @@ class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
   }
 }
 
-export { DisaggregationTableCellNumber as DisaggregationTableCellNumberEl };
+export {DisaggregationTableCellNumber as DisaggregationTableCellNumberEl};

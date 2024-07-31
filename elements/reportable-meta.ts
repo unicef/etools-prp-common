@@ -263,7 +263,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
   disconnectedCallback() {
     super.disconnectedCallback();
 
-    //@dci - check logic below...
+    // @dci - check logic below...
     const labelledItem = this.shadowRoot!.querySelectorAll('labelled-item');
     if (
       labelledItem &&

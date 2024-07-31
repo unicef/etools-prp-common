@@ -1,5 +1,5 @@
-import { LitElement, html, css, PropertyValues } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import {LitElement, html, css, PropertyValues} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from 'lit-translate';
 import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixin';
@@ -78,7 +78,8 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
   @property({type: Number})
   indicatorId!: number;
 
-  static styles = [layoutStyles,
+  static styles = [
+    layoutStyles,
     css`
       disaggregation-switches {
         margin-bottom: 1em;
@@ -136,7 +137,6 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
       .flex {
         flex: 1;
       }
-
     `
   ];
 
@@ -206,7 +206,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
   }
 
   connectedCallback() {
-    super.connectedCallback();    
+    super.connectedCallback();
     if (!this.totals) {
       this.totals = {};
     }
@@ -226,7 +226,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('formattedData')) {      
+    if (changedProperties.has('formattedData')) {
       this._resetFields();
     }
 
@@ -238,12 +238,12 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
       changedProperties.has('editableBool') ||
       changedProperties.has('formattedData') ||
       changedProperties.has('mapping')
-    ) {     
+    ) {
       this.formattedMapping = this._computeMapping(this.editableBool, this.formattedData, this.mapping);
     }
 
     if (changedProperties.has('formattedData') || changedProperties.has('totals')) {
-      this.viewData = this._computeViewData(this.formattedData, this.totals);    
+      this.viewData = this._computeViewData(this.formattedData, this.totals);
     }
 
     if (changedProperties.has('formattedData') && this.editableBool) {
@@ -251,14 +251,14 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
       this.totals = this._clone(this.formattedData.disaggregation);
     }
 
-    if (changedProperties.has('editable')) {      
+    if (changedProperties.has('editable')) {
       this.editableBool = this._computeEditableBool(this.editable);
       this._addEventListeners();
     }
 
-    if (changedProperties.has('data')) {      
+    if (changedProperties.has('data')) {
       this.indicatorType = this._computeIndicatorType(this.data);
-      this.formattedData = this._clone(this.data);   
+      this.formattedData = this._clone(this.data);
     }
 
     if (changedProperties.has('app') || changedProperties.has('indicatorType')) {
@@ -306,26 +306,27 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     const value = e.detail.value;
     let totals;
 
-    if (!this.localData.disaggregation)  {
+    if (!this.localData.disaggregation) {
       this.localData.disaggregation = {};
     }
-    if (!this.totals)  {
+    if (!this.totals) {
       this.totals = {};
     }
 
-    const newValue = Object.assign ({
-      c: null,
-      d: null,
-      v: null
-    },
+    const newValue = Object.assign(
+      {
+        c: null,
+        d: null,
+        v: null
+      },
       this.localData.disaggregation[key],
       value
     );
 
     e.stopPropagation();
-    
+
     this.localData.disaggregation[key] = newValue;
-    this.totals[key] = newValue;   
+    this.totals[key] = newValue;
 
     switch (this.formattedData.level_reported) {
       case 1:
@@ -375,7 +376,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     return !(String(app) === 'ip-reporting' && String(indicatorType) === 'number');
   }
 
-  save() {    
+  save() {
     if (!this.editable) {
       return Promise.reject();
     }
@@ -412,7 +413,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
       });
   }
 
-  _triggerModalRefit(e: CustomEvent) {   
+  _triggerModalRefit(e: CustomEvent) {
     if (e.detail.value && !isJsonStrMatch(this.formattedData, e.detail.value)) {
       this.formattedData = e.detail.value;
     }
@@ -501,4 +502,4 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
   }
 }
 
-export { DisaggregationTable as DisaggregationTableEl };
+export {DisaggregationTable as DisaggregationTableEl};

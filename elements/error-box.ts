@@ -40,7 +40,7 @@ export class ErrorBox extends UtilsMixin(LitElement) {
     `;
   }
 
-  @property({type: Object}) //@@ observer: '_scrollToBox'
+  @property({type: Object}) // @@ observer: '_scrollToBox'
   errors: any = {};
 
   @property({type: Array})

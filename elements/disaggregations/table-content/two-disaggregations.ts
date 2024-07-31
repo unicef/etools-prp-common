@@ -1,5 +1,5 @@
-import { LitElement, html, css, PropertyValues } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import {LitElement, html, css, PropertyValues} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';

@@ -247,7 +247,9 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         if (Object.prototype.hasOwnProperty.call(node, prop)) {
           try {
             newNode[prop] = node[prop];
-          } catch (err) {}
+          } catch (err) {
+            // catch
+          }
         }
       }
 

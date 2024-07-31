@@ -1,5 +1,5 @@
-import { html, css, LitElement, PropertyValues } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import {html, css, LitElement, PropertyValues} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -51,14 +51,13 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-     
   }
 
   protected firstUpdated(changedProperties: PropertyValues): void {
     super.firstUpdated(changedProperties);
 
-   // this.validate();
-   // fireEvent(this, 'register-field', this);
+    // this.validate();
+    // fireEvent(this, 'register-field', this);
   }
 
   validate() {
@@ -86,4 +85,4 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   }
 }
 
-export { DisaggregationField as DisaggregationFieldEl };
+export {DisaggregationField as DisaggregationFieldEl};

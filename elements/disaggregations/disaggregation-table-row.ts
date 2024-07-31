@@ -1,7 +1,6 @@
-import { LitElement, html, css, PropertyValues } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import {LitElement, html, css, PropertyValues} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
-import {translate} from 'lit-translate';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import './disaggregation-table-cell-number';
 import './disaggregation-table-cell-percentage';

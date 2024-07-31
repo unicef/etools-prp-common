@@ -62,4 +62,4 @@ export class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
   }
 }
 
-export {EtoolsPrpPrinter as EtoolsPrpPrinterEl}
+export {EtoolsPrpPrinter as EtoolsPrpPrinterEl};

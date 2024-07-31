@@ -1,4 +1,3 @@
-
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {sharedStyles} from '../styles/shared-styles';
@@ -8,7 +7,7 @@ import {sharedStyles} from '../styles/shared-styles';
  */
 @customElement('labelled-item')
 export class LabelledItem extends LitElement {
-   render() {
+  render() {
     return html`
       ${sharedStyles}
       <style>
