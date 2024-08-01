@@ -120,7 +120,7 @@ class DisaggregationTableRow extends UtilsMixin(LitElement) {
     super.updated(changedProperties);
 
     if (changedProperties.has('data') || changedProperties.has('levelReported') || changedProperties.has('editable')) {
-      this._setTotalEditable(this.data?.total.key, this.levelReported, this.editable);
+      this._setTotalEditable(this.data?.total?.key, this.levelReported, this.editable);
     }
   }
 
