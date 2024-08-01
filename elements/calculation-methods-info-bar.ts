@@ -29,12 +29,12 @@ export class CalculationMethodsInfoBar extends LitElement {
         }
 
         etools-icon {
-          color: var(--paper-grey-600);
+          color: var(--sl-color-neutral-600);
           margin-right: 5px;
         }
 
         span {
-          color: var(--paper-grey-600);
+          color: var(--sl-color-neutral-600);
         }
 
         .buttons {

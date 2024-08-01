@@ -24,11 +24,11 @@ export const disaggregationTableStyles = html` ${printStyles}
     /*  Text above the table  */
     h4 {
       font-weight: 400;
-      color: var(--paper-grey-600);
+      color: var(--sl-color-neutral-600);
       margin: 0 0 15px 0;
     }
     h4 strong {
-      color: var(--paper-grey-800);
+      color: var(--sl-color-neutral-800);
     }
     span.total {
       float: right;
@@ -96,7 +96,7 @@ export const disaggregationTableStyles = html` ${printStyles}
 
     .cellTitle,
     .cellTotal {
-      background-color: var(--paper-grey-100);
+      background-color: var(--sl-color-neutral-100);
     }
 
     disaggregation-table-cell-ratio,

@@ -10,7 +10,6 @@ export const modalStyles = html` <style>
   }
 
   .header h2 {
-    @apply --paper-font-title;
     margin: 0;
     line-height: 48px;
   }
@@ -26,15 +25,10 @@ export const modalStyles = html` <style>
   }
 
   .item.full-width {
-    @apply --app-grid-expandible-item;
   }
 
   .item {
     padding-right: 20px;
     margin-bottom: 20px !important;
   }
-
-  // .full-width {
-  //   @apply --app-grid-expandible-item;
-  // }
 </style>`;

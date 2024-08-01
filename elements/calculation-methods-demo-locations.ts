@@ -27,7 +27,7 @@ export class CalculationMethodsDemoLocations extends LitElement {
 
         .content-box {
           padding: 20px;
-          background: var(--paper-grey-200);
+          background: var(--sl-color-neutral-200);
         }
 
         .bold-text {

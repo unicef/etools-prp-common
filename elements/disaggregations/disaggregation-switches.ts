@@ -41,7 +41,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
     .container {
       padding: 10px 24px;
       margin: 0 -24px;
-      background: var(--paper-grey-100);
+      background: var(--sl-color-neutral-100);
     }
 
     .container h4 {

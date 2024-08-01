@@ -15,7 +15,7 @@ export class ErrorBox extends UtilsMixin(LitElement) {
     return html`
       <style>
         ${layoutStyles} #box {
-          background: var(--paper-grey-300);
+          background: var(--sl-color-neutral-300);
           padding: 10px;
           color: var(--error-color);
         }

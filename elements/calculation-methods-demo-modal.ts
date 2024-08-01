@@ -29,13 +29,13 @@ export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
         .content-box {
           padding: 20px;
           margin: 0 10px;
-          background: var(--paper-grey-200);
+          background: var(--sl-color-neutral-200);
         }
 
         .total-box {
           padding: 5px 5px 5px 50px;
           min-width: 75px;
-          background: var(--paper-grey-400);
+          background: var(--sl-color-neutral-400);
           text-align: end;
         }
 

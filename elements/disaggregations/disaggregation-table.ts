@@ -129,7 +129,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
         display: inline-block;
         padding: 3px 10px;
         white-space: nowrap;
-        background-color: var(--paper-grey-100);
+        background-color: var(--sl-color-neutral-100);
       }
       .justified {
         justify-content: space-between;
