@@ -24,8 +24,6 @@ export class LabelledItem extends LitElement {
           font-size: 12px;
           color: #737373;
           display: block;
-          @apply --labelled-item-label;
-          @apply --truncate;
         }
 
         .labelled-item__content {
@@ -33,7 +31,7 @@ export class LabelledItem extends LitElement {
         }
 
         .error {
-          color: var(--paper-deep-orange-a700);
+          color: var(--sl-color-warning-500);
         }
 
         ::slotted(.field-value) {
