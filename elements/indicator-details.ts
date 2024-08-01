@@ -56,7 +56,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
         .header {
           padding: 20px 75px 0 25px;
           position: relative;
-          height: 40px;
+          height: 56px;
         }
 
         .locations-heading {
@@ -72,8 +72,8 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
 
         .tab-header {
           padding: 10px 25px;
-          border-bottom: 1px solid var(--paper-grey-300);
-          background: var(--paper-grey-100);
+          border-bottom: 1px solid var--sl-color-gray-300);
+          background: var(--sl-color-gray-100);
         }
 
         .tab-header etools-button {
@@ -126,6 +126,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
           padding: 0;
           height: 300px; /* 360px - 60px */
           overflow: auto;
+          border: none;
         }
         #tabs-list #tab-item {
           padding-left: 10%;
