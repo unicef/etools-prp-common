@@ -148,13 +148,14 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
 
   _bindValidation(coords: string) {
     const vName = 'v-' + coords;
-    const validator = {
-      validatorName: vName,
-      validatorType: 'validator',
-      validate: (value: string) => {
-        return Number(value) !== 0 || Number((this.shadowRoot!.querySelector('#v') as EtoolsInput).value) === 0;
-      }
-    };
+    // @dci
+    // const validator = {
+    //   validatorName: vName,
+    //   validatorType: 'validator',
+    //   validate: (value: string) => {
+    //     return Number(value) !== 0 || Number((this.shadowRoot!.querySelector('#v') as EtoolsInput).value) === 0;
+    //   }
+    // };
 
     // What is this for?
     // new IronMeta({

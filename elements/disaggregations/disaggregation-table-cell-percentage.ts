@@ -7,7 +7,6 @@ import {disaggregationTableStyles} from '../../styles/disaggregation-table-style
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 // import '@polymer/iron-meta/iron-meta';
 // import {IronMeta} from '@polymer/iron-meta/iron-meta'; // TODO check what is does
-import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
 @customElement('disaggregation-table-cell-percentage')
 class DisaggregationTableCellPercentage extends LitElement {
@@ -169,16 +168,17 @@ class DisaggregationTableCellPercentage extends LitElement {
 
   _bindValidation(coords: string) {
     const vName = 'v-' + coords;
-    const validator = {
-      validatorName: vName,
-      validatorType: 'validator',
-      validate: (value: string) => {
-        return (
-          Number(value) !== 0 ||
-          Number((this.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as EtoolsInput) === 0
-        );
-      }
-    };
+    // @dci
+    // const validator = {
+    //   validatorName: vName,
+    //   validatorType: 'validator',
+    //   validate: (value: string) => {
+    //     return (
+    //       Number(value) !== 0 ||
+    //       Number((this.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as EtoolsInput) === 0
+    //     );
+    //   }
+    // };
 
     // new IronMeta({
     //   type: validator.validatorType,

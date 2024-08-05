@@ -40,6 +40,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
 
         labelled-item:not(:last-child) {
           margin-bottom: 25px;
+          margin-inline-start: 10px;
         }
 
         #input-button-container {
@@ -52,6 +53,9 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
         etools-input {
           width: 100%;
           padding-right: 18px;
+        }
+        etools-input::part(readonly-input-value) {
+          border-bottom: 2px dotted var(--list-second-bg-color);
         }
 
         etools-radio-group {
@@ -85,7 +89,10 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
               <etools-radio-group
                 id="overall_status"
                 .value="${this.data.overall_status}"
-                @sl-change="${this._handleInput}"
+                @sl-change="${(e: any) => {
+                  this.localData.overall_status = e.target.value;
+                  this._localDataChanged(this.localData);
+                }}"
               >
                 <sl-radio value="Met">${this._computeMetLabel(this.completed)}</sl-radio>
                 ${this.completed
@@ -106,11 +113,13 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
                 <etools-input
                   id="narrative_assessment"
                   .value="${this.data.narrative_assessment}"
-                  readonly
+                  ?readonly="${!this.enableNarrativeAssessment}"
+                  @value-changed="${({detail}) => (this.localData.narrative_assessment = detail.value)}"
+                  char-counter
                   maxlength="2000"
                 >
                 </etools-input>
-                <etools-button variant="primary" id="toggle-button" @click="${this._handleInput}">
+                <etools-button variant="primary" id="toggle-button" @click="${this._handleButtonClick}">
                   ${this.localizedToggle}
                 </etools-button>
               </div>
@@ -118,6 +127,9 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
       </labelled-item>
     `;
   }
+
+  @property({type: Boolean})
+  enableNarrativeAssessment = false;
 
   @property({type: String})
   mode!: string;
@@ -164,50 +176,18 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
     if (changedProperties.has('isCluster') || changedProperties.has('data')) {
       this.canRefresh = this._computeCanRefresh(this.isCluster, this.data);
     }
-    if (changedProperties.has('localData')) {
-      this._localDataChanged(this.localData);
-    }
   }
 
-  _handleInput(event: CustomEvent) {
-    let field = event.target as any;
-    const narrativeTextInput = this.shadowRoot!.querySelector('#narrative_assessment') as any; // PaperInputElement
-
-    if (narrativeTextInput && this.toggle === 'Edit' && field.id === 'toggle-button') {
-      narrativeTextInput.disabled = false;
-      narrativeTextInput.focus();
+  _handleButtonClick() {
+    if (this.toggle === 'Edit') {
+      this.enableNarrativeAssessment = true;
+      (this.shadowRoot?.querySelector('#narrative_assessment') as EtoolsInput).focus();
       this.toggle = 'Save';
       return;
-    }
-
-    if (field.id === 'toggle-button') {
-      const parent: any = event.composedPath().find((node: any) => {
-        return node.id === 'labelled-narrative';
-      });
-      if (parent) {
-        field = parent.querySelector('etools-input');
-      }
-    }
-
-    const id = field.id;
-    switch (id) {
-      case 'overall_status':
-        this.localData.id = field.selected;
-        break;
-
-      case 'narrative_assessment':
-        if (
-          (field.value !== null && this.data.narrative_assessment === field.value.trim()) ||
-          (field.value === null && this.data.narrative_assessment === null)
-        ) {
-          this.toggle = 'Edit';
-          narrativeTextInput.disabled = true;
-          break;
-        }
-        this.localData.id = field.value.trim();
-        this.toggle = 'Edit';
-        narrativeTextInput.disabled = true;
-        break;
+    } else {
+      this.enableNarrativeAssessment = false;
+      this.toggle = 'Edit';
+      this._localDataChanged(this.localData);
     }
     this.requestUpdate();
   }
@@ -230,12 +210,8 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
     return translate(toggle.toLowerCase()) as any as string;
   }
 
-  _localDataChanged(change: any) {
-    if (change.path?.split('.').length < 2) {
-      return;
-    }
-
-    fireEvent(this, 'reportable-meta-changed', this.localData);
+  _localDataChanged(data) {
+    fireEvent(this, 'reportable-meta-changed', data);
   }
 
   _computeRefreshData(reportId: string) {
@@ -258,6 +234,8 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
+
+    this.localData = {};
   }
 
   disconnectedCallback() {

@@ -2,6 +2,7 @@ import {LitElement, html, css} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
 import '../disaggregation-table-row';
 
@@ -40,6 +41,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
   bottomRows!: any[];
 
   static styles = [
+    layoutStyles,
     css`
       :host {
         display: block;
@@ -52,7 +54,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
       ${disaggregationTableStyles}
       <table>
         <!-- Column names -->
-        <tr class="horizontal layout headerRow">
+        <tr class="layout-horizontal headerRow">
           <th></th>
           ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
           <th>Total</th>
