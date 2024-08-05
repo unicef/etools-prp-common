@@ -17,7 +17,7 @@ class DisaggregationTableRow extends UtilsMixin(LitElement) {
   @property({type: String})
   indicatorType!: string;
 
-  @property({type: String})
+  @property({type: String, attribute: 'row-type'})
   rowType!: string;
 
   @property({type: Number})
