@@ -43,31 +43,30 @@ export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement
   render() {
     return html`
       ${disaggregationTableStyles}
-      <table>
-        <tr class="layout-horizontal headerRow">
-          <th></th>
-          <th>Total</th>
-        </tr>
 
-        ${(this.rows || []).map(
-          (row) => html`
-            <disaggregation-table-row
-              .data="${row}"
-              .levelReported="${this.data?.level_reported}"
-              .indicatorType="${this.data?.display_type}"
-              row-type="middleRow"
-              .editable="${this.editable}"
-            ></disaggregation-table-row>
-          `
-        )}
+      <tr class="layout-horizontal headerRow">
+        <th></th>
+        <th>Total</th>
+      </tr>
 
-        <disaggregation-table-row
-          .data="${this.totalRow}"
-          .levelReported="${this.data?.level_reported}"
-          .indicatorType="${this.data?.display_type}"
-          row-type="totalsRow"
-        ></disaggregation-table-row>
-      </table>
+      ${(this.rows || []).map(
+        (row) => html`
+          <disaggregation-table-row
+            .data="${row}"
+            .levelReported="${this.data?.level_reported}"
+            .indicatorType="${this.data?.display_type}"
+            row-type="middleRow"
+            .editable="${this.editable}"
+          ></disaggregation-table-row>
+        `
+      )}
+
+      <disaggregation-table-row
+        .data="${this.totalRow}"
+        .levelReported="${this.data?.level_reported}"
+        .indicatorType="${this.data?.display_type}"
+        row-type="totalsRow"
+      ></disaggregation-table-row>
     `;
   }
 

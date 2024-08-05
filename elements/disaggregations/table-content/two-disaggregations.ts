@@ -46,32 +46,31 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
   render() {
     return html`
       ${disaggregationTableStyles}
-      <table>
-        <tr class="layout-horizontal headerRow">
-          <th></th>
-          ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
-          <th>Total</th>
-        </tr>
 
-        ${(this.rowsForDisplay || []).map(
-          (row) => html`
-            <disaggregation-table-row
-              .data="${row}"
-              .levelReported="${this.data?.level_reported}"
-              .indicatorType="${this.data?.display_type}"
-              row-type="middleRow"
-              .editable="${this.editable}"
-            ></disaggregation-table-row>
-          `
-        )}
+      <tr class="layout-horizontal headerRow">
+        <th></th>
+        ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
+        <th>Total</th>
+      </tr>
 
-        <disaggregation-table-row
-          .data="${this.totalsForDisplay}"
-          .levelReported="${this.data?.level_reported}"
-          .indicatorType="${this.data?.display_type}"
-          row-type="totalsRow"
-        ></disaggregation-table-row>
-      </table>
+      ${(this.rowsForDisplay || []).map(
+        (row) => html`
+          <disaggregation-table-row
+            .data="${row}"
+            .levelReported="${this.data?.level_reported}"
+            .indicatorType="${this.data?.display_type}"
+            row-type="middleRow"
+            .editable="${this.editable}"
+          ></disaggregation-table-row>
+        `
+      )}
+
+      <disaggregation-table-row
+        .data="${this.totalsForDisplay}"
+        .levelReported="${this.data?.level_reported}"
+        .indicatorType="${this.data?.display_type}"
+        row-type="totalsRow"
+      ></disaggregation-table-row>
     `;
   }
 

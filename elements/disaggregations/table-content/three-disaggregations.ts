@@ -52,58 +52,56 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
   render() {
     return html`
       ${disaggregationTableStyles}
-      <table>
-        <!-- Column names -->
-        <tr class="layout-horizontal headerRow">
-          <th></th>
-          ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
-          <th>Total</th>
-        </tr>
+      <!-- Column names -->
+      <tr class="layout-horizontal headerRow">
+        <th></th>
+        ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
+        <th>Total</th>
+      </tr>
 
-        <!-- Data rows: outer and middle. -->
-        ${(this.outerRowsForDisplay || []).map(
-          (outerRow) => html`
-            <disaggregation-table-row
-              .data="${outerRow}"
-              .levelReported="${this.data?.level_reported}"
-              .indicatorType="${this.data?.display_type}"
-              row-type="outerRow"
-            ></disaggregation-table-row>
+      <!-- Data rows: outer and middle. -->
+      ${(this.outerRowsForDisplay || []).map(
+        (outerRow) => html`
+          <disaggregation-table-row
+            .data="${outerRow}"
+            .levelReported="${this.data?.level_reported}"
+            .indicatorType="${this.data?.display_type}"
+            row-type="outerRow"
+          ></disaggregation-table-row>
 
-            ${(this._determineMiddleRows(outerRow.id, this.columns, this.middleRows, this.data) || []).map(
-              (middleRow) => html`
-                <disaggregation-table-row
-                  .data="${middleRow}"
-                  .levelReported="${this.data?.level_reported}"
-                  .indicatorType="${this.data?.display_type}"
-                  row-type="middleRow"
-                  .editable="${this.editable}"
-                ></disaggregation-table-row>
-              `
-            )}
-          `
-        )}
+          ${(this._determineMiddleRows(outerRow.id, this.columns, this.middleRows, this.data) || []).map(
+            (middleRow) => html`
+              <disaggregation-table-row
+                .data="${middleRow}"
+                .levelReported="${this.data?.level_reported}"
+                .indicatorType="${this.data?.display_type}"
+                row-type="middleRow"
+                .editable="${this.editable}"
+              ></disaggregation-table-row>
+            `
+          )}
+        `
+      )}
 
-        <!-- Totals row -->
-        <disaggregation-table-row
-          .data="${this.columnTotalRow}"
-          .levelReported="${this.data?.level_reported}"
-          .indicatorType="${this.data?.display_type}"
-          row-type="totalsRow"
-        ></disaggregation-table-row>
+      <!-- Totals row -->
+      <disaggregation-table-row
+        .data="${this.columnTotalRow}"
+        .levelReported="${this.data?.level_reported}"
+        .indicatorType="${this.data?.display_type}"
+        row-type="totalsRow"
+      ></disaggregation-table-row>
 
-        <!-- Bottom table -->
-        ${(this.bottomRows || []).map(
-          (bottomRow) => html`
-            <disaggregation-table-row
-              .data="${bottomRow}"
-              .levelReported="${this.data?.level_reported}"
-              .indicatorType="${this.data?.display_type}"
-              row-type="bottomRow"
-            ></disaggregation-table-row>
-          `
-        )}
-      </table>
+      <!-- Bottom table -->
+      ${(this.bottomRows || []).map(
+        (bottomRow) => html`
+          <disaggregation-table-row
+            .data="${bottomRow}"
+            .levelReported="${this.data?.level_reported}"
+            .indicatorType="${this.data?.display_type}"
+            row-type="bottomRow"
+          ></disaggregation-table-row>
+        `
+      )}
     `;
   }
 
