@@ -1,5 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-file';
 import UtilsMixin from '../mixins/utils-mixin';
 import {get as getTranslation} from 'lit-translate';
@@ -38,7 +39,7 @@ export class UploadButton extends UtilsMixin(LitElement) {
         }
       </style>
 
-      <etools-button class="btn-primary" @click="${this._openModal}">
+      <etools-button variant="text" @click="${this._openModal}">
         <etools-icon name="file-upload"></etools-icon>
         <slot></slot>
       </etools-button>
@@ -58,9 +59,9 @@ export class UploadButton extends UtilsMixin(LitElement) {
                 <etools-file
                   ?showFilesContainer="${true}"
                   .files="${this.files}"
-                  .label="Template file"
+                  label="Template file"
                   ?disabled="${this.pending}"
-                  .accept=".xlsx, .xls"
+                  accept=".xlsx, .xls"
                   required
                 >
                 </etools-file>
