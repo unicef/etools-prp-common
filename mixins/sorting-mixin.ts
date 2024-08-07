@@ -1,6 +1,9 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {store} from '../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @mixinFunction
@@ -9,33 +12,29 @@ function SortingMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class SortingClass extends baseClass {
     _sortOrderChanged(e: CustomEvent) {
       const data = e.detail;
-      debounce(() => {
-        const newParams = {
-          // @ts-ignore
-          ...this.queryParams,
-          sort: `${data.field}.${data.direction}`
-        };
+      const newParams = {
+        ...this.queryParams,
+        sort: `${data.field}.${data.direction}`
+      };
 
-        e.stopPropagation();
-        // @ts-ignore
-        this.queryParams = newParams;
-      }, 100)();
+      e.stopPropagation();
+      if (!isJsonStrMatch(newParams, store.getState().app.routeDetails.queryParams)) {
+        EtoolsRouter.updateAppLocation(
+          store.getState().app.routeDetails.path,
+          EtoolsRouter.encodeQueryParams(newParams)
+        );
+      }
     }
 
     connectedCallback() {
       super.connectedCallback();
-      this._sortOrderChanged = this._sortOrderChanged.bind(this);
-      // @ts-ignore
+      this._sortOrderChanged = debounce(this._sortOrderChanged.bind(this), 100);
       this.addEventListener('sort-changed', this._sortOrderChanged as any);
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
-      // @ts-ignore
       this.removeEventListener('sort-changed', this._sortOrderChanged as any);
-      if (this._sortOrderDebouncer) {
-        clearTimeout(this._sortOrderDebouncer);
-      }
     }
   }
 

@@ -1,28 +1,16 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {property} from 'lit/decorators.js';
+import {property, state} from 'lit/decorators.js';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {store} from '../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
     @property({type: Object}) queryParams = {};
     @property({type: Array}) openedDetails = [];
 
-    // _pageSizeChanged(e: CustomEvent) {
-    //   this.paginator = {...this.paginator, page_size: e.detail.value};
-    //   this.queryParams = {
-    //     ...this.queryParams,
-    //     page_size: this.paginator.page_size,
-    //     page: this.paginator.page
-    //   };
-    //   this.requestUpdate();
-
-    //   EtoolsRouter.updateAppLocation(
-    //     store.getState().app.routeDetails.path,
-    //     EtoolsRouter.encodeQueryParams(this.queryParams)
-    //   );
-    // }
+    @state() _localPaginator = null;
 
     _colapseExpandedDetails() {
       setTimeout(() => {
@@ -34,33 +22,23 @@ function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }, 100);
     }
 
-    // _pageNumberChanged(e: CustomEvent) {
-    //   this._colapseExpandedDetails();
-
-    //   this.paginator = {...this.paginator, page: e.detail.value};
-    //   this.queryParams = {...this.queryParams, page: this.paginator.page};
-    //   this.requestUpdate();
-
-    //   EtoolsRouter.updateAppLocation(
-    //     store.getState().app.routeDetails.path,
-    //     EtoolsRouter.encodeQueryParams(this.queryParams)
-    //   );
-    // }
-
     _paginatorChanged() {
-      this.queryParams = {
-        ...this.queryParams,
-        page_size: this.paginator.page_size,
-        page: this.paginator.page
-      };
+      if (this.paginator && !isJsonStrMatch(this._localPaginator, this.paginator)) {
+        this._localPaginator = {...this.paginator};
 
-      console.log('hello', this.queryParams);
-      this.requestUpdate();
+        this.queryParams = {
+          ...(store.getState().app.routeDetails.queryParams || {}),
+          page_size: this.paginator.page_size,
+          page: this.paginator.page
+        };
 
-      EtoolsRouter.updateAppLocation(
-        store.getState().app.routeDetails.path,
-        EtoolsRouter.encodeQueryParams(this.queryParams)
-      );
+        if (!isJsonStrMatch(this.queryParams, store.getState().app.routeDetails.queryParams)) {
+          EtoolsRouter.updateAppLocation(
+            store.getState().app.routeDetails.path,
+            EtoolsRouter.encodeQueryParams(this.queryParams)
+          );
+        }
+      }
     }
   }
 
