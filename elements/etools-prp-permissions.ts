@@ -193,19 +193,19 @@ export const permissions = {
 @customElement('etools-prp-permissions')
 export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement)) {
   @property({type: Object})
-  profile!: any;
+  profile?: any;
 
   @property({type: Array})
-  prpRoles!: any[];
+  prpRoles?: any[];
 
   @property({type: Array})
-  imoClusters!: any[];
+  imoClusters?: any[];
 
   @property({type: Object})
-  partner!: any;
+  partner?: any;
 
   @property({type: String})
-  workspace!: string | undefined;
+  workspace?: string;
 
   @property({type: Object})
   responsePlan!: any;
@@ -219,6 +219,8 @@ export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement))
   stateChanged(state: RootState) {
     if (!isJsonStrMatch(state?.userProfile?.profile, this.profile)) {
       this.profile = state.userProfile.profile;
+      this.imoClusters = this._computeImoClusters(this.profile);
+      this.prpRoles = this._computePrpRoles(this.profile);
     }
     if (!isJsonStrMatch(state?.partner?.current, this.partner)) {
       this.partner = state.partner.current;
@@ -234,10 +236,6 @@ export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement))
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('profile')) {
-      this.imoClusters = this._computeImoClusters(this.profile);
-      this.prpRoles = this._computePrpRoles(this.profile);
-    }
     if (
       changedProperties.has('prpRoles') ||
       changedProperties.has('imoClusters') ||
@@ -245,17 +243,11 @@ export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement))
       changedProperties.has('workspace') ||
       changedProperties.has('responsePlan')
     ) {
-      this.params = this._computeParams(
-        this.prpRoles,
-        this.imoClusters,
-        this.partner,
-        this.workspace || '',
-        this.responsePlan
-      );
-    }
-    if (changedProperties.has('params')) {
-      this.permissions = this._computePermissions(this.params);
-      fireEvent(this, 'permissions-changed', {value: this.permissions});
+      if (this.profile) {
+        this.params = this._computeParams();
+        this.permissions = this._computePermissions(this.params);
+        fireEvent(this, 'permissions-changed', {value: this.permissions});
+      }
     }
   }
 
@@ -312,13 +304,13 @@ export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement))
       : [];
   }
 
-  _computeParams(prpRoles: any[], imoClusters: any[], partner: any, workspace: string, responsePlan: any) {
+  _computeParams() {
     return {
-      prpRoles: prpRoles,
-      imoClusters: imoClusters,
-      partner: partner,
-      workspace: workspace,
-      responsePlan: responsePlan
+      prpRoles: this.prpRoles,
+      imoClusters: this.imoClusters,
+      partner: this.partner,
+      workspace: this.workspace,
+      responsePlan: this.responsePlan
     };
   }
 }

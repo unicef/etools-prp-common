@@ -3,7 +3,6 @@ import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import RoutingMixin from '../mixins/routing-mixin';
 import {sharedStyles} from '../styles/shared-styles';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
@@ -14,7 +13,7 @@ import {RootState} from '../../typings/redux.types';
  * @appliesMixin RoutingMixin
  */
 @customElement('page-header')
-export class PageHeader extends RoutingMixin(connect(store)(LitElement)) {
+export class PageHeader extends connect(store)(LitElement) {
   static get styles() {
     return [layoutStyles];
   }
@@ -102,11 +101,18 @@ export class PageHeader extends RoutingMixin(connect(store)(LitElement)) {
   backUrl!: string | undefined;
 
   @property({type: String})
+  baseUrl?: string;
+
+  @property({type: String})
   app!: string;
 
   stateChanged(state: RootState) {
     if (state?.app?.current) {
       this.app = state.app.current;
+    }
+
+    if (state?.workspaces.baseUrl) {
+      this.baseUrl = state?.workspaces.baseUrl;
     }
   }
 
@@ -114,18 +120,23 @@ export class PageHeader extends RoutingMixin(connect(store)(LitElement)) {
     super.updated(changedProperties);
 
     if (changedProperties.has('back') || changedProperties.has('_baseUrl') || changedProperties.has('app')) {
-      this.backUrl = this._computeBackUrl(this.back, this._baseUrl, this.app);
+      this.backUrl = this._computeBackUrl(this.back, this.baseUrl, this.app);
     }
   }
 
-  _computeBackUrl(tail: string, baseUrl: string, app: string) {
+  _computeBackUrl(tail?: string, baseUrl?: string, app?: string) {
     if (tail === undefined) {
       return;
     }
 
-    if (app === 'cluster-reporting') {
-      return this.buildUrl(this._baseUrlCluster, tail);
+    if (baseUrl === undefined) {
+      return;
     }
-    return tail ? this.buildUrl(baseUrl, tail) : '';
+
+    if (app === 'cluster-reporting') {
+      return `${baseUrl}/${tail}`;
+    }
+
+    return tail ? `${baseUrl}/${tail}` : '';
   }
 }
