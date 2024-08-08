@@ -13,6 +13,7 @@ export class LabelledItem extends LitElement {
       <style>
         :host {
           display: block;
+          flex: 1;
           position: relative;
         }
 
