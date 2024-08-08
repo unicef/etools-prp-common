@@ -116,6 +116,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
                   ?readonly="${!this.enableNarrativeAssessment}"
                   @value-changed="${({detail}) => (this.localData.narrative_assessment = detail.value)}"
                   char-counter
+                  .charCount=${this.data?.narrative_assessment?.length}
                   maxlength="2000"
                 >
                 </etools-input>
