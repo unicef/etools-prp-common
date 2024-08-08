@@ -8,6 +8,7 @@ import UtilsMixin from '../mixins/utils-mixin';
 import './calculation-methods-demo-locations';
 import './calculation-methods-demo-periods';
 import './etools-prp-number';
+import {translate} from 'lit-translate';
 
 /**
  * @customElement
@@ -59,7 +60,14 @@ export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
         }
       </style>
 
-      <etools-dialog no-padding keep-dialog-open size="md" dialog-title="Calculation method across ${this.domain}">
+      <etools-dialog
+        no-padding
+        hide-confirm-btn
+        keep-dialog-open
+        size="md"
+        .cancelBtnText="${translate('CLOSE')}"
+        dialog-title="Calculation method across ${this.domain}"
+      >
         <div class="container-dialog">
           <div class="content-box">
             <labelled-item label="Sample indicator">
@@ -140,51 +148,47 @@ export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
 
   @property({type: Object})
   descriptionsLocations = {
-    value: {
-      sum:
-        'Adds values as cumulative results for all locations. ' +
-        'Answers the question, what is total coverage for reporting ' +
-        'period across locations. Requires that indicator definition ' +
-        'does not count same case or event twice across locations, i.e. ' +
-        'reported values covering overlapping populations (e.g. for' +
-        'estimated catchment population for mass dissemination by ' +
-        'radio, total coverage must be calculated manually ' +
-        'discounting overlap).',
-      max:
-        'Takes the top value for all locations. Answers the ' +
-        'question, ' +
-        'where is the  highest number of "x" reached at any one time. ' +
-        'Useful for identification of pattern of demand.  Not generally ' +
-        'a useful measure of overall performance of programme across ' +
-        'locations.',
-      avg:
-        'Provides a measure of the typical value across the ' +
-        'locations. Answers the question, how many people does a ' +
-        'programme or service usually reach at any given location. ' +
-        'Does not reflect the best or worst or total picture. '
-    }
+    sum:
+      'Adds values as cumulative results for all locations. ' +
+      'Answers the question, what is total coverage for reporting ' +
+      'period across locations. Requires that indicator definition ' +
+      'does not count same case or event twice across locations, i.e. ' +
+      'reported values covering overlapping populations (e.g. for' +
+      'estimated catchment population for mass dissemination by ' +
+      'radio, total coverage must be calculated manually ' +
+      'discounting overlap).',
+    max:
+      'Takes the top value for all locations. Answers the ' +
+      'question, ' +
+      'where is the  highest number of "x" reached at any one time. ' +
+      'Useful for identification of pattern of demand.  Not generally ' +
+      'a useful measure of overall performance of programme across ' +
+      'locations.',
+    avg:
+      'Provides a measure of the typical value across the ' +
+      'locations. Answers the question, how many people does a ' +
+      'programme or service usually reach at any given location. ' +
+      'Does not reflect the best or worst or total picture. '
   };
 
   @property({type: Object})
   descriptionsReportingPeriods = {
-    value: {
-      sum:
-        'Sum adds all results for all reporting periods. Answers the ' +
-        'question: what is total coverage over time? Only valid ' +
-        'indicator counts the same case or event only once over time ' +
-        'e.g. sum of children admitted to SAM treatment (each child ' +
-        'registered once at programme start) is valid. Not valid to ' +
-        'aggregate sum of children participating in ongoing learning ' +
-        'programme each month as this counts each child multiple times. ',
-      max:
-        'Max takes the top value for all reporting intervals. ' +
-        'Answers the question: what was the peak case load or highest ' +
-        'coverage at any one time?',
-      avg:
-        'Average provides a measure of the typical value across ' +
-        'reporting periods. Answers the question: what is the usual ' +
-        'reach/coverage in ongoing programme. '
-    }
+    sum:
+      'Sum adds all results for all reporting periods. Answers the ' +
+      'question: what is total coverage over time? Only valid ' +
+      'indicator counts the same case or event only once over time ' +
+      'e.g. sum of children admitted to SAM treatment (each child ' +
+      'registered once at programme start) is valid. Not valid to ' +
+      'aggregate sum of children participating in ongoing learning ' +
+      'programme each month as this counts each child multiple times. ',
+    max:
+      'Max takes the top value for all reporting intervals. ' +
+      'Answers the question: what was the peak case load or highest ' +
+      'coverage at any one time?',
+    avg:
+      'Average provides a measure of the typical value across ' +
+      'reporting periods. Answers the question: what is the usual ' +
+      'reach/coverage in ongoing programme. '
   };
 
   @property({type: String})
@@ -194,7 +198,7 @@ export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
     const {domain, items}: any = data;
 
     this.domain = domain;
-    this.items - items;
+    this.items = items;
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -206,17 +210,14 @@ export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
       changedProperties.has('descriptionsLocations') ||
       changedProperties.has('descriptionsReportingPeriods')
     ) {
-      this.description = this._computeDescription(
-        this.selectedType,
-        this.domain,
-        this.descriptionsLocations,
-        this.descriptionsReportingPeriods
-      );
+      this.description = this._computeDescription();
     }
+
     if (changedProperties.has('totals') || changedProperties.has('items')) {
       this.locationTotals = this._computeTotals(this.totals, this.items);
     }
-    if (changedProperties.has('totals') || changedProperties.has('items')) {
+
+    if (changedProperties.has('selectedType') || changedProperties.has('locationTotals')) {
       this.finalTotal = this._computeFinalTotal(this.selectedType, this.locationTotals);
     }
   }
@@ -246,13 +247,10 @@ export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
     return totals.slice(0, items);
   }
 
-  _computeDescription(
-    selectedType: string,
-    domain: string,
-    descriptionsLocations: any,
-    descriptionsReportingPeriods: any
-  ) {
-    return domain === 'locations' ? descriptionsLocations[selectedType] : descriptionsReportingPeriods[selectedType];
+  _computeDescription() {
+    return this.domain === 'locations'
+      ? this.descriptionsLocations[this.selectedType]
+      : this.descriptionsReportingPeriods[this.selectedType];
   }
 
   _onRadioChange(e: CustomEvent) {
