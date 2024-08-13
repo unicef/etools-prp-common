@@ -27,8 +27,7 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
  */
 @customElement('pull-modal')
 export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
-
-  static styles = [layoutStyles]
+  static styles = [layoutStyles];
 
   @property({type: String})
   reportingPeriod!: string;
@@ -70,7 +69,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     return html`
       ${tableStyles}
       <style>
-        .qpr-header {          
+        .qpr-header {
         }
 
         .qpr-header h3 {
@@ -167,9 +166,9 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
       changedProperties.has('reportId') ||
       changedProperties.has('indicatorId')
     ) {
-      if(this.workspaceId && this.reportId && this.indicatorId && !this.pullUrl)
+      if (this.workspaceId && this.reportId && this.indicatorId && !this.pullUrl)
         this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
-        this.loadData();
+      this.loadData();
     }
   }
 
