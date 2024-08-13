@@ -15,6 +15,7 @@ import './list-placeholder';
 import './status-badge';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {tableStyles} from '../styles/table-styles';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
@@ -26,6 +27,9 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
  */
 @customElement('pull-modal')
 export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
+
+  static styles = [layoutStyles]
+
   @property({type: String})
   reportingPeriod!: string;
 
@@ -164,7 +168,9 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
       changedProperties.has('reportId') ||
       changedProperties.has('indicatorId')
     ) {
-      this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
+      if(this.workspaceId && this.reportId && this.indicatorId && !this.pullUrl)
+        this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
+        this.loadData();
     }
   }
 
@@ -194,7 +200,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     }
   }
 
-  open() {
+  loadData() {
     sendRequest({
       method: 'GET',
       endpoint: {url: this.pullUrl}
