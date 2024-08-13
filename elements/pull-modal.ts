@@ -70,8 +70,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     return html`
       ${tableStyles}
       <style>
-        .qpr-header {
-          transform: translate(24px, 48px);
+        .qpr-header {          
         }
 
         .qpr-header h3 {
@@ -110,16 +109,16 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
           <h4>For this high frequency indicator data will be pulled from reports matching this time period:</h4>
         </div>
         <etools-data-table-header no-collapse>
-          <etools-data-table-column field="report">
+          <etools-data-table-column class="col-2" field="report">
             <div class="table-column">Report #</div>
           </etools-data-table-column>
-          <etools-data-table-column field="due">
+          <etools-data-table-column class="col-3" field="due">
             <div class="table-column">Due date</div>
           </etools-data-table-column>
-          <etools-data-table-column field="period">
+          <etools-data-table-column class="col-3" field="period">
             <div class="table-column">Reporting Period</div>
           </etools-data-table-column>
-          <etools-data-table-column field="progress">
+          <etools-data-table-column class="col-4" field="progress">
             <div class="table-column">Total indicator progress across all locations</div>
           </etools-data-table-column>
         </etools-data-table-header>
@@ -127,11 +126,11 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
         ${(this.data?.reports || []).map(
           (report: any) => html`
             <etools-data-table-row no-collapse>
-              <div slot="row-data">
-                <div class="table-cell table-cell--text">${report.report_name}</div>
-                <div class="table-cell table-cell--text">${report.due_date}</div>
-                <div class="table-cell table-cell--text">${report.start_date} - ${report.end_date}</div>
-                <div class="table-cell table-cell--text">${report.report_location_total.v}</div>
+              <div slot="row-data" class="layout-horizontal row-data">
+                <div class="col-data col-2">${report.report_name}</div>
+                <div class="col-data col-3">${report.due_date}</div>
+                <div class="col-data col-3">${report.start_date} - ${report.end_date}</div>
+                <div class="col-data col-4">${report.report_location_total.v}</div>
               </div>
             </etools-data-table-row>
           `
