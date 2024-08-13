@@ -17,6 +17,7 @@ export class ErrorBoxErrors extends LitElement {
           padding-left: 2em;
           margin: 0;
           font-size: 12px;
+          text-align: start !important;
         }
       </style>
 
@@ -25,7 +26,7 @@ export class ErrorBoxErrors extends LitElement {
           (error: any) => html`
             <li>
               ${error.field ? html`<span>${error.field}:</span>` : ``}
-              ${error.value ? html`<span>${error.value}:</span>` : ``}
+              ${error.value ? html`<span>${error.value}</span>` : ``}
               ${error.details ? html`<error-box-errors .errors="${error.details}"> </error-box-errors>` : ``}
             </li>
           `

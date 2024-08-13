@@ -15,7 +15,7 @@ export class ErrorBox extends UtilsMixin(LitElement) {
     return html`
       <style>
         ${layoutStyles} #box {
-          background: var(--sl-color-neutral-300);
+          background: var(--sl-color-neutral-200);
           padding: 10px;
           color: var(--error-color);
         }
@@ -94,9 +94,11 @@ export class ErrorBox extends UtilsMixin(LitElement) {
           .map((key) => {
             return {
               field: key,
-              details: error[key].reduce((acc: any, err: any) => {
-                return acc.concat(this.errorMapper(err));
-              }, [])
+              details: error[key].reduce
+                ? error[key].reduce((acc: any, err: any) => {
+                    return acc.concat(this.errorMapper(err));
+                  }, [])
+                : this.errorMapper(error[key])
             };
           });
     }
