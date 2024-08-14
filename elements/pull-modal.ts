@@ -98,7 +98,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
         id="dialog"
         size="lg"
         dialog-title="Pull data"
-        @close="${this.close}"        
+        @close="${this.close}"
         @confirm-btn-clicked="${this.onSaveClick}"
         keep-dialog-open
       >
@@ -168,7 +168,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     ) {
       if (this.workspaceId && this.reportId && this.indicatorId && !this.pullUrl)
         this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
-        this.loadData();
+      this.loadData();
     }
   }
 
@@ -181,7 +181,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
       .then(() => {
         this.data = {reports: []};
         fireEvent(this, 'locations-updated');
-        this.onClose(true);
+        this.close(true);
       })
       .catch((err: any) => {
         fireEvent(this, 'toast', {
