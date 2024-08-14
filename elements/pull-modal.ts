@@ -8,7 +8,6 @@ import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-ro
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-header';
 import UtilsMixin from '../mixins/utils-mixin';
-import './etools-prp-permissions';
 import './project-status';
 import './page-body';
 import './list-placeholder';
@@ -37,9 +36,6 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
 
   @property({type: Boolean})
   updatePending = false;
-
-  @property({type: Object})
-  postBody: any = {};
 
   @property({type: String})
   workspaceId!: string;
@@ -97,12 +93,6 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
           height: 0px !important;
         }
       </style>
-
-      <etools-prp-permissions
-        .permissions="${this.permissions}"
-        @permissions-changed="${(e) => (this.permissions = e.detail.value)}"
-      >
-      </etools-prp-permissions>
 
       <etools-dialog
         id="dialog"
@@ -177,7 +167,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     ) {
       if (this.workspaceId && this.reportId && this.indicatorId && !this.pullUrl)
         this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
-      this.loadData();
+        this.loadData();
     }
   }
 
@@ -185,7 +175,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     sendRequest({
       method: 'POST',
       endpoint: {url: this.pullUrl},
-      body: this.postBody
+      body: {}
     })
       .then(() => {
         this.data = {reports: []};
