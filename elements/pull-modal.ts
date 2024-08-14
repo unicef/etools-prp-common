@@ -98,8 +98,9 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
         id="dialog"
         size="lg"
         dialog-title="Pull data"
-        @close=${this.close}
+        @close="${this.close}"        
         @confirm-btn-clicked="${this.onSaveClick}"
+        keep-dialog-open
       >
         <div class="qpr-header">
           <h3>Reporting period: ${this.reportingPeriod}</h3>
