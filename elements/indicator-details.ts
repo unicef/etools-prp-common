@@ -628,6 +628,10 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
         indicatorId: this.indicatorId,
         reportId: this.reportId
       }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this._onLocationsUpdated();
+      }
     });
   }
 

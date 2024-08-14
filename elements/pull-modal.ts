@@ -93,6 +93,9 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
         etools-dialog {
           --divider-color: transparent;
         }
+        etools-data-table-header::part(edt-header-title) {
+          height: 0px !important;
+        }
       </style>
 
       <etools-prp-permissions
@@ -101,7 +104,13 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
       >
       </etools-prp-permissions>
 
-      <etools-dialog id="dialog" size="lg" dialog-title="Pull data" @close=${this.close}>
+      <etools-dialog
+        id="dialog"
+        size="lg"
+        dialog-title="Pull data"
+        @close=${this.close}
+        @confirm-btn-clicked="${this.onSaveClick}"
+      >
         <div class="qpr-header">
           <h3>Reporting period: ${this.reportingPeriod}</h3>
           <h3>${this.indicatorName}</h3>
@@ -172,7 +181,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     }
   }
 
-  _save() {
+  onSaveClick() {
     sendRequest({
       method: 'POST',
       endpoint: {url: this.pullUrl},
@@ -181,6 +190,7 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
       .then(() => {
         this.data = {reports: []};
         fireEvent(this, 'locations-updated');
+        this.onClose(true);
       })
       .catch((err: any) => {
         fireEvent(this, 'toast', {
@@ -190,12 +200,8 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
       });
   }
 
-  close(e: any) {
-    if (e.detail.confirmed) {
-      this._save();
-    } else {
-      this.data = {reports: []};
-    }
+  close(confirmed = false) {
+    fireEvent(this, 'dialog-closed', {confirmed: confirmed});
   }
 
   loadData() {
