@@ -18,6 +18,21 @@ export class PageHeader extends connect(store)(LitElement) {
     return [layoutStyles];
   }
 
+  @property({type: String, attribute: 'title'})
+  title!: string;
+
+  @property({type: String, attribute: 'back'})
+  back!: string;
+
+  @property({type: String})
+  backUrl!: string | undefined;
+
+  @property({type: String})
+  baseUrl?: string;
+
+  @property({type: String})
+  app!: string;
+
   render() {
     return html`
       ${sharedStyles}
@@ -90,21 +105,6 @@ export class PageHeader extends connect(store)(LitElement) {
       </div>
     `;
   }
-
-  @property({type: String})
-  title!: string;
-
-  @property({type: String})
-  back!: string;
-
-  @property({type: String})
-  backUrl!: string | undefined;
-
-  @property({type: String})
-  baseUrl?: string;
-
-  @property({type: String})
-  app!: string;
 
   stateChanged(state: RootState) {
     if (state?.app?.current) {
