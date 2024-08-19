@@ -69,24 +69,26 @@ class DisaggregationTableCellPercentage extends LitElement {
       ${this.editable
         ? html`
             <div class="app-grid">
-              <div class="item">
-                <disaggregation-field
-                  id="v"
-                  key="v"
-                  min="0"
-                  .value="${this.data?.v}"
-                  .coords="${this.coords}"
-                ></disaggregation-field>
-              </div>
-              <div class="item">
-                <disaggregation-field
-                  id="d"
-                  key="d"
-                  min="0"
-                  .value="${this.data?.d}"
-                  .coords="${this.coords}"
-                  .validatorEl="${this.vDisaggregationEl}"
-                ></disaggregation-field>
+              <div class="layout-horizontal">
+                <div class="item">
+                  <disaggregation-field
+                    id="v"
+                    key="v"
+                    min="0"
+                    .value="${this.data?.v}"
+                    .coords="${this.coords}"
+                  ></disaggregation-field>
+                </div>
+                <div class="item">
+                  <disaggregation-field
+                    id="d"
+                    key="d"
+                    min="0"
+                    .value="${this.data?.d}"
+                    .coords="${this.coords}"
+                    .validatorEl="${this.vDisaggregationEl}"
+                  ></disaggregation-field>
+                </div>
               </div>
               <div class="computed-value">${this._toPercentage(this.data?.c)}</div>
             </div>
@@ -95,11 +97,13 @@ class DisaggregationTableCellPercentage extends LitElement {
             ${this.isNotEditableAndValue(this.editable, this.data)
               ? html`
                   <div class="app-grid">
-                    <div class="item">
-                      <etools-prp-number .value="${this.data?.v}"></etools-prp-number>
-                    </div>
-                    <div class="item">
-                      <etools-prp-number .value="${this.data?.d}"></etools-prp-number>
+                    <div class="layout-horizontal">
+                      <div class="item">
+                        <etools-prp-number .value="${this.data?.v}"></etools-prp-number>
+                      </div>
+                      <div class="item">
+                        <etools-prp-number .value="${this.data?.d}"></etools-prp-number>
+                      </div>
                     </div>
                     <div class="computed-value">${this._toPercentage(this.data?.c)}</div>
                   </div>

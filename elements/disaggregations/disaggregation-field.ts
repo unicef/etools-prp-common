@@ -72,10 +72,11 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
   _inputValueChanged(e: CustomEvent) {
     const change: any = {};
-    change[this.key] = (e.target as EtoolsInput).value;
+    const currentValue = (e.target as EtoolsInput).value;
+    change[this.key] = currentValue;
 
     if (this.validatorEl) {
-      const isValid = change[this.key] !== 0 || Number(this.validatorEl.getField() as EtoolsInput) === 0;
+      const isValid = Number(currentValue) !== 0 || Number((this.validatorEl.getField() as EtoolsInput).value) === 0;
       (this.getField() as EtoolsInput).invalid = !isValid;
     }
 
