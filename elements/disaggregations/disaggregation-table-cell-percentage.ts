@@ -5,8 +5,7 @@ import './disaggregation-field';
 import {DisaggregationFieldEl} from './disaggregation-field';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-// import '@polymer/iron-meta/iron-meta';
-// import {IronMeta} from '@polymer/iron-meta/iron-meta'; // TODO check what is does
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 @customElement('disaggregation-table-cell-percentage')
 class DisaggregationTableCellPercentage extends LitElement {
@@ -29,6 +28,7 @@ class DisaggregationTableCellPercentage extends LitElement {
   vDisaggregationEl!: DisaggregationFieldEl;
 
   static styles = [
+    layoutStyles,
     css`
       :host {
         display: block;

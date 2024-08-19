@@ -1,5 +1,5 @@
-import {html, css, LitElement, PropertyValues} from 'lit';
-import {property, customElement} from 'lit/decorators.js';
+import {html, css, LitElement} from 'lit';
+import {property, customElement, query} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
@@ -7,7 +7,8 @@ import './disaggregation-field';
 import '../../elements/etools-prp-number';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-// import { IronMeta } from '@polymer/iron-meta/iron-meta'; // TODO check what is does
+import {DisaggregationFieldEl} from './disaggregation-field';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 @customElement('disaggregation-table-cell-ratio')
 class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
@@ -26,7 +27,11 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
   @property({type: String})
   coords!: string;
 
+  @query('#v')
+  vDisaggregationEl!: DisaggregationFieldEl;
+
   static styles = [
+    layoutStyles,
     css`
       :host {
         display: block;
@@ -61,24 +66,26 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
       ${disaggregationTableStyles}
       <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         <div slot="editable" class="app-grid">
-          <div class="item">
-            <disaggregation-field
-              id="v"
-              key="v"
-              min="0"
-              .value="${this.data?.v}"
-              .coords="${this.coords}"
-            ></disaggregation-field>
-          </div>
-          <div class="item">
-            <disaggregation-field
-              id="d"
-              key="d"
-              min="0"
-              .value="${this.data?.d}"
-              .coords="${this.coords}"
-              .validator="${this.vName}"
-            ></disaggregation-field>
+          <div class="layout-horizontal">
+            <div class="item">
+              <disaggregation-field
+                id="v"
+                key="v"
+                min="0"
+                .value="${this.data?.v}"
+                .coords="${this.coords}"
+              ></disaggregation-field>
+            </div>
+            <div class="item">
+              <disaggregation-field
+                id="d"
+                key="d"
+                min="0"
+                .value="${this.data?.d}"
+                .coords="${this.coords}"
+                .validatorEl="${this.vDisaggregationEl}"
+              ></disaggregation-field>
+            </div>
           </div>
           <div class="computed-value">
             <etools-prp-number .value="${this.localData?.v}"></etools-prp-number> /
@@ -99,14 +106,6 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
         </div>
       </disaggregation-table-cell>
     `;
-  }
-
-  updated(changedProperties: PropertyValues): void {
-    super.updated(changedProperties);
-
-    if (changedProperties.has('coords')) {
-      this._bindValidation(this.coords);
-    }
   }
 
   _handleInput(e: CustomEvent) {
@@ -144,27 +143,6 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
     });
 
     this.localData = change;
-  }
-
-  _bindValidation(coords: string) {
-    const vName = 'v-' + coords;
-    // @dci
-    // const validator = {
-    //   validatorName: vName,
-    //   validatorType: 'validator',
-    //   validate: (value: string) => {
-    //     return Number(value) !== 0 || Number((this.shadowRoot!.querySelector('#v') as EtoolsInput).value) === 0;
-    //   }
-    // };
-
-    // What is this for?
-    // new IronMeta({
-    //   type: validator.validatorType,
-    //   key: validator.validatorName,
-    //   value: validator
-    // });
-
-    this.vName = vName;
   }
 
   _cloneData(data: any) {
