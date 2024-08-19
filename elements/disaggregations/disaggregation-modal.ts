@@ -2,6 +2,7 @@ import {html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
 import {translate, get as getTranslation} from 'lit-translate';
 import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -10,6 +11,9 @@ import UtilsMixin from '../../mixins/utils-mixin';
 
 @customElement('disaggregation-modal')
 export class DisaggregationModal extends UtilsMixin(LitElement) {
+
+  static styles = [layoutStyles]
+
   @property({type: String})
   reportingPeriod!: string;
 
@@ -71,7 +75,7 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
             </p>
             ${this.hasPD ? html`<p class="current-pd">${this.currentPd.agreement} | ${this.currentPd.title}</p>` : ``}
           </div>
-          <div class="layout-vertical end-justified">
+          <div class="right-align">
             <dl class="location-progress">
               <dt>${translate('LOCATION_PROGRESS')}</dt>
               <dd>
