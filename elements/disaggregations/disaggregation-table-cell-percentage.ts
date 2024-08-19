@@ -45,6 +45,7 @@ class DisaggregationTableCellPercentage extends LitElement {
         padding: 0;
         border-bottom: 1px solid white;
         white-space: nowrap;
+        width: 50%;
       }
 
       .item:not(:first-child) {

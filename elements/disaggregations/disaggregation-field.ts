@@ -14,7 +14,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   coords!: string;
 
   @property({type: String})
-  errMessage = '';
+  errMessage!: string;
 
   @property({type: Object})
   validatorEl!: DisaggregationField;
@@ -62,6 +62,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   protected firstUpdated(changedProperties: PropertyValues): void {
     super.firstUpdated(changedProperties);
 
+    this.errMessage = '';
     // this.validate();
   }
 
