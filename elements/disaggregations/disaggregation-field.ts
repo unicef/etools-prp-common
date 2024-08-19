@@ -13,6 +13,9 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   @property({type: String})
   coords!: string;
 
+  @property({type: String})
+  errMessage = '';
+
   @property({type: Object})
   validatorEl!: DisaggregationField;
 
@@ -44,6 +47,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
         .min="${this.min}"
         @value-changed="${this._inputValueChanged}"
         @keydown="${this._preventInvalidInput}"
+        .errorMessage="${this.errMessage}"
         no-label-float
         required
       >
@@ -59,7 +63,6 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     super.firstUpdated(changedProperties);
 
     // this.validate();
-    // fireEvent(this, 'register-field', this);
   }
 
   validate() {

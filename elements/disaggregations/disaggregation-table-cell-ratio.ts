@@ -93,11 +93,13 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
           </div>
         </div>
         <div slot="non-editable" class="app-grid">
-          <div class="item">
-            <etools-prp-number .value="${this.data?.v}"></etools-prp-number>
-          </div>
-          <div class="item">
-            <etools-prp-number .value="${this.data?.d}"></etools-prp-number>
+          <div class="layout-horizontal">
+            <div class="item">
+              <etools-prp-number .value="${this.data?.v}"></etools-prp-number>
+            </div>
+            <div class="item">
+              <etools-prp-number .value="${this.data?.d}"></etools-prp-number>
+            </div>
           </div>
           <div class="computed-value">
             <etools-prp-number .value="${this.data?.v}"></etools-prp-number> /
