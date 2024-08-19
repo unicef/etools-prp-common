@@ -34,7 +34,8 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   @property({type: Boolean})
   editableBool!: boolean;
 
-  static styles = css`${layoutStyles},
+  static styles = css`
+    ${layoutStyles},
     :host {
       display: block;
     }
@@ -68,17 +69,17 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
             <div class="container">
               <h4>${translate('ENTER_DATA_BY_DISAGGREGATION')}</h4>
               <div class="layout-horizontal">
-              ${(this.mapping || []).map(
-                (field) => html`
-                  <etools-checkbox
-                    id="${field.id}"
-                    ?checked="${this._computeChecked(field.id)}"
-                    @sl-change="${this.fieldValueChanged}"
-                  >
-                    ${this._formatFieldName(field.name)}
-                  </etools-checkbox>
-                `
-              )}
+                ${(this.mapping || []).map(
+                  (field) => html`
+                    <etools-checkbox
+                      id="${field.id}"
+                      ?checked="${this._computeChecked(field.id)}"
+                      @sl-change="${this.fieldValueChanged}"
+                    >
+                      ${this._formatFieldName(field.name)}
+                    </etools-checkbox>
+                  `
+                )}
               </div>
               ${this.warning
                 ? html`

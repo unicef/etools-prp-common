@@ -113,10 +113,10 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
       this.rows = this._getRows(this.mapping);
       this.middleRows = this._getMiddleRows(this.mapping);
     }
-    if (changedProperties.has('columns') || changedProperties.has('middleRows') || changedProperties.has('data')) {      
+    if (changedProperties.has('columns') || changedProperties.has('middleRows') || changedProperties.has('data')) {
       this._determineTotals(this.columns, this.middleRows, this.data);
     }
-    if (changedProperties.has('columns') || changedProperties.has('rows')  || changedProperties.has('data')) {
+    if (changedProperties.has('columns') || changedProperties.has('rows') || changedProperties.has('data')) {
       this.outerRowsForDisplay = this._determineOuterRows(this.rows, this.columns);
     }
   }

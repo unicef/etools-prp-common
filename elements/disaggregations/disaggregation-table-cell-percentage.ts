@@ -1,5 +1,5 @@
 import {html, css, LitElement} from 'lit';
-import {property, customElement} from 'lit/decorators.js';
+import {property, customElement, query} from 'lit/decorators.js';
 import '../../elements/etools-prp-number';
 import './disaggregation-field';
 import {DisaggregationFieldEl} from './disaggregation-field';
@@ -25,15 +25,13 @@ class DisaggregationTableCellPercentage extends LitElement {
   @property({type: String})
   coords!: string;
 
+  @query('#v')
+  vDisaggregationEl!: DisaggregationFieldEl;
+
   static styles = [
     css`
       :host {
         display: block;
-
-        --app-grid-columns: 2;
-        --app-grid-gutter: 0px;
-        --app-grid-item-height: auto;
-        --app-grid-expandible-item-columns: 2;
       }
 
       .item,
@@ -87,7 +85,7 @@ class DisaggregationTableCellPercentage extends LitElement {
                   min="0"
                   .value="${this.data?.d}"
                   .coords="${this.coords}"
-                  .validator="${this.vName}"
+                  .validatorEl="${this.vDisaggregationEl}"
                 ></disaggregation-field>
               </div>
               <div class="computed-value">${this._toPercentage(this.data?.c)}</div>
@@ -109,14 +107,6 @@ class DisaggregationTableCellPercentage extends LitElement {
               : html` <div class="cellValue">0</div> `}
           `}
     `;
-  }
-
-  updated(changedProperties) {
-    super.updated(changedProperties);
-
-    if (changedProperties.has('coords')) {
-      this._bindValidation(this.coords);
-    }
   }
 
   noValue(data: any) {
@@ -164,29 +154,6 @@ class DisaggregationTableCellPercentage extends LitElement {
     }
 
     this.localData = change;
-  }
-
-  _bindValidation(coords: string) {
-    const vName = 'v-' + coords;
-    // @dci
-    // const validator = {
-    //   validatorName: vName,
-    //   validatorType: 'validator',
-    //   validate: (value: string) => {
-    //     return (
-    //       Number(value) !== 0 ||
-    //       Number((this.shadowRoot!.querySelector('#v') as DisaggregationFieldEl).getField() as EtoolsInput) === 0
-    //     );
-    //   }
-    // };
-
-    // new IronMeta({
-    //   type: validator.validatorType,
-    //   key: validator.validatorName,
-    //   value: validator
-    // });
-
-    this.vName = vName;
   }
 
   _cloneData(data: any) {

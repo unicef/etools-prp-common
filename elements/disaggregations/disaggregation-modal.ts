@@ -11,28 +11,29 @@ import UtilsMixin from '../../mixins/utils-mixin';
 
 @customElement('disaggregation-modal')
 export class DisaggregationModal extends UtilsMixin(LitElement) {
-
   static styles = css`
-  ${layoutStyles}
-  etools-icon {
-   --etools-icon-fill-color: var(--sl-color-primary-400);
-  }
-  h3 {
-    margin-block-start: 0;
-  }
-  .half {
-    width: 50%;
-  }
-  .current-pd {
-    margin: 0;
-    font-size: 12px;
-    color: var(--theme-primary-text-color-medium);
-  }
-  .location-progress {
-    justify-content: flex-end;
-    font-weight: bold;
-  }
-`;
+    ${layoutStyles}
+    etools-icon {
+      --etools-icon-fill-color: var(--sl-color-primary-400);
+    }
+    h3 {
+      margin-block-start: 0;
+    }
+    .half {
+      width: 50%;
+    }
+    .current-pd {
+      margin: 0;
+      font-size: 12px;
+      color: var(--theme-primary-text-color-medium);
+    }
+    .location-progress {
+      justify-content: flex-end;
+      font-weight: bold;
+      display: flex;
+      margin-block-start: 0;
+    }
+  `;
 
   @property({type: String})
   reportingPeriod!: string;
@@ -92,12 +93,14 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
             <p class="location">
               <etools-icon name="communication:locationOn"></etools-icon>
               ${this.topLevelLocation?.name}
-            </p>            
+            </p>
           </div>
           <div class="layout-horizontal">
-            ${this.hasPD ? html`<div class="current-pd half">${this.currentPd.agreement} | ${this.currentPd.title}</div>` : ``}
+            ${this.hasPD
+              ? html`<div class="current-pd half">${this.currentPd.agreement} | ${this.currentPd.title}</div>`
+              : ``}
             <div class="half">
-              <dl class="layout-horizontal location-progress">
+              <dl class="location-progress">
                 <dt>${translate('LOCATION_PROGRESS')}</dt>
                 <dd>
                   ${this.topLevelLocation?.byEntity[0].display_type == 'number'

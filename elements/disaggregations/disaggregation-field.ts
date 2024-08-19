@@ -13,8 +13,8 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   @property({type: String})
   coords!: string;
 
-  @property({type: String})
-  validator!: string;
+  @property({type: Object})
+  validatorEl!: DisaggregationField;
 
   @property({type: Number})
   min!: number;
@@ -41,7 +41,6 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
         .value="${this.value}"
         allowed-pattern="^\\d*\\.?\\d*$"
         ?invalid="${this.invalid}"
-        .validator="${this.validator}"
         .min="${this.min}"
         @value-changed="${this._inputValueChanged}"
         @keydown="${this._preventInvalidInput}"
@@ -73,7 +72,12 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
   _inputValueChanged(e: CustomEvent) {
     const change: any = {};
-    change[this.key] = (e.target as any).value;
+    change[this.key] = (e.target as EtoolsInput).value;
+
+    if (this.validatorEl) {
+      const isValid = change[this.key] !== 0 || Number(this.validatorEl.getField() as EtoolsInput) === 0;
+      (this.getField() as EtoolsInput).invalid = !isValid;
+    }
 
     fireEvent(this, 'field-value-changed', {
       key: this.coords,
