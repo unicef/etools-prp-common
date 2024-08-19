@@ -153,7 +153,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
         >
         </disaggregation-switches>
 
-        ${this.viewLabel
+        ${this.viewLabel && (this.labels?.label || this.labels?.denominator_label)
           ? html`<dl class="data-key">
               <dt>${translate('LABEL')} -</dt>
               ${this.data?.display_type === 'number'
