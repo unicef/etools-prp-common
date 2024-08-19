@@ -4,6 +4,7 @@ import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from 'lit-translate';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
 import '../message-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
@@ -33,7 +34,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   @property({type: Boolean})
   editableBool!: boolean;
 
-  static styles = css`
+  static styles = css`${layoutStyles},
     :host {
       display: block;
     }
@@ -48,6 +49,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
       margin: 0 0 10px;
       font-size: 12px;
       line-height: 1;
+      display: block;
     }
 
     etools-checkbox:not(:first-of-type) {
@@ -65,6 +67,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
         ? html`
             <div class="container">
               <h4>${translate('ENTER_DATA_BY_DISAGGREGATION')}</h4>
+              <div class="layout-horizontal">
               ${(this.mapping || []).map(
                 (field) => html`
                   <etools-checkbox
@@ -76,6 +79,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
                   </etools-checkbox>
                 `
               )}
+              </div>
               ${this.warning
                 ? html`
                     <message-box type="warning">
