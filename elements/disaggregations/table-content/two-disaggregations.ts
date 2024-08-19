@@ -59,7 +59,7 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
             .data="${row}"
             .levelReported="${this.data?.level_reported}"
             .indicatorType="${this.data?.display_type}"
-            row-type="middleRow"
+            rowType="middleRow"
             .editable="${this.editable}"
           ></disaggregation-table-row>
         `
@@ -69,7 +69,7 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
         .data="${this.totalsForDisplay}"
         .levelReported="${this.data?.level_reported}"
         .indicatorType="${this.data?.display_type}"
-        row-type="totalsRow"
+        rowType="totalsRow"
       ></disaggregation-table-row>
     `;
   }
