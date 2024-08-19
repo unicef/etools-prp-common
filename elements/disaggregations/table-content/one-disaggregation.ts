@@ -84,7 +84,7 @@ export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement
       this.columns = this._getColumns(this.mapping);
     }
     if (changedProperties.has('columns') || changedProperties.has('data')) {
-      this.totalRow = this._determineRows(this.columns, this.data);
+      this.rows = this._determineRows(this.columns, this.data);
     }
   }
 
