@@ -1,4 +1,4 @@
-import {html, LitElement} from 'lit';
+import {css, html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
@@ -12,7 +12,27 @@ import UtilsMixin from '../../mixins/utils-mixin';
 @customElement('disaggregation-modal')
 export class DisaggregationModal extends UtilsMixin(LitElement) {
 
-  static styles = [layoutStyles]
+  static styles = css`
+  ${layoutStyles}
+  etools-icon {
+   --etools-icon-fill-color: var(--sl-color-primary-400);
+  }
+  h3 {
+    margin-block-start: 0;
+  }
+  .half {
+    width: 50%;
+  }
+  .current-pd {
+    margin: 0;
+    font-size: 12px;
+    color: var(--theme-primary-text-color-medium);
+  }
+  .location-progress {
+    justify-content: flex-end;
+    font-weight: bold;
+  }
+`;
 
   @property({type: String})
   reportingPeriod!: string;
@@ -72,26 +92,28 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
             <p class="location">
               <etools-icon name="communication:locationOn"></etools-icon>
               ${this.topLevelLocation?.name}
-            </p>
-            ${this.hasPD ? html`<p class="current-pd">${this.currentPd.agreement} | ${this.currentPd.title}</p>` : ``}
+            </p>            
           </div>
-          <div class="right-align">
-            <dl class="location-progress">
-              <dt>${translate('LOCATION_PROGRESS')}</dt>
-              <dd>
-                ${this.topLevelLocation?.byEntity[0].display_type == 'number'
-                  ? html`<etools-prp-number
-                      .value="${this.topLevelLocation?.byEntity[0].location_progress.v}"
-                    ></etools-prp-number>`
-                  : html`<span
-                      >${this._formatIndicatorValue(
-                        this.topLevelLocation?.byEntity[0].display_type,
-                        this.topLevelLocation?.byEntity[0].location_progress.c,
-                        1
-                      )}</span
-                    >`}
-              </dd>
-            </dl>
+          <div class="layout-horizontal">
+            ${this.hasPD ? html`<div class="current-pd half">${this.currentPd.agreement} | ${this.currentPd.title}</div>` : ``}
+            <div class="half">
+              <dl class="layout-horizontal location-progress">
+                <dt>${translate('LOCATION_PROGRESS')}</dt>
+                <dd>
+                  ${this.topLevelLocation?.byEntity[0].display_type == 'number'
+                    ? html`<etools-prp-number
+                        .value="${this.topLevelLocation?.byEntity[0].location_progress.v}"
+                      ></etools-prp-number>`
+                    : html`<span
+                        >${this._formatIndicatorValue(
+                          this.topLevelLocation?.byEntity[0].display_type,
+                          this.topLevelLocation?.byEntity[0].location_progress.c,
+                          1
+                        )}</span
+                      >`}
+                </dd>
+              </dl>
+            </div>
           </div>
 
           <disaggregation-table
