@@ -175,7 +175,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
 
   _updateReportedOn(ctrlId: string, checked: boolean) {
     const id = Number(ctrlId);
-    if (checked) {
+    if (checked && !this.reportedOn.includes(id)) {
       this.reportedOn = [...this.reportedOn, id];
     } else if (this.reportedOn.indexOf(id) !== -1) {
       this.reportedOn = this.reportedOn.filter((reportedId) => reportedId !== id);
