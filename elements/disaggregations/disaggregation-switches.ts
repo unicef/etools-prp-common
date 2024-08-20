@@ -74,7 +74,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
                     <etools-checkbox
                       id="${field.id}"
                       ?checked="${this._computeChecked(field.id)}"
-                      @sl-change="${(e: any) => this.fieldValueChanged(e)}"
+                      @sl-change="${(e: any) => this.fieldValueChanged(e.target)}"
                     >
                       ${this._formatFieldName(field.name)}
                     </etools-checkbox>
@@ -124,8 +124,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
     return this._capitalizeFirstLetter(name);
   }
 
-  fieldValueChanged(e: Event) {
-    const field = e.target as any;
+  fieldValueChanged(field: any) {
     this._recordField(field);
     this._confirmIntent(field)
       .then(() => this._commit())
@@ -186,7 +185,6 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   connectedCallback() {
     super.connectedCallback();
 
-    this.fieldValueChanged = debounce(this.fieldValueChanged.bind(this), 200);
     this.reportedOn = [];
   }
 }
