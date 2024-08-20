@@ -21,7 +21,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   @property({type: Boolean})
   warning = true;
 
-  @state() reportedOn: number[] = [];
+  @state() reportedOn!: number[];
 
   @property({type: Object})
   formattedData!: any;
