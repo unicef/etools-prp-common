@@ -1,5 +1,5 @@
 import {html, css, LitElement} from 'lit';
-import {property, customElement} from 'lit/decorators.js';
+import {property, customElement, state} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from 'lit-translate';
@@ -21,8 +21,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   @property({type: Boolean})
   warning = true;
 
-  @property({type: Array})
-  reportedOn: number[] = [];
+  @state() reportedOn: number[] = [];
 
   @property({type: Object})
   formattedData!: any;
