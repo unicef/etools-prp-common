@@ -1,5 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import {repeat} from 'lit/directives/repeat.js';
 import {connect} from 'pwa-helpers';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
@@ -289,7 +290,8 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                 </div>
 
                 <div id="pages-container">
-                  ${(this.locationData || []).map(
+                  ${repeat(
+                    this.locationData || [],
                     (topLevelLocation: any, topLevelLocationIndex: number) => html`
                       <div ?hidden="${this.selected !== topLevelLocationIndex}">
                         <div id="page-header-container">
@@ -315,7 +317,8 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                               hide-scroll-buttons
                               id="reporting-tabs-container"
                             >
-                              ${(topLevelLocation.byEntity || []).map(
+                              ${repeat(
+                                topLevelLocation.byEntity || [],
                                 (location: any, index: number) =>
                                   html`<sl-tab
                                     slot="nav"
@@ -330,7 +333,8 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                         </div>
 
                         <div id="page-view-container">
-                          ${(topLevelLocation.byEntity || []).map(
+                          ${repeat(
+                            topLevelLocation.byEntity || [],
                             (location: any, index: number) => html`
                               <div name="tab_${index}" ?hidden="${this.topLevelLocationSelected !== `tab_${index}`}">
                                 <div class="table-container ">
