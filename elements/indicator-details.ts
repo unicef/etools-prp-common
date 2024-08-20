@@ -134,6 +134,14 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
           padding: 0px 16px;
         }
 
+        #tabs-list #tab-item::part(base):hover {
+          background-color: #DBDBDB;
+        }
+
+        #tabs-list #tab-item.selected::part(base) {
+          background-color: var(--primary-color, #0099FF);
+        }
+
         #pages-container {
           width: 70%;
           height: inherit;
@@ -267,7 +275,11 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                   <sl-menu id="tabs-list">
                     ${(this.locationData || []).map(
                       (topLevelLocation: any, topLevelLocationIndex: number) => html`
-                        <sl-menu-item id="tab-item" @click="${() => (this.selected = topLevelLocationIndex)}">
+                        <sl-menu-item
+                          id="tab-item"
+                          class="${this.selected === topLevelLocationIndex ? 'selected' : ''}"
+                          @click="${() => (this.selected = topLevelLocationIndex)}"
+                        >
                           <status-badge .type="${this._computeLocationStatus(topLevelLocation)}"></status-badge>
                           ${topLevelLocation.name}
                         </sl-menu-item>
