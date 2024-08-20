@@ -435,7 +435,6 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     if (!this.editableBool) {
       return;
     }
-    fireEvent(this, 'disaggregation-modal-refit');
   }
 
   _computeMapping(editableBool: boolean, formattedData: any, mapping: any[]) {

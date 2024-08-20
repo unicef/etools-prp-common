@@ -74,7 +74,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
                     <etools-checkbox
                       id="${field.id}"
                       ?checked="${this._computeChecked(field.id)}"
-                      @sl-change="${this.fieldValueChanged}"
+                      @sl-change="${(e: any) => this.fieldValueChanged(e)}"
                     >
                       ${this._formatFieldName(field.name)}
                     </etools-checkbox>
