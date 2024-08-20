@@ -101,21 +101,19 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
     if (changedProperties.has('data') || changedProperties.has('reportedOn')) {
       this._computeWarning(this.data?.num_disaggregation, this.reportedOn?.length);
     }
+    if (changedProperties.has('formattedData')) {
+      if (this.formattedData && !this.reportedOn) {
+        this.reportedOn = [...(this.formattedData.disaggregation_reported_on || [])];
+      }
+    }
   }
 
   _computeEditableBool(editable: number) {
     return editable === 1;
   }
 
-  _cloneData(data: any) {
-    this.formattedData = {...data};
-    fireEvent(this, 'formatted-data-changed', {value: this.formattedData});
-  }
-
   _computeChecked(id: string) {
-    const checked = this.formattedData.disaggregation_reported_on.indexOf(id) !== -1;
-    this._updateReportedOn(id, checked);
-    return checked;
+    return this.formattedData.disaggregation_reported_on.indexOf(id) !== -1;
   }
 
   _formatFieldName(name: string) {
@@ -180,12 +178,6 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
     } else if (this.reportedOn.indexOf(id) !== -1) {
       this.reportedOn = this.reportedOn.filter((reportedId) => reportedId !== id);
     }
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.reportedOn = [];
   }
 }
 
