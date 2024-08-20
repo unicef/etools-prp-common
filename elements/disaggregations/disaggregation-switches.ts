@@ -102,7 +102,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
       this._computeWarning(this.data?.num_disaggregation, this.reportedOn?.length);
     }
     if (changedProperties.has('formattedData')) {
-      if (this.formattedData && !this.reportedOn) {
+      if (this.formattedData && Object.keys(this.formattedData).length && !this.reportedOn) {
         this.reportedOn = [...(this.formattedData.disaggregation_reported_on || [])];
       }
     }
