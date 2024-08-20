@@ -158,6 +158,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
       level_reported: this.reportedOn.length,
       disaggregation_reported_on: this.reportedOn
     };
+    fireEvent(this, 'formatted-data-changed', {value: this.formattedData});
   }
 
   _revert(field: any) {
