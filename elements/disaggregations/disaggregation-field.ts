@@ -35,6 +35,10 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     etools-input::part(input) {
       text-align: center;
     }
+    etools-input {
+      --etools-input-padding-top: 0;
+      --etools-input-padding-bottom: 0;
+    }    
   `;
 
   render() {
