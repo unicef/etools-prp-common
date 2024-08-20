@@ -7,7 +7,6 @@ import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
 import '../message-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 
@@ -175,8 +174,10 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
 
   _updateReportedOn(ctrlId: string, checked: boolean) {
     const id = Number(ctrlId);
-    if (checked && !this.reportedOn.includes(id)) {
-      this.reportedOn = [...this.reportedOn, id];
+    if (checked) {
+      if (!this.reportedOn.includes(id)) {
+        this.reportedOn = [...this.reportedOn, id];
+      }
     } else if (this.reportedOn.indexOf(id) !== -1) {
       this.reportedOn = this.reportedOn.filter((reportedId) => reportedId !== id);
     }

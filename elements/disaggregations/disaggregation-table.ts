@@ -334,7 +334,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
       case 3:
         totals = {
           ...this.totals,
-          ...this.getCalculateLevel(this.formattedData.level_reported, key, this.totals),
+          ...this.getCalculateLevel(this.formattedData.level_reported, key, this.totals)
         };
         break;
 
