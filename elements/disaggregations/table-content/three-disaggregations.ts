@@ -64,7 +64,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
             .data="${outerRow}"
             .levelReported="${this.data?.level_reported}"
             .indicatorType="${this.data?.display_type}"
-            row-type="outerRow"
+            rowType="outerRow"
           ></disaggregation-table-row>
 
           ${(this._determineMiddleRows(outerRow.id, this.columns, this.middleRows, this.data) || []).map(
@@ -73,7 +73,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
                 .data="${middleRow}"
                 .levelReported="${this.data?.level_reported}"
                 .indicatorType="${this.data?.display_type}"
-                row-type="middleRow"
+                rowType="middleRow"
                 .editable="${this.editable}"
               ></disaggregation-table-row>
             `
@@ -86,7 +86,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
         .data="${this.columnTotalRow}"
         .levelReported="${this.data?.level_reported}"
         .indicatorType="${this.data?.display_type}"
-        row-type="totalsRow"
+        rowType="totalsRow"
       ></disaggregation-table-row>
 
       <!-- Bottom table -->
@@ -96,7 +96,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
             .data="${bottomRow}"
             .levelReported="${this.data?.level_reported}"
             .indicatorType="${this.data?.display_type}"
-            row-type="bottomRow"
+            rowType="bottomRow"
           ></disaggregation-table-row>
         `
       )}
@@ -105,14 +105,17 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
 
   updated(changedProperties) {
     super.updated(changedProperties);
-    if (changedProperties.has('data') || changedProperties.has('mapping')) {
+
+    if (changedProperties.has('mapping')) {
       this.columns = this._getColumns(this.mapping);
       this.rows = this._getRows(this.mapping);
       this.middleRows = this._getMiddleRows(this.mapping);
+    }
+    if (changedProperties.has('columns') || changedProperties.has('middleRows') || changedProperties.has('data')) {
       this._determineTotals(this.columns, this.middleRows, this.data);
     }
-    if (changedProperties.has('columns') || changedProperties.has('rows')) {
-      this.outerRowsForDisplay = this._determineOuterRows(this.columns, this.rows);
+    if (changedProperties.has('columns') || changedProperties.has('rows') || changedProperties.has('data')) {
+      this.outerRowsForDisplay = this._determineOuterRows(this.rows, this.columns);
     }
   }
 
@@ -128,7 +131,7 @@ class ThreeDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
     return (mapping[2] || {}).choices || [];
   }
 
-  _determineOuterRows(columns: any[], rows: any[]) {
+  _determineOuterRows(rows: any[], columns: any[]) {
     return this._determineRows(this, rows, columns);
   }
 

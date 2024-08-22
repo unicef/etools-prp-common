@@ -1,12 +1,12 @@
-import {html, css, LitElement} from 'lit';
-import {property, customElement} from 'lit/decorators.js';
+import {html, LitElement} from 'lit';
+import {property, customElement, state} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from 'lit-translate';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
 import '../message-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 
@@ -21,8 +21,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   @property({type: Boolean})
   warning = true;
 
-  @property({type: Array})
-  reportedOn: number[] = [];
+  @state() reportedOn!: number[];
 
   @property({type: Object})
   formattedData!: any;
@@ -36,13 +35,15 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   render() {
     return html`
       <style>
+        ${layoutStyles}
+
         :host {
           display: block;
         }
 
         .container {
           padding: 10px 24px;
-          margin: 0 -24px;
+          margin-block-end: 8px;
           background: var(--sl-color-neutral-100);
         }
 
@@ -50,6 +51,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
           margin: 0 0 10px;
           font-size: 12px;
           line-height: 1;
+          display: block;
         }
 
         etools-checkbox:not(:first-of-type) {
@@ -64,17 +66,19 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
         ? html`
             <div class="container">
               <h4>${translate('ENTER_DATA_BY_DISAGGREGATION')}</h4>
-              ${(this.mapping || []).map(
-                (field) => html`
-                  <etools-checkbox
-                    id="${field.id}"
-                    ?checked="${this._computeChecked(field.id)}"
-                    @sl-change="${this.fieldValueChanged}"
-                  >
-                    ${this._formatFieldName(field.name)}
-                  </etools-checkbox>
-                `
-              )}
+              <div class="layout-horizontal">
+                ${(this.mapping || []).map(
+                  (field) => html`
+                    <etools-checkbox
+                      id="${field.id}"
+                      ?checked="${this._computeChecked(field.id)}"
+                      @sl-change="${(e: any) => this.fieldValueChanged(e.target)}"
+                    >
+                      ${this._formatFieldName(field.name)}
+                    </etools-checkbox>
+                  `
+                )}
+              </div>
               ${this.warning
                 ? html`
                     <message-box type="warning">
@@ -97,29 +101,26 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
     if (changedProperties.has('data') || changedProperties.has('reportedOn')) {
       this._computeWarning(this.data?.num_disaggregation, this.reportedOn?.length);
     }
+    if (changedProperties.has('formattedData')) {
+      if (this.formattedData && Object.keys(this.formattedData).length && !this.reportedOn) {
+        this.reportedOn = [...(this.formattedData.disaggregation_reported_on || [])];
+      }
+    }
   }
 
   _computeEditableBool(editable: number) {
     return editable === 1;
   }
 
-  _cloneData(data: any) {
-    this.formattedData = {...data};
-    fireEvent(this, 'formatted-data-changed', {value: this.formattedData});
-  }
-
   _computeChecked(id: string) {
-    const checked = this.formattedData.disaggregation_reported_on.indexOf(id) !== -1;
-    this._updateReportedOn(id, checked);
-    return checked;
+    return this.formattedData.disaggregation_reported_on.indexOf(id) !== -1;
   }
 
   _formatFieldName(name: string) {
     return this._capitalizeFirstLetter(name);
   }
 
-  fieldValueChanged(e: Event) {
-    const field = e.target as any;
+  fieldValueChanged(field: any) {
     this._recordField(field);
     this._confirmIntent(field)
       .then(() => this._commit())
@@ -152,6 +153,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
       level_reported: this.reportedOn.length,
       disaggregation_reported_on: this.reportedOn
     };
+    fireEvent(this, 'formatted-data-changed', {value: this.formattedData});
   }
 
   _revert(field: any) {
@@ -170,17 +172,12 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   _updateReportedOn(ctrlId: string, checked: boolean) {
     const id = Number(ctrlId);
     if (checked) {
-      this.reportedOn = [...this.reportedOn, id];
+      if (!this.reportedOn.includes(id)) {
+        this.reportedOn = [...this.reportedOn, id];
+      }
     } else if (this.reportedOn.indexOf(id) !== -1) {
       this.reportedOn = this.reportedOn.filter((reportedId) => reportedId !== id);
     }
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.fieldValueChanged = debounce(this.fieldValueChanged.bind(this), 200);
-    this.reportedOn = [];
   }
 }
 

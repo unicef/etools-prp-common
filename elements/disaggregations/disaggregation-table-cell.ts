@@ -39,6 +39,7 @@ class DisaggregationTableCell extends UtilsMixin(LitElement) {
     }
     if (changedProperties.has('data')) {
       this.noValue = this._computeNoValue(this.data);
+      this.requestUpdate();
     }
   }
 

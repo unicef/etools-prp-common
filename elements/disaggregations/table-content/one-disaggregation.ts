@@ -54,7 +54,7 @@ export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement
             .data="${row}"
             .levelReported="${this.data?.level_reported}"
             .indicatorType="${this.data?.display_type}"
-            row-type="middleRow"
+            rowType="middleRow"
             .editable="${this.editable}"
           ></disaggregation-table-row>
         `
@@ -64,7 +64,7 @@ export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement
         .data="${this.totalRow}"
         .levelReported="${this.data?.level_reported}"
         .indicatorType="${this.data?.display_type}"
-        row-type="totalsRow"
+        rowType="totalsRow"
       ></disaggregation-table-row>
     `;
   }
@@ -83,7 +83,7 @@ export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement
       this.columns = this._getColumns(this.mapping);
     }
     if (changedProperties.has('columns') || changedProperties.has('data')) {
-      this.totalRow = this._determineRows(this.columns, this.data);
+      this.rows = this._determineRows(this.columns, this.data);
     }
   }
 

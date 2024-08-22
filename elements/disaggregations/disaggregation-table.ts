@@ -330,7 +330,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
       case 3:
         totals = {
           ...this.totals,
-          ...this[`_calculateLevel${this.formattedData.level_reported}`](key, this.totals)
+          ...this.getCalculateLevel(this.formattedData.level_reported, key, this.totals)
         };
         break;
 
@@ -349,6 +349,19 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     if (totals) {
       this.totals = totals;
     }
+  }
+
+  getCalculateLevel(level_reported: number, key: string, totals: any) {
+    level_reported = Number(level_reported);
+    switch (level_reported) {
+      case 1:
+        return this._calculateLevel1(key, totals);
+      case 2:
+        return this._calculateLevel2(key, totals);
+      case 3:
+        return this._calculateLevel3(key, totals);
+    }
+    return {};
   }
 
   _cloneData(formattedData: any) {
@@ -418,7 +431,6 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     if (!this.editableBool) {
       return;
     }
-    fireEvent(this, 'disaggregation-modal-refit');
   }
 
   _computeMapping(editableBool: boolean, formattedData: any, mapping: any[]) {
