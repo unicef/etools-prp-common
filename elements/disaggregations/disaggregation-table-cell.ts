@@ -1,4 +1,4 @@
-import {html, css, LitElement} from 'lit';
+import {html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
@@ -17,16 +17,13 @@ class DisaggregationTableCell extends UtilsMixin(LitElement) {
   @property({type: Boolean})
   noValue!: boolean;
 
-  static styles = [
-    css`
-      :host {
-        display: block;
-      }
-    `
-  ];
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
       ${disaggregationTableStyles}
       ${this.editableBool
         ? html`<slot name="editable"></slot>`

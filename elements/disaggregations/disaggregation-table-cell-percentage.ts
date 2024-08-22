@@ -1,4 +1,4 @@
-import {html, css, LitElement} from 'lit';
+import {html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import '../../elements/etools-prp-number';
 import './disaggregation-field';
@@ -25,48 +25,45 @@ class DisaggregationTableCellPercentage extends LitElement {
   @property({type: String})
   coords!: string;
 
-  static styles = [
-    css`
-      :host {
-        display: block;
-
-        --app-grid-columns: 2;
-        --app-grid-gutter: 0px;
-        --app-grid-item-height: auto;
-        --app-grid-expandible-item-columns: 2;
-      }
-
-      .item,
-      .computed-value {
-        box-sizing: border-box;
-        min-height: 25px;
-        line-height: 25px;
-      }
-
-      .item {
-        padding: 0;
-        border-bottom: 1px solid white;
-        white-space: nowrap;
-      }
-
-      .item:not(:first-child) {
-        border-left: 1px solid white;
-      }
-
-      .computed-value {
-        grid-column: span 2;
-        color: var(--theme-secondary-text-color);
-      }
-
-      .app-grid,
-      .cellValue {
-        width: 100%;
-      }
-    `
-  ];
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+
+          --app-grid-columns: 2;
+          --app-grid-gutter: 0px;
+          --app-grid-item-height: auto;
+          --app-grid-expandible-item-columns: 2;
+        }
+
+        .item,
+        .computed-value {
+          box-sizing: border-box;
+          min-height: 25px;
+          line-height: 25px;
+        }
+
+        .item {
+          padding: 0;
+          border-bottom: 1px solid white;
+          white-space: nowrap;
+        }
+
+        .item:not(:first-child) {
+          border-left: 1px solid white;
+        }
+
+        .computed-value {
+          grid-column: span 2;
+          color: var(--theme-secondary-text-color);
+        }
+
+        .app-grid,
+        .cellValue {
+          width: 100%;
+        }
+      </style>
       ${disaggregationTableStyles}
       ${this.editable
         ? html`

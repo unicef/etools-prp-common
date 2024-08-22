@@ -1,4 +1,4 @@
-import {LitElement, html, css, PropertyValues} from 'lit';
+import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../../mixins/utils-mixin';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
@@ -31,17 +31,16 @@ export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement
   @property({type: Array})
   rows!: any[];
 
-  static styles = [
-    layoutStyles,
-    css`
-      :host {
-        display: block;
-      }
-    `
-  ];
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+
+        ${layoutStyles}
+      </style>
+
       ${disaggregationTableStyles}
 
       <tr class="layout-horizontal headerRow">

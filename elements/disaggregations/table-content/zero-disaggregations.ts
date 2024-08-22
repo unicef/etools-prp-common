@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'lit';
+import {LitElement, html} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
 import '../disaggregation-table-row';
@@ -17,16 +17,14 @@ class ZeroDisaggregations extends LitElement {
   @property({type: Object})
   totalRow!: any;
 
-  static styles = [
-    css`
-      :host {
-        display: block;
-      }
-    `
-  ];
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+
       ${disaggregationTableStyles}
       <disaggregation-table-row
         .data="${this.totalRow}"

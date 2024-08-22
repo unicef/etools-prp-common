@@ -254,7 +254,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                             <report-status
                               class="printme"
                               .status="${this.indicatorStatus}"
-                              .report-type="${this.reportType}"
+                              .reportType="${this.reportType}"
                             >
                             </report-status>
                           `

@@ -33,7 +33,7 @@ export class ReportStatus extends connect(store)(LitElement) {
         }
       </style>
 
-      <status-badge type="${this.type}"></status-badge>
+      <status-badge .type="${this.type}"></status-badge>
       ${this.noLabel ? html`` : html`${this.label}`}
     `;
   }

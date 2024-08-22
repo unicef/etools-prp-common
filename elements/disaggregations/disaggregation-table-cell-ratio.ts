@@ -1,4 +1,4 @@
-import {html, css, LitElement, PropertyValues} from 'lit';
+import {html, LitElement, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import UtilsMixin from '../../mixins/utils-mixin';
@@ -26,38 +26,35 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
   @property({type: String})
   coords!: string;
 
-  static styles = [
-    css`
-      :host {
-        display: block;
-      }
-
-      .item,
-      .computed-value {
-        box-sizing: border-box;
-        min-height: 25px;
-        line-height: 25px;
-      }
-
-      .item {
-        padding: 0;
-        border-bottom: 1px solid white;
-        white-space: nowrap;
-      }
-
-      .item:not(:first-child) {
-        border-left: 1px solid white;
-      }
-
-      .computed-value {
-        grid-column: span 2;
-        color: var(--theme-secondary-text-color);
-      }
-    `
-  ];
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+
+        .item,
+        .computed-value {
+          box-sizing: border-box;
+          min-height: 25px;
+          line-height: 25px;
+        }
+
+        .item {
+          padding: 0;
+          border-bottom: 1px solid white;
+          white-space: nowrap;
+        }
+
+        .item:not(:first-child) {
+          border-left: 1px solid white;
+        }
+
+        .computed-value {
+          grid-column: span 2;
+          color: var(--theme-secondary-text-color);
+        }
+      </style>
       ${disaggregationTableStyles}
       <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         <div slot="editable" class="app-grid">

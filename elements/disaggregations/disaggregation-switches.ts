@@ -33,34 +33,33 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   @property({type: Boolean})
   editableBool!: boolean;
 
-  static styles = css`
-    :host {
-      display: block;
-    }
-
-    .container {
-      padding: 10px 24px;
-      margin: 0 -24px;
-      background: var(--sl-color-neutral-100);
-    }
-
-    .container h4 {
-      margin: 0 0 10px;
-      font-size: 12px;
-      line-height: 1;
-    }
-
-    etools-checkbox:not(:first-of-type) {
-      margin-left: 24px;
-    }
-
-    message-box {
-      margin-top: 10px;
-    }
-  `;
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+
+        .container {
+          padding: 10px 24px;
+          margin: 0 -24px;
+          background: var(--sl-color-neutral-100);
+        }
+
+        .container h4 {
+          margin: 0 0 10px;
+          font-size: 12px;
+          line-height: 1;
+        }
+
+        etools-checkbox:not(:first-of-type) {
+          margin-left: 24px;
+        }
+
+        message-box {
+          margin-top: 10px;
+        }
+      </style>
       ${this.editableBool
         ? html`
             <div class="container">

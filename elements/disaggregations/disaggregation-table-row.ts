@@ -1,4 +1,4 @@
-import {LitElement, html, css, PropertyValues} from 'lit';
+import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
@@ -26,16 +26,13 @@ class DisaggregationTableRow extends UtilsMixin(LitElement) {
   @property({type: Number})
   totalEditable = 0;
 
-  static styles = [
-    css`
-      :host {
-        display: block;
-      }
-    `
-  ];
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
       ${disaggregationTableStyles}
       <tr class="${this._computeClass(this.rowType)}">
         <td class="cellTitle">

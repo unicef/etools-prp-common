@@ -1,4 +1,4 @@
-import {LitElement, html, css, PropertyValues} from 'lit';
+import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from 'lit-translate';
@@ -78,71 +78,67 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
   @property({type: Number})
   indicatorId!: number;
 
-  static styles = [
-    layoutStyles,
-    css`
-      disaggregation-switches {
-        margin-bottom: 1em;
-      }
-
-      .data-key {
-        font-size: 12px;
-        color: var(--theme-secondary-text-color);
-      }
-
-      .data-key dt,
-      .data-key dd {
-        display: inline;
-      }
-
-      .data-key dd {
-        margin: 0;
-      }
-
-      h4 {
-        font-size: 12px;
-      }
-
-      .percentage-map {
-        padding-left: 25px;
-      }
-
-      .percentage-map ul {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        font-size: 13px;
-      }
-
-      .percentage-map li {
-        margin-bottom: 5px;
-      }
-
-      .percentage-map etools-input {
-        width: 60px;
-        padding: 0;
-        margin: 0 5px;
-        text-align: center;
-      }
-
-      .percentage-map .entity-name {
-        display: inline-block;
-        padding: 3px 10px;
-        white-space: nowrap;
-        background-color: var(--sl-color-neutral-100);
-      }
-      .justified {
-        justify-content: space-between;
-      }
-      .flex {
-        flex: 1;
-      }
-    `
-  ];
-
   render() {
     return html`
       ${disaggregationTableStyles}
+      <style>
+        ${layoutStyles} disaggregation-switches {
+          margin-bottom: 1em;
+        }
+
+        .data-key {
+          font-size: 12px;
+          color: var(--theme-secondary-text-color);
+        }
+
+        .data-key dt,
+        .data-key dd {
+          display: inline;
+        }
+
+        .data-key dd {
+          margin: 0;
+        }
+
+        h4 {
+          font-size: 12px;
+        }
+
+        .percentage-map {
+          padding-left: 25px;
+        }
+
+        .percentage-map ul {
+          padding: 0;
+          margin: 0;
+          list-style: none;
+          font-size: 13px;
+        }
+
+        .percentage-map li {
+          margin-bottom: 5px;
+        }
+
+        .percentage-map etools-input {
+          width: 60px;
+          padding: 0;
+          margin: 0 5px;
+          text-align: center;
+        }
+
+        .percentage-map .entity-name {
+          display: inline-block;
+          padding: 3px 10px;
+          white-space: nowrap;
+          background-color: var(--sl-color-neutral-100);
+        }
+        .justified {
+          justify-content: space-between;
+        }
+        .flex {
+          flex: 1;
+        }
+      </style>
       <div>
         <disaggregation-switches
           .data="${this.data}"

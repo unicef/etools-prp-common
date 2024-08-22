@@ -1,4 +1,4 @@
-import {html, css, LitElement} from 'lit';
+import {html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
@@ -17,16 +17,13 @@ class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
   @property({type: Number})
   editable!: number;
 
-  static styles = [
-    css`
-      :host {
-        display: block;
-      }
-    `
-  ];
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
       ${disaggregationTableStyles}
       <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         ${this.editable

@@ -1,4 +1,4 @@
-import {html, css, LitElement, PropertyValues} from 'lit';
+import {html, LitElement, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
@@ -25,17 +25,16 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   @property({type: Boolean})
   invalid!: boolean;
 
-  static styles = css`
-    :host {
-      display: block;
-    }
-    etools-input::part(input) {
-      text-align: center;
-    }
-  `;
-
   render() {
     return html`
+      <style>
+        :host {
+          display: block;
+        }
+        etools-input::part(input) {
+          text-align: center;
+        }
+      </style>
       <etools-input
         id="field"
         .value="${this.value}"

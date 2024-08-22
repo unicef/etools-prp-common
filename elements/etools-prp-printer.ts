@@ -1,6 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 
 /**
  * @customElement
@@ -30,6 +31,17 @@ export class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
     }
 
     const toPrint = this.querySelectorAll(this.selector);
+
+    var appTheme = document.createElement('link');
+    appTheme.rel = 'stylesheet';
+    appTheme.type = 'text/css';
+    appTheme.href = Environment.baseUrl + 'assets/css/app-theme.css';
+
+    var shoelaceStyles = document.createElement('link');
+    shoelaceStyles.rel = 'stylesheet';
+    shoelaceStyles.type = 'text/css';
+    shoelaceStyles.href = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/themes/light.css';
+
     const style = document.createElement('style');
 
     style.innerHTML = 'body { color: #212121; font: 14px/1.5 Roboto, Noto, sans-serif; }';
@@ -41,21 +53,21 @@ export class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
     this.printWindow = window.open('', '', ['width=640', 'height=480', 'left=0', 'top=0'].join());
 
     // @ts-ignore
+    this.printWindow!.document.head.appendChild(shoelaceStyles);
+    this.printWindow!.document.head.appendChild(appTheme);
     this.printWindow!.document.head.appendChild(style);
 
+    const restores: any = {};
     toPrint.forEach((node) => {
-      try {
-        const clonedNode = this._cloneNode(node);
-        this.printWindow!.document.body.appendChild(clonedNode);
-      } catch (error) {
-        console.log(error);
-      }
+      const clonedNode = this._cloneNode(node, restores);
+      this.printWindow!.document.body.appendChild(clonedNode);
     }, this);
 
     setTimeout(() => {
       if (this.printWindow) {
+        Object.values(restores).forEach((restoreLifecycleMethods: any) => restoreLifecycleMethods());
         this.printWindow.print();
-        this.printWindow.close();
+        this.printWindow.onafterprint = this.printWindow.close;
         this.printWindow = null;
       }
     }, 100);
