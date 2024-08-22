@@ -274,7 +274,8 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                   </div>
 
                   <sl-menu id="tabs-list">
-                    ${(this.locationData || []).map(
+                    ${repeat(
+                      this.locationData || [],
                       (topLevelLocation: any, topLevelLocationIndex: number) => html`
                         <sl-menu-item
                           id="tab-item"

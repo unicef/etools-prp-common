@@ -1,4 +1,4 @@
-import {html, css, LitElement} from 'lit';
+import {html, css, LitElement, PropertyValues} from 'lit';
 import {property, customElement, query} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import UtilsMixin from '../../mixins/utils-mixin';
@@ -149,8 +149,16 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
   }
 
   _cloneData(data: any) {
-    if (!this.localData) {
+    if (data && !this.localData) {
       this.localData = {...data};
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('data')) {
+      this._cloneData(this.data);
     }
   }
 
