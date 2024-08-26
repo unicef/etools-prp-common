@@ -13,7 +13,7 @@ export const disaggregationTableStyles = html` ${printStyles}
       flex-wrap: wrap;
     }
     .item {
-      padding: 0 10px;
+      padding: 0;
     }
 
     table {
