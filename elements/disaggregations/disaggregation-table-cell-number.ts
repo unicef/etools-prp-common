@@ -31,7 +31,7 @@ class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
               <disaggregation-field
                 slot="editable"
                 key="v"
-                .value="${this.data?.v}"
+                .value="${this.data?.v || 0}"
                 .coords="${this.coords}"
               ></disaggregation-field>
             `
