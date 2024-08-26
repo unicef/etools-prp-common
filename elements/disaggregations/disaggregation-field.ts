@@ -91,8 +91,13 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
   _validateByValidator(currentValue: string | number | null) {
     if (this.validatorEl) {
-      const isValid = Number(currentValue) !== 0 || Number((this.validatorEl.getField() as EtoolsInput).value) === 0;
-      this.invalid = !isValid;
+      try {
+        const isValid = Number(currentValue) !== 0 || Number((this.validatorEl.getField() as EtoolsInput).value) === 0;
+        this.invalid = !isValid;
+        return this.invalid;
+      } catch (err) {
+        console.log(err);
+      }
     }
     return true;
   }
