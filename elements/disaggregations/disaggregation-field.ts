@@ -16,8 +16,8 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   @property({type: String})
   errMessage!: string;
 
-  @property({type: Object})
-  validatorEl!: DisaggregationField;
+  @property({type: Boolean, attribute: 'validate-sibling'})
+  validateSibling = false;
 
   @property({type: Number})
   min!: number;
@@ -90,16 +90,34 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   }
 
   _validateByValidator(currentValue: string | number | null) {
-    if (this.validatorEl) {
+    if (this.validateSibling) {
       try {
-        const isValid = Number(currentValue) !== 0 || Number((this.validatorEl.getField() as EtoolsInput).value) === 0;
-        this.invalid = !isValid;
-        return this.invalid;
+        const siblingEl = this._getSiblingEl();
+        if (siblingEl) {
+          console.log('sibling value is:..', (siblingEl as EtoolsInput).value);
+          const isValid = Number(currentValue) !== 0 || Number((siblingEl as EtoolsInput).value) === 0;
+          this.invalid = !isValid;
+          return this.invalid;
+        }
       } catch (err) {
         console.log(err);
       }
     }
     return true;
+  }
+
+  _getSiblingEl() {
+    let parentEl = this.parentElement;
+    while (parentEl && !parentEl.classList.contains('item-parent')) {
+      parentEl = parentEl.parentElement;
+    }
+    if (parentEl) {
+      const disaggEl = parentEl.querySelector('.item-v')!.querySelector('disaggregation-field') as DisaggregationField;
+      if (disaggEl) {
+        return disaggEl.getField();
+      }
+    }
+    return null;
   }
 
   _preventInvalidInput(e: KeyboardEvent) {

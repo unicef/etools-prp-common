@@ -7,7 +7,6 @@ import './disaggregation-field';
 import '../../elements/etools-prp-number';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {DisaggregationFieldEl} from './disaggregation-field';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 @customElement('disaggregation-table-cell-ratio')
@@ -26,9 +25,6 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
 
   @property({type: String})
   coords!: string;
-
-  @query('#v')
-  vDisaggregationEl!: DisaggregationFieldEl;
 
   render() {
     return html`
@@ -63,8 +59,8 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
       ${disaggregationTableStyles}
       <disaggregation-table-cell .data="${this.data}" .editable="${this.editable}">
         <div slot="editable" class="app-grid">
-          <div class="layout-horizontal">
-            <div class="item">
+          <div class="layout-horizontal item-parent">
+            <div class="item item-v">
               <disaggregation-field
                 id="v"
                 key="v"
@@ -73,14 +69,14 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
                 .coords="${this.coords}"
               ></disaggregation-field>
             </div>
-            <div class="item">
+            <div class="item item-d">
               <disaggregation-field
                 id="d"
                 key="d"
                 min="0"
                 .value="${this.data?.d}"
                 .coords="${this.coords}"
-                .validatorEl="${this.vDisaggregationEl}"
+                validate-sibling
               ></disaggregation-field>
             </div>
           </div>

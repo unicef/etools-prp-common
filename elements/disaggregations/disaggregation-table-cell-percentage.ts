@@ -24,9 +24,6 @@ class DisaggregationTableCellPercentage extends LitElement {
   @property({type: String})
   coords!: string;
 
-  @query('#v')
-  vDisaggregationEl!: DisaggregationFieldEl;
-
   render() {
     return html`
       <style>
@@ -66,8 +63,8 @@ class DisaggregationTableCellPercentage extends LitElement {
       ${this.editable
         ? html`
             <div class="app-grid">
-              <div class="layout-horizontal">
-                <div class="item">
+              <div class="layout-horizontal item-parent">
+                <div class="item item-v">
                   <disaggregation-field
                     id="v"
                     key="v"
@@ -76,14 +73,14 @@ class DisaggregationTableCellPercentage extends LitElement {
                     .coords="${this.coords}"
                   ></disaggregation-field>
                 </div>
-                <div class="item">
+                <div class="item item-d">
                   <disaggregation-field
                     id="d"
                     key="d"
                     min="0"
                     .value="${this.data?.d}"
                     .coords="${this.coords}"
-                    .validatorEl="${this.vDisaggregationEl}"
+                    validate-sibling
                   ></disaggregation-field>
                 </div>
               </div>
