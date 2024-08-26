@@ -74,6 +74,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     const field = this.getField() as EtoolsInput;
     const isValid = field.validate() && this._validateByValidator(field.value);
     this.invalid = !isValid;
+    this.requestUpdate();
     return isValid;
   }
 
