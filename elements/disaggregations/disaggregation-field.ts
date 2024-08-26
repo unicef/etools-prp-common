@@ -68,8 +68,9 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
   validate() {
     const field = this.getField() as EtoolsInput;
-    this.invalid = !(field.validate() && this._validateByValidator(field.value));
-    return this.invalid;
+    const isValid = field.validate() && this._validateByValidator(field.value);
+    this.invalid = !isValid;
+    return isValid;
   }
 
   getField() {
@@ -97,7 +98,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
           console.log('sibling value is:..', (siblingEl as EtoolsInput).value);
           const isValid = Number(currentValue) !== 0 || Number((siblingEl as EtoolsInput).value) === 0;
           this.invalid = !isValid;
-          return this.invalid;
+          return isValid;
         }
       } catch (err) {
         console.log(err);
