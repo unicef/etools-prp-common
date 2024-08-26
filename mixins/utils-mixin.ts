@@ -313,9 +313,10 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         return node.cloneNode(false);
       }
 
-      // For all lit nodes and all nodes that have renderRoot (ShoelaceElement) we need to disable execution of rendering
+      // For all nodes that have renderRoot (ShoelaceElement) we need to disable execution of rendering
       // We are cloning nodes just how they were rendered so we don't need them to execute again.
-      // Keeping all restore functions in an object to restore functionality once the new node is generated and inserted in dom.
+      // Keeping all restore functions in an object to restore functionality
+      // once the new node is generated and inserted in dom.
       if (node instanceof LitElement || node.hasOwnProperty('renderRoot')) {
         const name = node.constructor.name || node.tagName;
         if (!restores.hasOwnProperty(name)) {

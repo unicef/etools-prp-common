@@ -35,9 +35,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   render() {
     return html`
       <style>
-        ${layoutStyles}
-
-        :host {
+        ${layoutStyles} :host {
           display: block;
         }
 

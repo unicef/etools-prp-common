@@ -149,7 +149,7 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
           console.log(err);
           this.updatePending = false;
           fireEvent(this, 'toast', {
-            text: err.response?.non_field_errors?.[0] || getTranslation('ERROR_VERIFY_ENTERED_DATA'),
+            text: err?.response?.non_field_errors?.[0] || getTranslation('ERROR_VERIFY_ENTERED_DATA'),
             showCloseBtn: true
           });
         });

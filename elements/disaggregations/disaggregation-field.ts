@@ -62,11 +62,14 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     super.firstUpdated(changedProperties);
 
     this.errMessage = '';
+    fireEvent(this, 'register-field', this);
     // this.validate();
   }
 
   validate() {
-    return (this.shadowRoot!.getElementById('field') as EtoolsInput).validate();
+    const field = this.getField() as EtoolsInput;
+    this.invalid = !(field.validate() && this._validateByValidator(field.value));
+    return this.invalid;
   }
 
   getField() {
@@ -78,15 +81,20 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     const currentValue = (e.target as EtoolsInput).value;
     change[this.key] = currentValue;
 
-    if (this.validatorEl) {
-      const isValid = Number(currentValue) !== 0 || Number((this.validatorEl.getField() as EtoolsInput).value) === 0;
-      (this.getField() as EtoolsInput).invalid = !isValid;
-    }
+    this._validateByValidator(currentValue);
 
     fireEvent(this, 'field-value-changed', {
       key: this.coords,
       value: this._toNumericValues(change)
     });
+  }
+
+  _validateByValidator(currentValue: string | number | null) {
+    if (this.validatorEl) {
+      const isValid = Number(currentValue) !== 0 || Number((this.validatorEl.getField() as EtoolsInput).value) === 0;
+      this.invalid = !isValid;
+    }
+    return true;
   }
 
   _preventInvalidInput(e: KeyboardEvent) {
