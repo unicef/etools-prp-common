@@ -67,6 +67,11 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
     this.errMessage = '';
     fireEvent(this, 'register-field', this);
+    if (!this.value && Number(this.value) !== 0) {
+      // fill with 0 by default if no value is set
+      this.value = 0;
+      this._inputValueChanged({target: this.getField()} as CustomEvent);
+    }
     // this.validate();
   }
 

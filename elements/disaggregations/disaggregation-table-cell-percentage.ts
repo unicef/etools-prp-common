@@ -69,7 +69,7 @@ class DisaggregationTableCellPercentage extends LitElement {
                     id="v"
                     key="v"
                     min="0"
-                    .value="${this.data?.v || 0}"
+                    .value="${this.data?.v}"
                     .coords="${this.coords}"
                   ></disaggregation-field>
                 </div>
@@ -78,7 +78,7 @@ class DisaggregationTableCellPercentage extends LitElement {
                     id="d"
                     key="d"
                     min="0"
-                    .value="${this.data?.d || 0}"
+                    .value="${this.data?.d}"
                     .coords="${this.coords}"
                     validate-sibling
                   ></disaggregation-field>
