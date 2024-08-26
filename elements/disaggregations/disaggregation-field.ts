@@ -67,11 +67,17 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
 
     this.errMessage = '';
     fireEvent(this, 'register-field', this);
-    if (!this.value && Number(this.value) !== 0) {
-      // fill with 0 by default if no value is set
-      this.value = 0;
-      this._inputValueChanged({target: this.getField()} as CustomEvent);
-    }
+
+    setTimeout(() => {
+      if (!this.value && Number(this.value) !== 0) {
+        // fill with 0 by default if no value is set
+        const field = this.getField();
+        if (field) {
+          field.value = 0;
+          this._inputValueChanged({target: field as any} as CustomEvent);
+        }
+      }
+    }, 100);
     // this.validate();
   }
 
@@ -84,7 +90,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   }
 
   getField() {
-    return this.shadowRoot!.getElementById('field');
+    return this.shadowRoot!.getElementById('field') as EtoolsInput;
   }
 
   _inputValueChanged(e: CustomEvent) {
