@@ -94,19 +94,19 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     return this.shadowRoot!.getElementById('field') as EtoolsInput;
   }
 
-  _inputValueChanged(e: CustomEvent, escapeValidation = false) {
+  _inputValueChanged(e: CustomEvent, isSettingDefault = false) {
     const change: any = {};
     const currentValue = (e.target as EtoolsInput).value;
     change[this.key] = currentValue;
 
-    if (!escapeValidation) {
+    if (!isSettingDefault) {
       this._validateByValidator(currentValue);
     }
 
     fireEvent(this, 'field-value-changed', {
       key: this.coords,
       value: this._toNumericValues(change),
-      escapeValidation: escapeValidation
+      isSettingDefault: isSettingDefault
     });
   }
 

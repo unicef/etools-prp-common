@@ -138,16 +138,27 @@ class DisaggregationTableCellPercentage extends LitElement {
     }
 
     const change = {...this.localData, ...value};
-    if (!e.detail.escapeValidation && (!v.validate() || !d.validate())) {
-      change.c = null;
-    } else {
-      change.c = change.d === 0 ? 0 : change.v / change.d;
 
+    if (e.detail.isSettingDefault) {
+      // used by setting default with 0
+      change.c = 0;
       fireEvent(this, 'field-value-changed', {
         key: key,
         value: change,
         internal: true
       });
+    } else {
+      if (!v.validate() || !d.validate()) {
+        change.c = null;
+      } else {
+        change.c = change.d === 0 ? 0 : change.v / change.d;
+
+        fireEvent(this, 'field-value-changed', {
+          key: key,
+          value: change,
+          internal: true
+        });
+      }
     }
 
     this.localData = change;
