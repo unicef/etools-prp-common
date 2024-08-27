@@ -69,7 +69,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     fireEvent(this, 'register-field', this);
 
     setTimeout(() => {
-      if (!this.value && isNaN(Number(this.value))) {
+      if (!this.value && (this.value === null || isNaN(Number(this.value)))) {
         // fill with 0 by default if no value is set
         const field = this.getField();
         if (field) {
