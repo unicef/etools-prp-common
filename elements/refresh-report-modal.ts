@@ -1,7 +1,6 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import RoutingMixin from '../mixins/routing-mixin';
 import {translate} from 'lit-translate';
 import './error-modal';
 import './etools-prp-number';
@@ -14,7 +13,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
  * @appliesMixin RoutingMixin
  */
 @customElement('refresh-report-modal')
-export class RefreshReportModal extends RoutingMixin(UtilsMixin(LitElement)) {
+export class RefreshReportModal extends UtilsMixin(LitElement) {
   render() {
     return html`
       <style>

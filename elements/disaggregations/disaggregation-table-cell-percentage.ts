@@ -1,5 +1,5 @@
 import {html, LitElement} from 'lit';
-import {property, customElement, query} from 'lit/decorators.js';
+import {property, customElement} from 'lit/decorators.js';
 import '../../elements/etools-prp-number';
 import './disaggregation-field';
 import {DisaggregationFieldEl} from './disaggregation-field';

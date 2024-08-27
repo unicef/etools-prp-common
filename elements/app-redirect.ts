@@ -1,12 +1,11 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {connect} from 'pwa-helpers';
-import RoutingMixin from '../mixins/routing-mixin';
 import {RootState} from '../../typings/redux.types';
 import {store} from '../../redux/store';
 
 @customElement('app-redirect')
-export class AppRedirect extends RoutingMixin(connect(store)(LitElement)) {
+export class AppRedirect extends connect(store)(LitElement) {
   @property({type: String})
   app?: string;
 

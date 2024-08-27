@@ -28,7 +28,7 @@ export class PageHeader extends connect(store)(LitElement) {
   backUrl!: string | undefined;
 
   @property({type: String})
-  baseUrl?: string;
+  baseUrl!: string;
 
   @property({type: String})
   app!: string;
@@ -107,11 +107,11 @@ export class PageHeader extends connect(store)(LitElement) {
   }
 
   stateChanged(state: RootState) {
-    if (state?.app?.current) {
+    if (state?.app?.current && state.app.current !== this.app) {
       this.app = state.app.current;
     }
 
-    if (state?.workspaces.baseUrl) {
+    if (state?.workspaces?.baseUrl && state.workspaces.baseUrl !== this.baseUrl) {
       this.baseUrl = state?.workspaces.baseUrl;
     }
   }
@@ -119,7 +119,7 @@ export class PageHeader extends connect(store)(LitElement) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('back') || changedProperties.has('_baseUrl') || changedProperties.has('app')) {
+    if (changedProperties.has('back') || changedProperties.has('baseUrl') || changedProperties.has('app')) {
       this.backUrl = this._computeBackUrl(this.back, this.baseUrl, this.app);
     }
   }

@@ -1,5 +1,5 @@
 import {html, LitElement, PropertyValues} from 'lit';
-import {property, customElement, query} from 'lit/decorators.js';
+import {property, customElement} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
