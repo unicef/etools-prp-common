@@ -74,7 +74,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
         const field = this.getField();
         if (field) {
           field.value = 0;
-          this._inputValueChanged({target: field as any} as CustomEvent, false);
+          this._inputValueChanged({target: field as any} as CustomEvent, true);
           this.value = 0;
         }
       }
@@ -94,18 +94,19 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     return this.shadowRoot!.getElementById('field') as EtoolsInput;
   }
 
-  _inputValueChanged(e: CustomEvent, applyValidation = true) {
+  _inputValueChanged(e: CustomEvent, escapeValidation = false) {
     const change: any = {};
     const currentValue = (e.target as EtoolsInput).value;
     change[this.key] = currentValue;
 
-    if (applyValidation) {
+    if (!escapeValidation) {
       this._validateByValidator(currentValue);
     }
 
     fireEvent(this, 'field-value-changed', {
       key: this.coords,
-      value: this._toNumericValues(change)
+      value: this._toNumericValues(change),
+      escapeValidation: escapeValidation
     });
   }
 

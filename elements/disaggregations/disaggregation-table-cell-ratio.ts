@@ -119,7 +119,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
 
     const change = {...this.localData, ...value};
 
-    if (!v.validate() || !d.validate()) {
+    if (!e.detail.escapeValidation && (!v.validate() || !d.validate())) {
       change.c = null;
     } else {
       change.c = change.d === 0 ? 0 : change.v / change.d;

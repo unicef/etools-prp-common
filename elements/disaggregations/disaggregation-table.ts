@@ -455,14 +455,6 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     return Object.assign({}, data, {
       disaggregation: Object.assign({}, data.disaggregation, totals)
     });
-
-    // return {
-    //   ...data,
-    //   disaggregation: {
-    //     ...data.disaggregation,
-    //     ...totals
-    //   }
-    // };
   }
 
   _computeDualReportingEnabled(byEntity: any[], editableBool: boolean) {
