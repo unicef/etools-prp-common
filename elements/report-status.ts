@@ -124,14 +124,14 @@ export class ReportStatus extends connect(store)(LitElement) {
       case 'Rej':
         return translate('REJECTED') as any as string;
       case 'Met':
-        return final ? (translate('MET_RESULTS') as any as string) : (translate('MET') as any as string);
+        return final ? (translate('ACHIEVED_AS_PLANNED') as any as string) : (translate('MET') as any as string);
       case 'OnT':
         return translate('ON_TRACK') as any as string;
       case 'NoP':
         return translate('NO_PROGRESS') as any as string;
       case 'Con':
         return final
-          ? (translate('CONSTRAINED_PARTIALLY') as any as string)
+          ? (translate('NOT_ACHIEVED_AS_PLANNED') as any as string)
           : (translate('CONSTRAINED') as any as string);
       case 'Ong':
         return translate('ONGOING') as any as string;
