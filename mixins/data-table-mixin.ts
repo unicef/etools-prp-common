@@ -8,19 +8,9 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
     @property({type: Object}) queryParams = {};
-    @property({type: Array}) openedDetails = [];
 
-    @state() _localPaginator = null;
-
-    _colapseExpandedDetails() {
-      setTimeout(() => {
-        const openedDetails = this.openedDetails || [];
-        if (openedDetails.length > 0) {
-          const tempList = openedDetails.slice();
-          tempList.forEach((detail: any) => (detail.detailsOpened = false));
-        }
-      }, 100);
-    }
+    @state()
+    _localPaginator = null;
 
     _paginatorChanged() {
       if (this.paginator && !isJsonStrMatch(this._localPaginator, this.paginator)) {
