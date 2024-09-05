@@ -195,14 +195,14 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
 
   _computeMetLabel(completed: boolean) {
     if (completed) {
-      return translate('MET_RESULTS');
+      return translate('ACHIEVED_AS_PLANNED');
     }
     return translate('MET');
   }
 
   _computeConstrainedLabel(completed: boolean) {
     if (completed) {
-      return translate('CONSTRAINED_PARTIALLY');
+      return translate('NOT_ACHIEVED_AS_PLANNED');
     }
     return translate('CONSTRAINED');
   }
