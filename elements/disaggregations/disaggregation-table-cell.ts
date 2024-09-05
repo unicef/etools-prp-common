@@ -1,59 +1,55 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/polymer/lib/elements/dom-if';
+import {html, LitElement} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import {GenericObject} from '../../typings/globals.types';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin UtilsMixin
- */
-class DisaggregationTableCell extends UtilsMixin(PolymerElement) {
-  public static get template() {
+@customElement('disaggregation-table-cell')
+class DisaggregationTableCell extends UtilsMixin(LitElement) {
+  @property({type: Object})
+  data!: any;
+
+  @property({type: Number})
+  editable!: number;
+
+  @property({type: Boolean})
+  editableBool!: boolean;
+
+  @property({type: Boolean})
+  noValue!: boolean;
+
+  render() {
     return html`
-      ${disaggregationTableStyles}
       <style>
         :host {
           display: block;
         }
       </style>
-
-      <template is="dom-if" if="[[editableBool]]">
-        <slot name="editable"></slot>
-      </template>
-
-      <template is="dom-if" if="[[!editableBool]]">
-        <span class="cellValue">
-          <template is="dom-if" if="[[noValue]]" restamp="true"> 0 </template>
-          <template is="dom-if" if="[[!noValue]]" restamp="true">
-            <slot name="non-editable"></slot>
-          </template>
-        </span>
-      </template>
+      ${disaggregationTableStyles}
+      ${this.editableBool
+        ? html`<slot name="editable"></slot>`
+        : html` <span class="cellValue"> ${this.noValue ? html`0` : html`<slot name="non-editable"></slot>`} </span> `}
     `;
   }
 
-  @property({type: Object})
-  data!: GenericObject;
+  updated(changedProperties): void {
+    super.updated(changedProperties);
 
-  @property({type: Number})
-  editable!: number;
-
-  @property({type: Boolean, computed: '_computeEditableBool(editable)'})
-  editableBool!: boolean;
-
-  @property({type: Boolean, computed: '_computeNoValue(data)'})
-  noValue!: boolean;
+    if (changedProperties.has('editable')) {
+      this.editableBool = this._computeEditableBool(this.editable);
+    }
+    if (changedProperties.has('data')) {
+      this.noValue = this._computeNoValue(this.data);
+      this.requestUpdate();
+    }
+  }
 
   _computeEditableBool(editable: number) {
     return editable === 1;
   }
 
-  _computeNoValue(data: GenericObject) {
+  _computeNoValue(data: any) {
     return data ? !data.c && !data.d && !data.v : true;
   }
 }
 
-window.customElements.define('disaggregation-table-cell', DisaggregationTableCell);
+export default DisaggregationTableCell;

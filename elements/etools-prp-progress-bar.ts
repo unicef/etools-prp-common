@@ -1,27 +1,21 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import '@polymer/paper-progress/paper-progress';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 import {progressBarStyles} from '../styles/progress-bar-styles';
+import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class EtoolsPrpProgressBar extends UtilsMixin(PolymerElement) {
-  public static get template() {
+@customElement('etools-prp-progress-bar')
+export class EtoolsPrpProgressBar extends UtilsMixin(LitElement) {
+  render() {
     return html`
       ${progressBarStyles}
-      <style>
-        .percentage {
-          vertical-align: middle;
-          line-height: 15px;
-        }
-      </style>
-      <paper-progress value="[[percentage]]"></paper-progress>
-      <span class="percentage">[[percentage]]%</span>
+      <sl-progress-bar .value="${this.percentage}"></sl-progress-bar>
+      <span class="percentage">${this.percentage}%</span>
     `;
   }
 
@@ -31,17 +25,27 @@ class EtoolsPrpProgressBar extends UtilsMixin(PolymerElement) {
   @property({type: String})
   number = '0';
 
-  @property({type: Number, computed: '_computePercentage(number)'})
-  percentage!: number;
+  @property({type: Number})
+  percentage!: number | string;
 
-  _computePercentage(num: string) {
-    if (num === 'N/A') {
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('number')) {
+      this.percentage = this._computePercentage();
+    }
+  }
+
+  _computePercentage() {
+    if (this.number === 'N/A') {
       return 'N/A';
     }
 
     // round to two decimal places, more info here: https://stackoverflow.com/a/29494612
-    return this.displayType === 'percentage' ? Math.round(Number(num)) : Math.round(Number(num) * 100 * 1e2) / 1e2;
+    return this.displayType === 'percentage'
+      ? Math.round(Number(this.number))
+      : Math.round(Number(this.number) * 100 * 1e2) / 1e2;
   }
 }
 
-window.customElements.define('etools-prp-progress-bar', EtoolsPrpProgressBar);
+export {EtoolsPrpProgressBar as EtoolsPrpProgressBarEl};

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {html} from '@polymer/polymer';
+import {html} from 'lit';
 
 export const etoolsLogo = html`
   <svg xmlns="http://www.w3.org/2000/svg" width="122" viewBox="0 0 363.7 105.4" enable-background="new 0 0 363.7 105.4">

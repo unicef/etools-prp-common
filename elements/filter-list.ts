@@ -1,70 +1,74 @@
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/iron-location/iron-location';
-import '@polymer/iron-location/iron-query-params';
-import '@polymer/paper-button/paper-button';
-import '@unicef-polymer/etools-loading/etools-loading';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/polymer/lib/elements/dom-if';
-import LocalizeMixin from '../mixins/localize-mixin';
-import {GenericObject} from '../typings/globals.types';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {translate} from 'lit-translate';
+import {RootState} from '../../typings/redux.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {connect} from 'pwa-helpers';
+import {store} from '../../redux/store';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {getCurrentPath} from '../utils/util';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
- * @polymer
  * @customElement
  */
-class FilterList extends LocalizeMixin(ReduxConnectedElement) {
-  static get template() {
+@customElement('filter-list')
+export class FilterList extends connect(store)(LitElement) {
+  static get styles() {
+    return [layoutStyles];
+  }
+
+  render() {
     return html`
-      <style include="iron-flex">
+      <style>
         :host {
           background-color: #f9f9f9;
           display: block;
           position: relative;
+          padding-inline-start: 15px;
+          padding-inline-end: 15px;
         }
 
-        div#action {
-          @apply --layout-horizontal;
-          @apply --layout-end-justified;
-        }
-
-        paper-button {
-          margin: 0 10px;
+        etools-button::part(base) {
+          margin: 0 15px;
+          margin-bottom: 5px;
           text-transform: uppercase;
+          --sl-button-font-size-medium: var(--etools-font-size-14, 14px);
+          color: #212121;
+        }
+        etools-button::part(label) {
+          font-weight: normal;
         }
       </style>
 
-      <iron-location query="{{query}}"> </iron-location>
-
-      <iron-query-params params-string="{{query}}" params-object="{{queryParams}}"> </iron-query-params>
-
       <slot></slot>
 
-      <template is="dom-if" if="[[!hideClear]]" restamp="true">
-        <div id="action">
-          <paper-button on-tap="_clearFilters">[[localize('clear')]]</paper-button>
-        </div>
-      </template>
+      ${this.hideClear
+        ? ``
+        : html`<div id="action" class="row right-align">
+            <etools-button variant="text" @click="${this._clearFilters}">${translate('CLEAR')}</etools-button>
+          </div>`}
 
-      <etools-loading active="[[loading]]"></etools-loading>
+      <etools-loading ?active="${this.loading}"></etools-loading>
     `;
   }
 
   @property({type: Object})
-  queryParams!: GenericObject;
+  queryParams!: any;
 
   @property({type: Array})
-  filters!: any[];
+  filters: any[] = [];
 
   @property({type: Object})
-  filtersReady!: GenericObject;
+  filtersReady!: any;
 
   @property({type: String})
   ignore = '';
 
-  @property({type: Array, computed: '_computeIgnoredFilters(ignore)'})
-  ignoredFilters!: any[];
+  @property({type: Array})
+  ignoredFilters: any[] = [];
 
   @property({type: Boolean})
   loading = false;
@@ -72,8 +76,27 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
   @property({type: Boolean})
   hideClear = false;
 
-  public static get observers() {
-    return ['_updateLoading(filters.splices, filtersReady.*)'];
+  @property({type: Object})
+  routeDetails?: any;
+
+  stateChanged(state: RootState) {
+    if (state.app?.routeDetails?.queryParams && !isJsonStrMatch(this.queryParams, state.app.routeDetails.queryParams)) {
+      this.queryParams = state.app?.routeDetails.queryParams;
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('ignore')) {
+      this.ignoredFilters = this._computeIgnoredFilters(this.ignore);
+    }
+    if (changedProperties.has('filters') || changedProperties.has('filtersReady')) {
+      this._updateLoading();
+    }
+    if (changedProperties.has('filters')) {
+      fireEvent(this, 'filters-changed', {value: this.filters});
+    }
   }
 
   _onFilterChanged(e: CustomEvent) {
@@ -99,9 +122,9 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
         }
       }
 
-      this.set('queryParams', newParams);
-
+      this.queryParams = newParams;
       this._resetPageNumber();
+      EtoolsRouter.replaceAppLocation(getCurrentPath(), EtoolsRouter.encodeQueryParams(this.queryParams));
     });
   }
 
@@ -112,23 +135,23 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
       return;
     }
 
-    if (this.ignoredFilters.indexOf(name) !== -1) {
+    if (this.ignoredFilters?.indexOf(name) !== -1) {
       return;
     }
 
-    this.push('filters', name);
+    this.filters.push(name);
   }
 
   _deregisterFilter(e: CustomEvent) {
     e.stopPropagation();
     const name = e.detail;
-    const index = this.filters.indexOf(name);
+    const index = this.filters?.indexOf(name);
 
     if (index === -1) {
       return;
     }
 
-    this.splice('filters', index, 1);
+    this.filters.splice(index, 1);
   }
 
   _filterReady(e: CustomEvent) {
@@ -138,16 +161,17 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
       return;
     }
 
-    if (this.ignoredFilters.indexOf(name) !== -1) {
+    if (this.ignoredFilters?.indexOf(name) !== -1) {
       return;
     }
 
-    this.set(['filtersReady', name], true);
+    this.filtersReady = {...this.filtersReady, [name]: true};
+    this.requestUpdate();
   }
 
   _clearFilters() {
     const clearParams = Object.keys(this.queryParams).reduce((prev: any, curr) => {
-      if (this.filters.indexOf(curr) === -1) {
+      if (this.filters?.indexOf(curr) === -1) {
         prev[curr] = this.queryParams[curr];
       } else {
         prev[curr] = ''; // Can't set to undefined (does not trigger observers)
@@ -155,18 +179,15 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
 
       return prev;
     }, {});
-    this.set('queryParams', clearParams);
-
+    this.queryParams = clearParams;
     this._resetPageNumber();
+    EtoolsRouter.replaceAppLocation(getCurrentPath(), EtoolsRouter.encodeQueryParams(this.queryParams));
   }
 
   _resetPageNumber() {
-    this.set(
-      'queryParams',
-      Object.assign({}, this.queryParams, {
-        page: 1
-      })
-    );
+    this.queryParams = Object.assign({}, this.queryParams, {
+      page: 1
+    });
   }
 
   _computeIgnoredFilters(ignore: string) {
@@ -177,7 +198,7 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
     setTimeout(() => {
       const filtersCount = this.filters.length - this.ignoredFilters.length;
       const readyCount = Object.keys(this.filtersReady).length;
-      this.set('loading', readyCount < filtersCount);
+      this.loading = readyCount < filtersCount;
     });
   }
 
@@ -195,8 +216,8 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    this.set('filters', []);
-    this.set('filtersReady', {});
+    this.filters = [];
+    this.filtersReady = {};
     this._addEventListeners();
   }
 
@@ -213,6 +234,5 @@ class FilterList extends LocalizeMixin(ReduxConnectedElement) {
     this._removeEventListeners();
   }
 }
-window.customElements.define('filter-list', FilterList);
 
 export {FilterList as FilterListEl};

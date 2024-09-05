@@ -1,48 +1,63 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/paper-styles/typography';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-
-import LocalizeMixin from '../mixins/localize-mixin';
-import RoutingMixin from '../mixins/routing-mixin';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {connect} from 'pwa-helpers';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '../styles/shared-styles';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
- * @appliesMixin LocalizeMixin
  * @appliesMixin RoutingMixin
  */
-class PageHeader extends LocalizeMixin(RoutingMixin(ReduxConnectedElement)) {
-  public static get template() {
+@customElement('page-header')
+export class PageHeader extends connect(store)(LitElement) {
+  static get styles() {
+    return [layoutStyles];
+  }
+
+  @property({type: String, attribute: 'title'})
+  title!: string;
+
+  @property({type: String, attribute: 'back'})
+  back!: string;
+
+  @property({type: String})
+  backUrl!: string | undefined;
+
+  @property({type: String})
+  baseUrl!: string;
+
+  @property({type: String})
+  app!: string;
+
+  render() {
     return html`
       ${sharedStyles}
-      <style include="iron-flex iron-flex-alignment iron-flex-factors">
+      <style>
         :host {
           --header-gutter: 25px;
-
           display: block;
           padding: var(--header-gutter);
 
           background: white;
           box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.1);
-
-          --paper-icon-button: {
-            color: #666;
-          }
+        }
+        etools-icon-button {
+          color: #666;
         }
         .title {
           min-width: 0;
           position: relative;
+          flex: 1;
         }
         .title h1 {
-          @apply --paper-font-title;
-          @apply --truncate;
+          font-size: 20px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-wrap: ellipsis;
           max-width: 100%;
           margin: 0;
         }
@@ -61,18 +76,18 @@ class PageHeader extends LocalizeMixin(RoutingMixin(ReduxConnectedElement)) {
         }
       </style>
 
-      <div class="layout horizontal baseline">
+      <div class="layout-horizontal">
         <div class="title flex">
           <div class="above-title">
             <slot name="above-title"></slot>
           </div>
-          <div class="layout horizontal center">
-            <template is="dom-if" if="[[back]]">
-              <a href="[[backUrl]]" class="back-button">
-                <paper-icon-button icon="chevron-left"></paper-icon-button>
-              </a>
-            </template>
-            <h1>[[title]]<slot name="in-title"></slot></h1>
+          <div class="layout-horizontal align-items-center">
+            ${this.back
+              ? html`<a href="${this.backUrl}" class="back-button">
+                  <etools-icon-button name="chevron-left"></etools-icon-button>
+                </a>`
+              : ``}
+            <h1>${this.title}<slot name="in-title"></slot></h1>
           </div>
         </div>
 
@@ -91,28 +106,37 @@ class PageHeader extends LocalizeMixin(RoutingMixin(ReduxConnectedElement)) {
     `;
   }
 
-  @property({type: String})
-  title!: string;
+  stateChanged(state: RootState) {
+    if (state?.app?.current && state.app.current !== this.app) {
+      this.app = state.app.current;
+    }
 
-  @property({type: String})
-  back!: string;
+    if (state?.workspaces?.baseUrl && state.workspaces.baseUrl !== this.baseUrl) {
+      this.baseUrl = state?.workspaces.baseUrl;
+    }
+  }
 
-  @property({type: String, computed: '_computeBackUrl(back, _baseUrl, app)'})
-  backUrl!: string;
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.app.current)'})
-  app!: string;
+    if (changedProperties.has('back') || changedProperties.has('baseUrl') || changedProperties.has('app')) {
+      this.backUrl = this._computeBackUrl(this.back, this.baseUrl, this.app);
+    }
+  }
 
-  _computeBackUrl(tail: string, baseUrl: string, app: string) {
+  _computeBackUrl(tail?: string, baseUrl?: string, app?: string) {
     if (tail === undefined) {
       return;
     }
 
-    if (app === 'cluster-reporting') {
-      return this.buildUrl(this._baseUrlCluster, tail);
+    if (baseUrl === undefined) {
+      return;
     }
-    return tail ? this.buildUrl(baseUrl, tail) : '';
+
+    if (app === 'cluster-reporting') {
+      return `${baseUrl}/${tail}`;
+    }
+
+    return tail ? `${baseUrl}/${tail}` : '';
   }
 }
-
-window.customElements.define('page-header', PageHeader);

@@ -1,48 +1,37 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {LitElement} from 'lit';
+import {Constructor} from '../typings/globals.types';
+import {property, state} from 'lit/decorators.js';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {store} from '../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
-/**
- * @polymer
- * @mixinFunction
- */
-function DataTableMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
-    _pageSizeChanged(e: CustomEvent) {
-      const change: GenericObject = {
-        page_size: e.detail.value
-      };
+    @property({type: Object}) queryParams = {};
 
-      // @ts-ignore
-      if (this._pageNumberInitialized) {
-        change.page = 1;
-      }
+    @state()
+    _localPaginator = null;
 
-      // @ts-ignore
-      this.set('queryParams', Object.assign({}, this.queryParams, change));
-    }
+    _paginatorChanged() {
+      if (this.paginator && !isJsonStrMatch(this._localPaginator, this.paginator)) {
+        this._localPaginator = {...this.paginator};
 
-    _colapseExpandedDetails() {
-      setTimeout(() => {
-        // @ts-ignore
-        const openedDetails = (this.openedDetails as any[]) || [];
-        if (openedDetails.length > 0) {
-          const tempList = openedDetails.slice();
-          tempList.forEach((detail: any) => (detail.detailsOpened = false));
+        this.queryParams = {
+          ...(store.getState().app.routeDetails.queryParams || {}),
+          page_size: this.paginator.page_size,
+          page: this.paginator.page
+        };
+
+        if (!isJsonStrMatch(this.queryParams, store.getState().app.routeDetails.queryParams)) {
+          EtoolsRouter.updateAppLocation(
+            store.getState().app.routeDetails.path,
+            EtoolsRouter.encodeQueryParams(this.queryParams)
+          );
         }
-      }, 100);
-    }
-
-    _pageNumberChanged(e: CustomEvent) {
-      this._colapseExpandedDetails();
-
-      // @ts-ignore
-      this.set('queryParams', Object.assign({}, this.queryParams, {page: e.detail.value}));
-
-      setTimeout(() => {
-        this.set('_pageNumberInitialized', true);
-      });
+      }
     }
   }
+
   return DataTableClass;
 }
 

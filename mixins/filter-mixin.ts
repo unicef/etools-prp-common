@@ -1,24 +1,23 @@
-import {PolymerElement} from '@polymer/polymer';
+import {LitElement} from 'lit';
+import {property, state} from 'lit/decorators.js';
 import {Constructor} from '../typings/globals.types';
-import {property} from '@polymer/decorators';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
-/**
- * @polymer
- * @mixinFunction
- */
-function FilterMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function FilterMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class FilterClass extends baseClass {
     @property({type: String})
     label!: string;
-
     @property({type: String})
     name!: string;
-
-    @property({type: String, computed: '_computeLastValue(value)'})
+    @state()
     lastValue!: string;
 
-    static _debounceDelay = 400;
+    updated(changedProperties) {
+      super.updated(changedProperties);
+      if (changedProperties.has('value')) {
+        this.lastValue = this._computeLastValue(this.value);
+      }
+    }
 
     _computeLastValue(value: any) {
       return value;
@@ -32,13 +31,11 @@ function FilterMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     connectedCallback() {
       super.connectedCallback();
-
       fireEvent(this, 'register-filter', this.name);
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
-
       fireEvent(this, 'deregister-filter', this.name);
     }
   }

@@ -1,61 +1,71 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/paper-button/paper-button';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@unicef-polymer/etools-loading/etools-loading.js';
-
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import '@polymer/paper-styles/typography';
-import '@polymer/iron-location/iron-location';
-import '@polymer/paper-input/paper-input';
-import '@polymer/app-layout/app-grid/app-grid-style';
-import {GenericObject} from '../typings/globals.types';
-import ModalMixin from '../mixins/modal-mixin';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {connect} from 'pwa-helpers';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-column';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-row';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-header';
 import UtilsMixin from '../mixins/utils-mixin';
-import './etools-prp-permissions';
-import './confirm-box';
 import './project-status';
 import './page-body';
 import './list-placeholder';
 import './status-badge';
-import './etools-prp-ajax';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {tableStyles} from '../styles/table-styles';
-import {buttonsStyles} from '../styles/buttons-styles';
-import {modalStyles} from '../styles/modal-styles';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin ModalMixin
  */
-class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
-  static get template() {
+@customElement('pull-modal')
+export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
+  static styles = [layoutStyles];
+
+  @property({type: String})
+  reportingPeriod!: string;
+
+  @property({type: String})
+  indicatorName!: string;
+
+  @property({type: Boolean})
+  updatePending = false;
+
+  @property({type: String})
+  workspaceId!: string;
+
+  @property({type: String})
+  indicatorId!: string;
+
+  @property({type: String})
+  reportId!: string;
+
+  @property({type: String})
+  pullUrl!: string;
+
+  @property({type: Object})
+  data!: any;
+
+  set dialogData(data: any) {
+    const {indicatorName, reportingPeriod, indicatorId, reportId}: any = data;
+
+    this.indicatorName = indicatorName;
+    this.reportingPeriod = reportingPeriod;
+    this.indicatorId = indicatorId;
+    this.reportId = reportId;
+  }
+
+  render() {
     return html`
-      ${tableStyles} ${buttonsStyles} ${modalStyles}
-      <style include="data-table-styles iron-flex iron-flex iron-flex-alignment iron-flex-reverse">
-        :host {
-          display: block;
-
-          --header-title: {
-            display: block;
-          }
-          --paper-dialog: {
-            width: 800px;
-          }
-        }
-
+      ${tableStyles}
+      <style>
         .qpr-header {
-          transform: translate(24px, 48px);
         }
 
         .qpr-header h3 {
@@ -71,151 +81,136 @@ class PullModal extends ModalMixin(UtilsMixin(ReduxConnectedElement)) {
           margin: 20px;
         }
 
-        .overwrite-notification iron-icon {
+        .overwrite-notification etools-icon {
           top: 10px;
           margin: 12px;
         }
+
+        etools-dialog {
+          --divider-color: transparent;
+        }
+        etools-data-table-header::part(edt-header-title) {
+          height: 0px !important;
+        }
       </style>
 
-      <etools-prp-permissions permissions="{{permissions}}"> </etools-prp-permissions>
-
-      <etools-prp-ajax id="reports" url="[[pullUrl]]"> </etools-prp-ajax>
-
-      <etools-prp-ajax id="pull" url="[[pullUrl]]" method="post" body="[[postBody]]" content-type="application/json">
-      </etools-prp-ajax>
-
-      <paper-dialog id="dialog" modal opened="{{opened}}">
-        <div class="header layout horizontal justified">
-          <h2>Pull data</h2>
-          <div class="layout horizontal">
-            <p>Reporting period: [[reportingPeriod]]</p>
-
-            <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
-          </div>
+      <etools-dialog
+        id="dialog"
+        size="lg"
+        dialog-title="Pull data"
+        @close="${this.close}"
+        @confirm-btn-clicked="${this.onSaveClick}"
+        keep-dialog-open
+      >
+        <div class="qpr-header">
+          <h3>Reporting period: ${this.reportingPeriod}</h3>
+          <h3>${this.indicatorName}</h3>
+          <h4>For this high frequency indicator data will be pulled from reports matching this time period:</h4>
         </div>
+        <etools-data-table-header no-collapse>
+          <etools-data-table-column class="col-2" field="report">
+            <div class="table-column">Report #</div>
+          </etools-data-table-column>
+          <etools-data-table-column class="col-3" field="due">
+            <div class="table-column">Due date</div>
+          </etools-data-table-column>
+          <etools-data-table-column class="col-3" field="period">
+            <div class="table-column">Reporting Period</div>
+          </etools-data-table-column>
+          <etools-data-table-column class="col-4" field="progress">
+            <div class="table-column">Total indicator progress across all locations</div>
+          </etools-data-table-column>
+        </etools-data-table-header>
 
-        <paper-dialog-scrollable>
-          <div class="qpr-header">
-            <h3>[[indicatorName]]</h3>
-            <h4>For this high frequency indicator data will be pulled from reports matching this time period:</h4>
-          </div>
-          <etools-data-table-header no-collapse>
-            <etools-data-table-column field="report">
-              <div class="table-column">Report #</div>
-            </etools-data-table-column>
-            <etools-data-table-column field="due">
-              <div class="table-column">Due date</div>
-            </etools-data-table-column>
-            <etools-data-table-column field="period">
-              <div class="table-column">Reporting Period</div>
-            </etools-data-table-column>
-            <etools-data-table-column field="progress">
-              <div class="table-column">Total indicator progress across all locations</div>
-            </etools-data-table-column>
-          </etools-data-table-header>
-
-          <template id="list" is="dom-repeat" items="[[data.reports]]" as="report">
+        ${(this.data?.reports || []).map(
+          (report: any) => html`
             <etools-data-table-row no-collapse>
-              <div slot="row-data">
-                <div class="table-cell table-cell--text">[[report.report_name]]</div>
-                <div class="table-cell table-cell--text">[[report.due_date]]</div>
-                <div class="table-cell table-cell--text">[[report.start_date]] - [[report.end_date]]</div>
-                <div class="table-cell table-cell--text">[[report.report_location_total.v]]</div>
+              <div slot="row-data" class="layout-horizontal row-data">
+                <div class="col-data col-2">${report.report_name}</div>
+                <div class="col-data col-3">${report.due_date}</div>
+                <div class="col-data col-3">${report.start_date} - ${report.end_date}</div>
+                <div class="col-data col-4">${report.report_location_total.v}</div>
               </div>
             </etools-data-table-row>
-          </template>
+          `
+        )}
 
-          <div class="layout horizontal justified overwrite-notification">
-            <iron-icon icon="icons:info"></iron-icon>
-            <p>
-              In order to keep data intact, aggregated data will be shown as a total progress. Any data provided
-              manually will be overwritten.
-            </p>
-          </div>
-        </paper-dialog-scrollable>
-
-        <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_save" raised> OK </paper-button>
+        <div class="layout-horizontal justified overwrite-notification">
+          <etools-icon name="info"></etools-icon>
+          <p>
+            In order to keep data intact, aggregated data will be shown as a total progress. Any data provided manually
+            will be overwritten.
+          </p>
         </div>
 
-        <confirm-box id="confirm"></confirm-box>
-
-        <etools-loading active="[[updatePending]]"></etools-loading>
-      </paper-dialog>
+        <etools-loading ?active="${this.updatePending}"></etools-loading>
+      </etools-dialog>
     `;
   }
-
-  @property({type: String})
-  reportingPeriod!: string;
-
-  @property({type: String})
-  indicatorName!: string;
-
-  @property({type: Boolean})
-  opened!: boolean;
-
-  @property({type: Boolean})
-  updatePending = false;
-
-  @property({type: Object})
-  postBody: GenericObject = {};
-
-  @property({type: String, computed: 'getReduxStateValue(rootState.location.id)'})
-  workspaceId!: string;
-
-  @property({type: String})
-  indicatorId!: string;
-
-  @property({type: String})
-  reportId!: string;
-
-  @property({type: String, computed: '_computePullUrl(workspaceId, reportId, indicatorId)'})
-  pullUrl!: string;
-
-  @property({type: Object})
-  data!: GenericObject;
 
   _computePullUrl(workspaceId: string, reportId: string, indicatorId: string) {
     return Endpoints.indicatorPullData(workspaceId, reportId, indicatorId);
   }
 
-  _save() {
-    (this.$.pull as EtoolsPrpAjaxEl)
-      .thunk()()
+  stateChanged(state: RootState) {
+    if (state?.location?.id && state?.location?.id !== this.workspaceId) {
+      this.workspaceId = state.location.id;
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (
+      changedProperties.has('workspaceId') ||
+      changedProperties.has('reportId') ||
+      changedProperties.has('indicatorId')
+    ) {
+      if (this.workspaceId && this.reportId && this.indicatorId && !this.pullUrl)
+        this.pullUrl = this._computePullUrl(this.workspaceId, this.reportId, this.indicatorId);
+      this.loadData();
+    }
+  }
+
+  onSaveClick() {
+    sendRequest({
+      method: 'POST',
+      endpoint: {url: this.pullUrl},
+      body: {}
+    })
       .then(() => {
-        this.close();
+        this.data = {reports: []};
         fireEvent(this, 'locations-updated');
+        this.close(true);
       })
       .catch((err: any) => {
         fireEvent(this, 'toast', {
-          text: err.data.non_field_errors[0],
+          text: err.response.non_field_errors[0],
           showCloseBtn: true
         });
       });
   }
 
-  close() {
-    this.set('opened', false);
-    this.set('data', {reports: []});
+  close(confirmed = false) {
+    fireEvent(this, 'dialog-closed', {confirmed: confirmed});
   }
 
-  open() {
-    (this.$.reports as EtoolsPrpAjaxEl).abort();
-
-    const thunk = (this.$.reports as EtoolsPrpAjaxEl).thunk();
-    thunk()
-      .then((res: GenericObject) => {
-        this.set('data', {reports: res.data});
-        this.set('opened', true);
+  loadData() {
+    sendRequest({
+      method: 'GET',
+      endpoint: {url: this.pullUrl}
+    })
+      .then((res: any) => {
+        this.data = {reports: res};
+        this.opened = true;
       })
       .catch((err: any) => {
         fireEvent(this, 'toast', {
-          text: err.data.non_field_errors[0],
+          text: err.response.non_field_errors[0],
           showCloseBtn: true
         });
       });
   }
 }
-window.customElements.define('pull-modal', PullModal);
 
 export {PullModal as PullModalEl};

@@ -1,31 +1,28 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/paper-radio-group/paper-radio-group.js';
-import '@polymer/paper-radio-button/paper-radio-button.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {connect} from 'pwa-helpers';
+import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
+import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import UtilsMixin from '../mixins/utils-mixin';
+import {store} from '../../redux/store';
 
 /**
- * @polymer
- * @appliesMixin LocalizeMixin
  * @appliesMixin UtilsBehavior
  */
-class CalculationMethod extends UtilsMixin(LocalizeMixin(ReduxConnectedElement)) {
-  static get template() {
+@customElement('calculation-method')
+export class CalculationMethod extends connect(store)(UtilsMixin(LitElement)) {
+  render() {
     return html`
       <style>
         :host {
           display: block;
         }
 
-        paper-radio-group {
+        etools-radio-group {
           margin-left: -12px;
         }
 
-        paper-radio-button,
+        sl-radio,
         .read-only-label {
           text-transform: uppercase;
         }
@@ -38,19 +35,16 @@ class CalculationMethod extends UtilsMixin(LocalizeMixin(ReduxConnectedElement))
         }
       </style>
 
-      <template is="dom-if" if="[[!readonly]]" restamp="true">
-        <paper-radio-group selected="{{value}}">
-          <template is="dom-repeat" items="[[choices]]">
-            <paper-radio-button name="[[item.id]]" disabled="[[disabled]]">
-              [[_localizeLowerCased(item.title, localize)]]
-            </paper-radio-button>
-          </template>
-        </paper-radio-group>
-      </template>
-
-      <template is="dom-if" if="[[readonly]]" restamp="true">
-        <span class="read-only-label">[[_localizeLowerCased(readOnlyLabel, localize)]]</span>
-      </template>
+      ${this.readonly
+        ? html`<span class="read-only-label">${this._localizeLowerCased(this.readOnlyLabel)}</span>`
+        : html`<etools-radio-group .value="${this.value}">
+      ${(this.choices || []).map(
+        (item: any) =>
+          html`<sl-radio class="${this.disabled ? 'readonly' : ''}" name="${item.id}">
+            ${this._localizeLowerCased(item.title)}</sl-radio
+          >`
+      )}
+        </<etools-radio-group>`}
     `;
   }
 
@@ -60,7 +54,7 @@ class CalculationMethod extends UtilsMixin(LocalizeMixin(ReduxConnectedElement))
   @property({type: Boolean})
   readonly = false;
 
-  @property({type: String, notify: true})
+  @property({type: String})
   value!: string;
 
   @property({type: Array})
@@ -79,8 +73,16 @@ class CalculationMethod extends UtilsMixin(LocalizeMixin(ReduxConnectedElement))
     }
   ];
 
-  @property({type: String, computed: '_computeReadonlyLabel(value, choices)'})
+  @property({type: String})
   readOnlyLabel!: string;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('value') || changedProperties.has('choices')) {
+      this.readOnlyLabel = this._computeReadonlyLabel(this.value, this.choices);
+    }
+  }
 
   _computeReadonlyLabel(value: any, choices: any[]) {
     const method = choices.find(function (choice) {
@@ -92,7 +94,5 @@ class CalculationMethod extends UtilsMixin(LocalizeMixin(ReduxConnectedElement))
 
   // TODO: Might also need validation at some point
 }
-
-window.customElements.define('calculation-method', CalculationMethod);
 
 export {CalculationMethod as CalculationMethodEl};

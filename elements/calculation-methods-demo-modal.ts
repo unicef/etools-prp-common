@@ -1,144 +1,127 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/paper-button/paper-button';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/paper-styles/typography';
-import {GenericObject} from '../typings/globals.types';
-import ModalMixin from '../mixins/modal-mixin';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
+import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import UtilsMixin from '../mixins/utils-mixin';
 import './calculation-methods-demo-locations';
 import './calculation-methods-demo-periods';
 import './etools-prp-number';
-import {buttonsStyles} from '../styles/buttons-styles';
-import {modalStyles} from '../styles/modal-styles';
+import {translate} from 'lit-translate';
 
 /**
- * @polymer
  * @customElement
- * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  */
-class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement)) {
-  static get template() {
+@customElement('calculation-methods-demo-modal')
+export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
+  static get styles() {
+    return [layoutStyles];
+  }
+
+  render() {
     return html`
-    ${buttonsStyles} ${modalStyles}
-    <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
-      :host {
-        display: block;
-        --paper-dialog: {
-          width: 750px;
-
-          &>* {
-            margin: 0;
-          }
+      <style>
+        :host {
+          display: block;
         }
-        ;
-      }
 
-      .flex-2 {
-        @apply --layout-flex-2;
-      }
+        .content-box {
+          padding: 20px;
+          margin: 0 10px;
+          background: var(--sl-color-neutral-200);
+        }
 
-      .content-box {
-        padding: 25px;
-        background: var(--paper-grey-200);
-      }
+        .total-box {
+          padding: 5px 5px 5px 50px;
+          min-width: 75px;
+          background: var(--sl-color-neutral-400);
+          text-align: end;
+        }
 
-      .total-box {
-        padding: 5px 5px 5px 50px;
-        min-width: 75px;
-        background: var(--paper-grey-400);
-        text-align: end;
-      }
+        .bold-text {
+          font-weight: bold;
+          font-size: 1.17em;
+        }
 
-      .bold-text {
-        font-weight: bold;
-        font-size: 1.17em;
-      }
+        .total-label {
+          margin-right: 50px;
+        }
+        .m-10 {
+          margin: 0 10px;
+        }
+        calculation-methods-demo-locations,
+        calculation-methods-demo-periods {
+          margin: 0 25px;
+        }
+        .pl-12 {
+          padding-inline-start: 12px;
+        }
+      </style>
 
-      .total-label {
-        margin-right: 50px;
-      }
-    </style>
+      <etools-dialog
+        no-padding
+        hide-confirm-btn
+        keep-dialog-open
+        size="md"
+        .cancelBtnText="${translate('CLOSE')}"
+        dialog-title="Calculation method across ${this.domain}"
+      >
+        <div class="container-dialog">
+          <div class="content-box">
+            <labelled-item label="Sample indicator">
+              <span class="bold-text">
+                # of children aged 6-59 months affected by severe acute malnutrition who are admitted into treatment.
+              </span>
+            </labelled-item>
 
-    <paper-dialog id="calculation-methods-demo-modal-dialog" modal opened="{{opened}}">
-      <div class="header layout horizontal justified">
-        <h2>Calculation method across [[domain]]</h2>
+            <labelled-item label="Guidance on measurement (for each reporting period)">
+              <span>
+                Quality standard: requires agreed treatment protocol and duration (usually 2 mo); Measurement/reporting
+                clarification: measures newly admitted cases for an ongoing service, therefore requires agreement to
+                consistently report NEW admissions for an agreed reporting period (set dates) to avoid double counting.
+              </span>
+            </labelled-item>
+          </div>
 
-        <paper-icon-button class="self-center" on-tap="close"
-          icon="icons:close">
-        </paper-icon-button>
-      </div>
-
-      <br />
-
-      <paper-dialog-scrollable>
-        <div class="content-box">
-          <labelled-item label="Sample indicator">
-            <span class="bold-text">
-              # of children aged 6-59 months affected by severe acute
-              malnutrition who are admitted into treatment.
-            </span>
-          </labelled-item>
+          <br />
 
           <labelled-item
-            label="Guidance on measurement (for each reporting period)">
-            <span>
-              Quality standard: requires agreed treatment protocol and duration
-              (usually 2 mo); Measurement/reporting clarification: measures
-              newly admitted cases for an ongoing service, therefore requires
-              agreement to consistently report NEW admissions for an agreed
-              reporting period (set dates) to avoid double counting.
-            </span>
+            class="pl-12"
+            label="Choose calculation method to read description
+              and observe the impact on data presented below:"
+          >
+            <etools-radio-group @sl-change="${this._onRadioChange}" .value="${this.selectedType}">
+              <sl-radio value="sum">SUM</sl-radio>
+              <sl-radio value="max">MAX</sl-radio>
+              <sl-radio value="avg">AVG</sl-radio>
+            </etools-radio-group>
+            <div>${this.description}</div>
           </labelled-item>
-        </div>
 
-        <br />
+          <br />
+          ${this._equals(this.domain, 'locations')
+            ? html` <calculation-methods-demo-locations .totals="${this.locationTotals}">
+              </calculation-methods-demo-locations>`
+            : ``}
+          ${this._equals(this.domain, 'reporting periods')
+            ? html`
+              <calculation-methods-demo-periods .totals="${this.locationTotals}">
+                </calculation-methods-demo-locations>`
+            : ``}
 
-        <labelled-item label="Choose calculation method to read description
-          and observe the impact on data presented below:">
-          <paper-radio-group on-paper-radio-group-changed="_onRadioChange"
-            selected=[[selectedType]]>
-            <paper-radio-button name="sum">SUM</paper-radio-button>
-            <paper-radio-button name="max">MAX</paper-radio-button>
-            <paper-radio-button name="avg">AVG</paper-radio-button>
-          </paper-radio-group>
-          <div>[[description]]</div>
-        </labelled-item>
-
-        <br />
-        <template is="dom-if" if="[[_equals(domain, 'locations')]]">
-          <calculation-methods-demo-locations totals=[[locationTotals]]>
-          </calculation-methods-demo-locations>
-        </template>
-        <template is="dom-if" if="[[_equals(domain, 'reporting periods')]]">
-          <calculation-methods-demo-periods totals=[[locationTotals]]>
-            </calculation-methods-demo-locations>
-        </template>
-
-        <div class="content-box layout horizontal justified center-center">
-          <div class="flex-2"></div>
-          <div class="total-label bold-text">Total progress:</div>
-          <div class="total-box bold-text">
-            <etools-prp-number value=[[finalTotal]]></etools-prp-number>
+          <div class="content-box right-align m-10">
+            <div class="total-label bold-text">Total progress:</div>
+            <div class="total-box bold-text">
+              <etools-prp-number .value="${this.finalTotal}"></etools-prp-number>
+            </div>
           </div>
+
+          <br />
         </div>
-
-        <br />
-
-      </paper-dialog-scrollable>
-
-      <div class="buttons layout horizontal-reverse">
-        <paper-button class="btn-primary" dialog-dismiss raised>
-          Close
-        </paper-button>
-      </div>
-    </paper-dialog>
-  `;
+      </etools-dialog>
+    `;
   }
 
   @property({type: String})
@@ -157,68 +140,89 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
     {id: 3, value: 2000}
   ];
 
-  @property({type: Array, computed: '_computeTotals(totals, items)'})
+  @property({type: Array})
   locationTotals!: any[];
 
-  @property({type: Number, computed: '_computeFinalTotal(selectedType, locationTotals)'})
-  finalTotal!: number;
+  @property({type: Number})
+  finalTotal!: number | undefined;
 
   @property({type: Object})
   descriptionsLocations = {
-    value: {
-      sum:
-        'Adds values as cumulative results for all locations. ' +
-        'Answers the question, what is total coverage for reporting ' +
-        'period across locations. Requires that indicator definition ' +
-        'does not count same case or event twice across locations, i.e. ' +
-        'reported values covering overlapping populations (e.g. for' +
-        'estimated catchment population for mass dissemination by ' +
-        'radio, total coverage must be calculated manually ' +
-        'discounting overlap).',
-      max:
-        'Takes the top value for all locations. Answers the ' +
-        'question, ' +
-        'where is the  highest number of "x" reached at any one time. ' +
-        'Useful for identification of pattern of demand.  Not generally ' +
-        'a useful measure of overall performance of programme across ' +
-        'locations.',
-      avg:
-        'Provides a measure of the typical value across the ' +
-        'locations. Answers the question, how many people does a ' +
-        'programme or service usually reach at any given location. ' +
-        'Does not reflect the best or worst or total picture. '
-    }
+    sum:
+      'Adds values as cumulative results for all locations. ' +
+      'Answers the question, what is total coverage for reporting ' +
+      'period across locations. Requires that indicator definition ' +
+      'does not count same case or event twice across locations, i.e. ' +
+      'reported values covering overlapping populations (e.g. for' +
+      'estimated catchment population for mass dissemination by ' +
+      'radio, total coverage must be calculated manually ' +
+      'discounting overlap).',
+    max:
+      'Takes the top value for all locations. Answers the ' +
+      'question, ' +
+      'where is the  highest number of "x" reached at any one time. ' +
+      'Useful for identification of pattern of demand.  Not generally ' +
+      'a useful measure of overall performance of programme across ' +
+      'locations.',
+    avg:
+      'Provides a measure of the typical value across the ' +
+      'locations. Answers the question, how many people does a ' +
+      'programme or service usually reach at any given location. ' +
+      'Does not reflect the best or worst or total picture. '
   };
 
   @property({type: Object})
   descriptionsReportingPeriods = {
-    value: {
-      sum:
-        'Sum adds all results for all reporting periods. Answers the ' +
-        'question: what is total coverage over time? Only valid ' +
-        'indicator counts the same case or event only once over time ' +
-        'e.g. sum of children admitted to SAM treatment (each child ' +
-        'registered once at programme start) is valid. Not valid to ' +
-        'aggregate sum of children participating in ongoing learning ' +
-        'programme each month as this counts each child multiple times. ',
-      max:
-        'Max takes the top value for all reporting intervals. ' +
-        'Answers the question: what was the peak case load or highest ' +
-        'coverage at any one time?',
-      avg:
-        'Average provides a measure of the typical value across ' +
-        'reporting periods. Answers the question: what is the usual ' +
-        'reach/coverage in ongoing programme. '
-    }
+    sum:
+      'Sum adds all results for all reporting periods. Answers the ' +
+      'question: what is total coverage over time? Only valid ' +
+      'indicator counts the same case or event only once over time ' +
+      'e.g. sum of children admitted to SAM treatment (each child ' +
+      'registered once at programme start) is valid. Not valid to ' +
+      'aggregate sum of children participating in ongoing learning ' +
+      'programme each month as this counts each child multiple times. ',
+    max:
+      'Max takes the top value for all reporting intervals. ' +
+      'Answers the question: what was the peak case load or highest ' +
+      'coverage at any one time?',
+    avg:
+      'Average provides a measure of the typical value across ' +
+      'reporting periods. Answers the question: what is the usual ' +
+      'reach/coverage in ongoing programme. '
   };
 
-  @property({
-    type: String,
-    computed: '_computeDescription(selectedType, domain, descriptionsLocations, descriptionsReportingPeriods)'
-  })
+  @property({type: String})
   description!: string;
 
-  _computeFinalTotal(selectedType: string, totals: GenericObject[]) {
+  set dialogData(data: any) {
+    const {domain, items}: any = data;
+
+    this.domain = domain;
+    this.items = items;
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (
+      changedProperties.has('selectedType') ||
+      changedProperties.has('domain') ||
+      changedProperties.has('descriptionsLocations') ||
+      changedProperties.has('descriptionsReportingPeriods')
+    ) {
+      this.description = this._computeDescription();
+    }
+
+    if (changedProperties.has('totals') || changedProperties.has('items')) {
+      this.locationTotals = this._computeTotals(this.totals, this.items);
+    }
+
+    if (changedProperties.has('selectedType') || changedProperties.has('locationTotals')) {
+      this.finalTotal = this._computeFinalTotal(this.selectedType, this.locationTotals);
+    }
+  }
+
+  _computeFinalTotal(selectedType: string, totals: any[]) {
     if (!totals) {
       return;
     }
@@ -239,30 +243,27 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
     }
   }
 
-  _computeTotals(totals: GenericObject[], items: number) {
+  _computeTotals(totals: any[], items: number) {
     return totals.slice(0, items);
   }
 
-  _computeDescription(
-    selectedType: string,
-    domain: string,
-    descriptionsLocations: GenericObject,
-    descriptionsReportingPeriods: GenericObject
-  ) {
-    return domain === 'locations' ? descriptionsLocations[selectedType] : descriptionsReportingPeriods[selectedType];
+  _computeDescription() {
+    return this.domain === 'locations'
+      ? this.descriptionsLocations[this.selectedType]
+      : this.descriptionsReportingPeriods[this.selectedType];
   }
 
   _onRadioChange(e: CustomEvent) {
-    this.selectedType = (e.target! as any).selected;
+    this.selectedType = (e.target! as any).value;
   }
 
-  _totalSum(data: GenericObject[]) {
+  _totalSum(data: any[]) {
     return data.reduce(function (acc, next) {
       return acc + next.value;
     }, 0);
   }
 
-  _totalAvg(data: GenericObject[]) {
+  _totalAvg(data: any[]) {
     return (
       data.reduce(function (acc, next) {
         return acc + next.value;
@@ -270,6 +271,5 @@ class CalculationMethodsDemoModal extends UtilsMixin(ModalMixin(PolymerElement))
     );
   }
 }
-window.customElements.define('calculation-methods-demo-modal', CalculationMethodsDemoModal);
 
 export {CalculationMethodsDemoModal as CalculationMethodsDemoModalEl};

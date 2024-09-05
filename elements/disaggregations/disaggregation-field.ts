@@ -1,55 +1,12 @@
-import {ReduxConnectedElement} from '../../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/paper-input/paper-input';
-import {PaperInputElement} from '@polymer/paper-input/paper-input';
+import {html, LitElement, PropertyValues} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {GenericObject} from '../../typings/globals.types';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin DisaggregationFieldMixin
- */
-class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement) {
-  public static get template() {
-    // language=HTML
-    return html`
-      <style>
-        :host {
-          display: block;
-
-          --paper-input-container: {
-            padding: 0;
-          }
-
-          --paper-input-container-input: {
-            font-size: 13px;
-          }
-
-          --paper-input-container-input-webkit-spinner: {
-            display: none;
-          }
-        }
-      </style>
-
-      <paper-input
-        id="field"
-        value="[[value]]"
-        allowed-pattern="^\\d*\\.?\\d*$"
-        invalid="{{invalid}}"
-        validator="[[validator]]"
-        min="[[min]]"
-        on-value-changed="_inputValueChanged"
-        on-keydown="_preventInvalidInput"
-        no-label-float
-        required
-      >
-      </paper-input>
-    `;
-  }
-
+@customElement('disaggregation-field')
+export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   @property({type: String})
   key!: string;
 
@@ -57,51 +14,137 @@ class DisaggregationField extends DisaggregationFieldMixin(ReduxConnectedElement
   coords!: string;
 
   @property({type: String})
-  validator!: string;
+  errMessage!: string;
+
+  @property({type: Boolean, attribute: 'validate-sibling'})
+  validateSibling = false;
 
   @property({type: Number})
   min!: number;
 
-  @property({type: Number, notify: true})
+  @property({type: Number})
   value = 0;
 
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   invalid!: boolean;
+
+  render() {
+    return html`
+      <style>
+        :host {
+          display: block;
+        }
+        etools-input::part(input) {
+          text-align: center;
+        }
+        etools-input {
+          --etools-input-padding-top: 0 !important;
+          --etools-input-padding-bottom: 0 !important;
+        }
+      </style>
+      <etools-input
+        id="field"
+        .value="${this.value}"
+        allowed-pattern="^\\d*\\.?\\d*$"
+        ?invalid="${this.invalid}"
+        .min="${this.min}"
+        @value-changed="${this._inputValueChanged}"
+        @keydown="${this._preventInvalidInput}"
+        .errorMessage="${this.errMessage}"
+        no-label-float
+        required
+      >
+      </etools-input>
+    `;
+  }
 
   connectedCallback() {
     super.connectedCallback();
+  }
 
-    (this.$.field as PaperInputElement).validate();
+  protected firstUpdated(changedProperties: PropertyValues): void {
+    super.firstUpdated(changedProperties);
+
+    this.errMessage = '';
     fireEvent(this, 'register-field', this);
+
+    setTimeout(() => {
+      if (!this.value && (this.value === null || isNaN(Number(this.value)))) {
+        // fill with 0 by default if no value is set
+        const field = this.getField();
+        if (field) {
+          field.value = 0;
+          this._inputValueChanged({target: field as any} as CustomEvent, true);
+          this.value = 0;
+        }
+      }
+    }, 20);
+    // this.validate();
   }
 
   validate() {
-    return (this.$.field as PaperInputElement).validate();
+    const field = this.getField() as EtoolsInput;
+    const isValid = field.validate() && this._validateByValidator(field.value);
+    this.invalid = !isValid;
+    this.requestUpdate();
+    return isValid;
   }
 
   getField() {
-    return this.$.field;
+    return this.shadowRoot!.getElementById('field') as EtoolsInput;
   }
 
-  _inputValueChanged(e: CustomEvent) {
-    const change: GenericObject = {};
-    change[this.key] = (e.target as any).value;
+  _inputValueChanged(e: CustomEvent, isSettingDefault = false) {
+    const change: any = {};
+    const currentValue = (e.target as EtoolsInput).value;
+    change[this.key] = currentValue;
+
+    if (!isSettingDefault) {
+      this._validateByValidator(currentValue);
+    }
 
     fireEvent(this, 'field-value-changed', {
       key: this.coords,
-      value: this._toNumericValues(change)
+      value: this._toNumericValues(change),
+      isSettingDefault: isSettingDefault
     });
   }
 
-  _preventInvalidInput(e: KeyboardEvent) {
-    if (e.key == '.') {
-      if ((e.target as PaperInputElement).value!.indexOf('.') > -1) {
-        e.preventDefault();
+  _validateByValidator(currentValue: string | number | null) {
+    if (this.validateSibling) {
+      try {
+        const siblingEl = this._getSiblingEl();
+        if (siblingEl) {
+          const isValid = Number(currentValue) !== 0 || Number((siblingEl as EtoolsInput).value) === 0;
+          this.invalid = !isValid;
+          return isValid;
+        }
+      } catch (err) {
+        console.log('_validateByValidator', err);
       }
+    }
+    return true;
+  }
+
+  _getSiblingEl() {
+    let parentEl = this.parentElement;
+    while (parentEl && !parentEl.classList.contains('item-parent')) {
+      parentEl = parentEl.parentElement;
+    }
+    if (parentEl) {
+      const disaggEl = parentEl.querySelector('.item-v')!.querySelector('disaggregation-field') as DisaggregationField;
+      if (disaggEl) {
+        return disaggEl.getField();
+      }
+    }
+    return null;
+  }
+
+  _preventInvalidInput(e: KeyboardEvent) {
+    if (e.key === '.' && (e.target as EtoolsInput).value!.toString()?.indexOf('.') > -1) {
+      e.preventDefault();
     }
   }
 }
-
-window.customElements.define('disaggregation-field', DisaggregationField);
 
 export {DisaggregationField as DisaggregationFieldEl};

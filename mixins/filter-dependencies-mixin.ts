@@ -1,30 +1,32 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor, GenericObject} from '../typings/globals.types';
-import {property} from '@polymer/decorators';
+import {property, state} from 'lit/decorators.js';
+import {LitElement} from 'lit';
+import {Constructor} from '../typings/globals.types';
 
-/**
- * @polymer
- * @mixinFunction
- */
-function FilterDependenciesMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function FilterDependenciesMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class FilterDependenciesClass extends baseClass {
     @property({type: String})
-    lastParams!: string;
+    lastParams = '';
 
     @property({type: Object})
-    params!: GenericObject;
+    params!: any;
 
     @property({type: String})
     dependencies = '';
 
     @property({type: Object})
-    defaultParams: GenericObject = {};
+    defaultParams: any = {};
 
-    static get observers() {
-      return ['_computeParams(dependencies, queryParams)'];
+    @state()
+    queryParams: any = {};
+
+    updated(changedProperties) {
+      super.updated(changedProperties);
+      if (changedProperties.has('dependencies') || changedProperties.has('queryParams')) {
+        this._computeParams(this.dependencies, this.queryParams);
+      }
     }
 
-    _computeParams(dependencies: string, queryParams: GenericObject) {
+    _computeParams(dependencies: string, queryParams: any) {
       if (!queryParams) {
         return;
       }
@@ -32,23 +34,25 @@ function FilterDependenciesMixin<T extends Constructor<PolymerElement>>(baseClas
       const newParams = dependencies
         .split(',')
         .filter(Boolean)
-        .reduce(function (acc, key) {
-          if (typeof queryParams[key] !== 'undefined') {
-            acc[key] = queryParams[key];
-          }
-
-          return acc;
-        }, Object.assign({}, this.defaultParams));
+        .reduce(
+          (acc, key) => {
+            if (typeof queryParams[key] !== 'undefined') {
+              acc[key] = queryParams[key];
+            }
+            return acc;
+          },
+          {...this.defaultParams}
+        );
 
       const serialized = this._serializeParams(newParams);
 
-      if (serialized !== this.get('lastParams')) {
-        this.set('lastParams', serialized);
-        this.set('params', newParams);
+      if (serialized !== this.lastParams) {
+        this.lastParams = serialized;
+        this.params = newParams;
       }
     }
 
-    _serializeParams(params: GenericObject) {
+    _serializeParams(params: any) {
       return JSON.stringify(params);
     }
   }

@@ -1,19 +1,23 @@
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
+import {connect} from 'pwa-helpers';
 import {setToken} from '../../redux/actions';
+import {store} from '../../redux/store';
+import {RootState} from '../../typings/redux.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class EtoolsPrpAuth extends UtilsMixin(ReduxConnectedElement) {
-  @property({type: String, computed: 'getReduxStateValue(rootState.auth.token)'})
+@customElement('etools-prp-auth')
+export class EtoolsPrpAuth extends connect(store)(UtilsMixin(LitElement)) {
+  @property({type: String})
   token!: string;
 
-  @property({type: Boolean, notify: true, computed: '_computeAuthenticated(token)'})
+  @property({type: Boolean})
   authenticated!: boolean;
 
   connectedCallback() {
@@ -22,7 +26,21 @@ class EtoolsPrpAuth extends UtilsMixin(ReduxConnectedElement) {
     const savedToken = localStorage.getItem('token');
 
     if (savedToken && !this.token) {
-      this.reduxStore.dispatch(setToken(savedToken));
+      store.dispatch(setToken(savedToken));
+    }
+  }
+
+  stateChanged(state: RootState) {
+    if (!isJsonStrMatch(state?.auth?.token, this.token)) {
+      this.token = state.auth.token;
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('token')) {
+      this.authenticated = this._computeAuthenticated(this.token);
     }
   }
 
@@ -30,5 +48,3 @@ class EtoolsPrpAuth extends UtilsMixin(ReduxConnectedElement) {
     return !!token;
   }
 }
-
-window.customElements.define('etools-prp-auth', EtoolsPrpAuth);

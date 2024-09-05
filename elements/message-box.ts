@@ -1,17 +1,16 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
+import {LitElement, html} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
- * @polymer
  * @customElement
  */
-class MessageBox extends PolymerElement {
-  public static get template() {
-    return html` <style include="iron-flex iron-flex-alignment">
-        :host {
+@customElement('message-box')
+export class MessageBox extends LitElement {
+  render() {
+    return html` <style>
+        ${layoutStyles} :host {
           display: block;
         }
 
@@ -38,14 +37,13 @@ class MessageBox extends PolymerElement {
           margin-right: 15px;
         }
 
-        iron-icon {
-          width: 20px;
-          height: 20px;
+        etools-icon {
+          --etools-icon-font-size: var(--etools-font-size-20, 20px);
         }
       </style>
-      <div class$="message-box message-box--[[type]] layout horizontal">
+      <div class="message-box message-box--${this.type} layout-horizontal align-items-center">
         <div class="icon-wrapper self-center">
-          <iron-icon icon="icons:info"></iron-icon>
+          <etools-icon name="info"></etools-icon>
         </div>
         <div class="self-center">
           <slot></slot>
@@ -57,4 +55,4 @@ class MessageBox extends PolymerElement {
   type!: string;
 }
 
-window.customElements.define('message-box', MessageBox);
+export {MessageBox as MessageBoxEl};

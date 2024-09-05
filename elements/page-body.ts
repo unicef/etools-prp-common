@@ -1,11 +1,12 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
+import {customElement} from 'lit/decorators.js';
 
 /**
- * @polymer
  * @customElement
  */
-class PageBody extends PolymerElement {
-  public static get template() {
+@customElement('page-body')
+export class PageBody extends LitElement {
+  render() {
     return html`
       <style>
         :host {
@@ -18,4 +19,4 @@ class PageBody extends PolymerElement {
   }
 }
 
-window.customElements.define('page-body', PageBody);
+export {PageBody as PageBodyEl};

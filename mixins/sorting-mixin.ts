@@ -1,44 +1,43 @@
-import {PolymerElement} from '@polymer/polymer';
+import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {store} from '../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
- * @polymer
  * @mixinFunction
  */
-function SortingMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function SortingMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class SortingClass extends baseClass {
-    _sortOrderDebouncer!: Debouncer | null;
-
     _sortOrderChanged(e: CustomEvent) {
       const data = e.detail;
-      this._sortOrderDebouncer = Debouncer.debounce(this._sortOrderDebouncer, timeOut.after(100), () => {
-        const newParams = Object.assign({}, (this as any).queryParams, {
-          sort: data.field + '.' + data.direction
-        });
+      const newParams = {
+        ...this.queryParams,
+        sort: `${data.field}.${data.direction}`
+      };
 
-        e.stopPropagation();
-        this.set('queryParams', newParams);
-      });
+      e.stopPropagation();
+      if (!isJsonStrMatch(newParams, store.getState().app.routeDetails.queryParams)) {
+        EtoolsRouter.updateAppLocation(
+          store.getState().app.routeDetails.path,
+          EtoolsRouter.encodeQueryParams(newParams)
+        );
+      }
     }
 
     connectedCallback() {
       super.connectedCallback();
-
-      this._sortOrderChanged = this._sortOrderChanged.bind(this);
+      this._sortOrderChanged = debounce(this._sortOrderChanged.bind(this), 100);
       this.addEventListener('sort-changed', this._sortOrderChanged as any);
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
-
       this.removeEventListener('sort-changed', this._sortOrderChanged as any);
-      if (this._sortOrderDebouncer && this._sortOrderDebouncer.isActive()) {
-        this._sortOrderDebouncer.cancel();
-      }
     }
   }
+
   return SortingClass;
 }
 

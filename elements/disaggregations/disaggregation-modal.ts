@@ -1,75 +1,39 @@
-import {ReduxConnectedElement} from '../../ReduxConnectedElement';
-import {property} from '@polymer/decorators/lib/decorators';
-import {html} from '@polymer/polymer';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-button/paper-button';
-import '@unicef-polymer/etools-loading/etools-loading';
-import ModalMixin from '../../mixins/modal-mixin';
-import LocalizeMixin from '../../mixins/localize-mixin';
-import {buttonsStyles} from '../../styles/buttons-styles';
-import {modalStyles} from '../../styles/modal-styles';
-import '../confirm-box';
+import {css, html, LitElement} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
+import {translate, get as getTranslation} from 'lit-translate';
 import './disaggregation-table';
-import {DisaggregationTableEl} from './disaggregation-table';
-import {ConfirmBoxEl} from '../confirm-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {DisaggregationTableEl} from './disaggregation-table';
+import UtilsMixin from '../../mixins/utils-mixin';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin ModalMixin
- * @appliesMixin LocalizeMixin
- */
-class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement)) {
-  public static get template() {
-    // language=HTML
-    return html`
-      ${buttonsStyles} ${modalStyles}
-      <style include="iron-flex iron-flex-alignment iron-flex-reverse">
-        :host {
-          display: block;
-
-          --paper-dialog: {
-            width: 700px;
-          }
-        }
-        ::slotted([slot='disaggregation-table']) {
-          margin-bottom: 1em;
-        }
-      </style>
-
-      <paper-dialog id="dialog" modal opened="{{opened}}">
-        <div class="header layout horizontal justified">
-          <h2>[[localize('enter_data')]]</h2>
-
-          <div class="layout horizontal">
-            <p>[[localize('reporting_period')]]: [[reportingPeriod]]</p>
-
-            <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
-          </div>
-        </div>
-
-        <paper-dialog-scrollable>
-          <slot name="meta"></slot>
-          <slot name="disaggregation-table" class="table"></slot>
-        </paper-dialog-scrollable>
-
-        <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_save" raised> [[localize('save')]] </paper-button>
-
-          <paper-button class="btn-cancel" on-tap="close"> [[localize('cancel')]] </paper-button>
-        </div>
-
-        <confirm-box id="confirm"></confirm-box>
-
-        <etools-loading active="[[updatePending]]"></etools-loading>
-      </paper-dialog>
-    `;
-  }
+@customElement('disaggregation-modal')
+export class DisaggregationModal extends UtilsMixin(LitElement) {
+  static styles = css`
+    ${layoutStyles}
+    etools-icon {
+      --etools-icon-fill-color: var(--sl-color-primary-400);
+    }
+    h3 {
+      margin-block-start: 0;
+    }
+    .half {
+      width: 50%;
+    }
+    .current-pd {
+      margin: 0;
+      font-size: 12px;
+      color: var(--theme-primary-text-color-medium);
+    }
+    .location-progress {
+      justify-content: flex-end;
+      font-weight: bold;
+      display: flex;
+      margin-block-start: 0;
+    }
+  `;
 
   @property({type: String})
   reportingPeriod!: string;
@@ -77,64 +41,124 @@ class DisaggregationModal extends ModalMixin(LocalizeMixin(ReduxConnectedElement
   @property({type: Boolean})
   updatePending = false;
 
+  @property({type: Boolean})
+  hasPD = false;
+
+  @property({type: Object})
+  topLevelLocation!: any;
+
+  @property({type: Object})
+  currentPd!: any;
+
+  @property({type: String})
+  indicatorName!: string;
+
+  @property({type: Object})
+  disaggregations!: any;
+
+  @property({type: Number})
+  indicatorId!: number;
+
+  set dialogData(data: any) {
+    if (!data) {
+      return;
+    }
+    const {indicatorName, currentPd, topLevelLocation, reportingPeriod, disaggregations, indicatorId}: any = data;
+    this.indicatorName = indicatorName;
+    this.currentPd = currentPd;
+    this.hasPD = !!Object.keys(currentPd).length;
+    this.topLevelLocation = topLevelLocation;
+    this.reportingPeriod = reportingPeriod;
+    this.disaggregations = disaggregations;
+    this.indicatorId = indicatorId;
+  }
+
+  render() {
+    return html`
+      <etools-dialog
+        id="addUserDialog"
+        size="md"
+        opened
+        dialog-title="${translate('ENTER_DATA')} ${translate('REPORTING_PERIOD')}: ${this.reportingPeriod}"
+        ok-btn-text="${translate('SAVE')}"
+        cancel-btn-text=${translate('CANCEL')}
+        keep-dialog-open
+        @confirm-btn-clicked="${this._save}"
+        @close="${() => this.onClose()}"
+        ?show-spinner="${this.updatePending}"
+      >
+        <div class="container-dialog">
+          <div>
+            <h3>${this.indicatorName}</h3>
+            <p class="location">
+              <etools-icon name="communication:locationOn"></etools-icon>
+              ${this.topLevelLocation?.name}
+            </p>
+          </div>
+          <div class="layout-horizontal">
+            ${this.hasPD
+              ? html`<div class="current-pd half">${this.currentPd.agreement} | ${this.currentPd.title}</div>`
+              : ``}
+            <div class="half">
+              <dl class="location-progress">
+                <dt>${translate('LOCATION_PROGRESS')}</dt>
+                <dd>
+                  ${this.topLevelLocation?.byEntity[0].display_type == 'number'
+                    ? html`<etools-prp-number
+                        .value="${this.topLevelLocation?.byEntity[0].location_progress.v}"
+                      ></etools-prp-number>`
+                    : html`<span
+                        >${this._formatIndicatorValue(
+                          this.topLevelLocation?.byEntity[0].display_type,
+                          this.topLevelLocation?.byEntity[0].location_progress.c,
+                          1
+                        )}</span
+                      >`}
+                </dd>
+              </dl>
+            </div>
+          </div>
+
+          <disaggregation-table
+            slot="disaggregation-table"
+            .data="${this.topLevelLocation.byEntity[0]}"
+            .byEntity="${this.topLevelLocation.byEntity}"
+            .mapping="${this.disaggregations.disagg_lookup_map}"
+            .labels="${this.disaggregations.labels}"
+            .indicatorId="${this.indicatorId}"
+            editable="1"
+          >
+          </disaggregation-table>
+        </div>
+      </etools-dialog>
+    `;
+  }
+
   _save() {
-    const tableElem = this.querySelector('disaggregation-table');
+    const tableElem = this.shadowRoot!.querySelector('disaggregation-table');
     if (tableElem) {
-      this.set('updatePending', true);
+      this.updatePending = true;
 
       (tableElem as DisaggregationTableEl)
         .save()
         .then(() => {
-          this.set('updatePending', false);
-          this.close();
+          this.updatePending = false;
+          this.onClose(true);
         })
-        // @ts-ignore
-        .catch((_err: GenericObject) => {
-          console.log(_err);
-          this.set('updatePending', false);
+        .catch((err: any) => {
+          console.log(err);
+          this.updatePending = false;
           fireEvent(this, 'toast', {
-            text: this.localize('error_verify_entered_data'),
+            text: err?.response?.non_field_errors?.[0] || getTranslation('ERROR_VERIFY_ENTERED_DATA'),
             showCloseBtn: true
           });
         });
     }
   }
 
-  _confirm(e: CustomEvent) {
-    e.stopPropagation();
-
-    (this.$.confirm as ConfirmBoxEl).run({
-      body: 'Changing disaggregation will cause your previous data to be lost. ' + 'Do you want to continue?',
-      result: e.detail
-    });
-  }
-
-  _addEventListeners() {
-    this.close = this.close.bind(this);
-    this.addEventListener('dialog.iron-overlay-closed', this.close);
-    this.adjustPosition = this.adjustPosition.bind(this);
-    this.addEventListener('disaggregation-modal-refit', this.adjustPosition as any);
-    this._confirm = this._confirm.bind(this);
-    this.addEventListener('disaggregation-modal-confirm', this._confirm as any);
-  }
-
-  _removeEventListeners() {
-    this.removeEventListener('dialog.iron-overlay-closed', this.close);
-    this.removeEventListener('disaggregation-modal-refit', this.adjustPosition as any);
-    this.removeEventListener('disaggregation-modal-confirm', this._confirm as any);
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._addEventListeners();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._removeEventListeners();
+  onClose(confirmed = false): void {
+    fireEvent(this, 'dialog-closed', {confirmed: confirmed});
   }
 }
-
-window.customElements.define('disaggregation-modal', DisaggregationModal);
 
 export {DisaggregationModal as DisaggregationModalEl};

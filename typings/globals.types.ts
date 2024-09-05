@@ -1,4 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
+import {LitElement} from 'lit';
 
 /*
  * The type Constructor<T> is an alias for the construct signature
@@ -6,20 +6,16 @@ import {PolymerElement} from '@polymer/polymer';
  * and whose constructor function accepts an arbitrary number of parameters of any type
  * On the type level, a class can be represented as a newable function
  */
-export type Constructor<T> = new (...args: any[]) => T;
+export type Constructor<_T> = new (...args: any[]) => any; // eslint-disable-line
 
-export type MixinFunction = <T extends Constructor<PolymerElement>>(
+export type MixinFunction = <T extends Constructor<LitElement>>(
   baseClass: T
 ) => T & {
   new (...args: any[]): any;
 };
 
-export interface GenericObject {
-  [key: string]: any;
-}
-
 export interface Route {
   prefix: string;
   path: string;
-  __queryParams: GenericObject;
+  __queryParams: any;
 }

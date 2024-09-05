@@ -1,12 +1,8 @@
+import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
-/**
- * @polymer
- * @mixinFunction
- */
-function ErrorHandlerMixin<T extends Constructor<ReduxConnectedElement>>(baseClass: T) {
+function ErrorHandlerMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class ErrorHandlerClass extends baseClass {
     _handleError(e: CustomEvent) {
       let xhr;
@@ -27,6 +23,7 @@ function ErrorHandlerMixin<T extends Constructor<ReduxConnectedElement>>(baseCla
       }
     }
   }
+
   return ErrorHandlerClass;
 }
 

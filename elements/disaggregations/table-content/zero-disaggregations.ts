@@ -1,49 +1,57 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
-import {property} from '@polymer/decorators';
-import {GenericObject} from '../../../typings/globals.types';
 import '../disaggregation-table-row';
 
-/**
- * @polymer
- * @customElement
- */
-class ZeroDisaggregations extends PolymerElement {
-  public static get template() {
-    // language=HTML
-    return html`
-      ${disaggregationTableStyles}
-      <style></style>
-
-      <disaggregation-table-row
-        data="[[totalRow]]"
-        level-reported="[[data.level_reported]]"
-        indicator-type="[[data.display_type]]"
-        row-type="totalsRow"
-        editable="[[editable]]"
-      >
-      </disaggregation-table-row>
-    `;
-  }
-
+@customElement('zero-disaggregations')
+class ZeroDisaggregations extends LitElement {
   @property({type: Number})
   editable!: number;
 
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
-  @property({type: Array, computed: '_determineTotalRow(mapping, data)'})
-  totalRow!: any[];
+  @property({type: Object})
+  mapping!: any;
 
-  _determineTotalRow(_: any, data: GenericObject) {
+  @property({type: Object})
+  totalRow!: any;
+
+  render() {
+    return html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+
+      ${disaggregationTableStyles}
+      <disaggregation-table-row
+        .data="${this.totalRow}"
+        .levelReported="${this.data?.level_reported}"
+        .indicatorType="${this.data?.display_type}"
+        rowType="totalsRow"
+        .editable="${this.editable}"
+      ></disaggregation-table-row>
+    `;
+  }
+
+  updated(changedProperties) {
+    super.updated(changedProperties);
+    if (changedProperties.has('mapping') || changedProperties.has('data')) {
+      this.totalRow = this._determineTotalRow(this.data);
+    }
+  }
+
+  _determineTotalRow(data: any) {
     return {
       title: 'total',
       total: {
         key: '()',
-        data: data.disaggregation['()']
+        data: data?.disaggregation?.['()']
       }
     };
   }
 }
 
-window.customElements.define('zero-disaggregations', ZeroDisaggregations);
+export default ZeroDisaggregations;

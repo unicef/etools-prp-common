@@ -1,24 +1,26 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-button/paper-button';
+import {LitElement, html} from 'lit';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import './calculation-methods-demo-modal';
-import {CalculationMethodsDemoModalEl} from './calculation-methods-demo-modal';
-import LocalizeMixin from '../mixins/localize-mixin';
-import {buttonsStyles} from '../styles/buttons-styles';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {translate} from 'lit-translate';
 import {tableStyles} from '../styles/table-styles';
+import {customElement} from 'lit/decorators.js';
 
 /**
- * @polymer
  * @customElement
- * @appliesMixin LocalizeMixin
  */
-class CalculationMethodsInfoBar extends LocalizeMixin(ReduxConnectedElement) {
-  static get template() {
+@customElement('calculation-methods-info-bar')
+export class CalculationMethodsInfoBar extends LitElement {
+  static get styles() {
+    return [layoutStyles];
+  }
+
+  render() {
     return html`
-      ${buttonsStyles} ${tableStyles}
-      <style include="data-table-styles iron-flex iron-flex-alignment iron-flex-reverse">
+      ${tableStyles}
+      <style>
         :host {
           display: block;
           background: #fcfcfc;
@@ -26,52 +28,59 @@ class CalculationMethodsInfoBar extends LocalizeMixin(ReduxConnectedElement) {
           margin-bottom: 25px;
         }
 
-        iron-icon {
-          color: var(--paper-grey-600);
+        etools-icon {
+          color: var(--sl-color-neutral-600);
+          margin-right: 5px;
         }
 
         span {
-          color: var(--paper-grey-600);
-        }
-
-        iron-icon {
-          margin-right: 5px;
+          color: var(--sl-color-neutral-600);
         }
 
         .buttons {
           margin: 1em 0;
         }
+        .space-bt {
+          justify-content: space-between !important;
+        }
       </style>
-      <div class="layout horizontal justified center-aligned">
-        <div class="layout horizontal center-center">
-          <iron-icon icon="icons:info"></iron-icon>
-          <span>[[localize('to_help_you_decide')]]:</span>
+      <div class="layout-horizontal center-align space-bt">
+        <div class="layout-horizontal center-align">
+          <etools-icon id="information-icon" name="info"></etools-icon>
+          <span>${translate('TO_HELP_YOU_DECIDE')}:</span>
         </div>
         <div>
-          <paper-button id="locations" on-tap="_openLocationsModal" class="btn-primary">
-            [[localize('across_locations')]]
-          </paper-button>
+          <etools-button id="locations" variant="text" @click="${this._openLocationsModal}">
+            ${translate('ACROSS_LOCATIONS')}
+          </etools-button>
 
-          <paper-button id="periods" on-tap="_openPeriodsModal" class="btn-primary">
-            [[localize('across_reporting_periods')]]
-          </paper-button>
+          <etools-button id="periods" variant="text" @click="${this._openPeriodsModal}">
+            ${translate('ACROSS_REPORTING_PERIODS')}
+          </etools-button>
         </div>
       </div>
-      <calculation-methods-demo-modal id="locations-modal" domain="locations" items="3">
-      </calculation-methods-demo-modal>
-      <calculation-methods-demo-modal id="periods-modal" domain="reporting periods" items="2">
-      </calculation-methods-demo-modal>
     `;
   }
 
   _openLocationsModal() {
-    (this.shadowRoot!.querySelector('#locations-modal') as CalculationMethodsDemoModalEl).open();
+    openDialog({
+      dialog: 'calculation-methods-demo-modal',
+      dialogData: {
+        domain: 'locations',
+        items: 3
+      }
+    });
   }
 
   _openPeriodsModal() {
-    (this.shadowRoot!.querySelector('#periods-modal') as CalculationMethodsDemoModalEl).open();
+    openDialog({
+      dialog: 'calculation-methods-demo-modal',
+      dialogData: {
+        domain: 'reporting periods',
+        items: 2
+      }
+    });
   }
 }
-window.customElements.define('calculation-methods-info-bar', CalculationMethodsInfoBar);
 
 export {CalculationMethodsInfoBar as CalculationMethodsInfoBarEl};

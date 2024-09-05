@@ -1,23 +1,21 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import '@polymer/iron-icon/iron-icon';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
-import {GenericObject} from '../typings/globals.types';
 import './error-box-errors';
-
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class ErrorBox extends UtilsMixin(PolymerElement) {
-  public static get template() {
+@customElement('error-box')
+export class ErrorBox extends UtilsMixin(LitElement) {
+  render() {
     return html`
-      <style include="iron-flex iron-flex-alignment iron-flex-reverse">
-        #box {
-          background: var(--paper-grey-300);
+      <style>
+        ${layoutStyles} #box {
+          background: var(--sl-color-neutral-200);
           padding: 10px;
           color: var(--error-color);
         }
@@ -26,32 +24,43 @@ class ErrorBox extends UtilsMixin(PolymerElement) {
           margin-bottom: 1em;
         }
 
-        iron-icon {
+        etools-icon {
           margin-right: 5px;
         }
       </style>
 
-      <div id="box" hidden$="[[_hidden]]">
-        <div class="header layout horizontal center">
-          <iron-icon icon="icons:error"></iron-icon>
+      <div id="box" ?hidden="${this._hidden}">
+        <div class="header layout-horizontal align-items-center">
+          <etools-icon name="icons:error"></etools-icon>
           <span>Error(s) occurred. Please check the list to save the form.</span>
         </div>
 
-        <error-box-errors errors="[[mappedErrors]]"> </error-box-errors>
+        <error-box-errors .errors="${this.mappedErrors}"> </error-box-errors>
       </div>
     `;
   }
 
-  @property({type: Object, observer: '_scrollToBox'})
-  errors: GenericObject = {};
+  @property({type: Object}) // @@ observer: '_scrollToBox'
+  errors: any = {};
 
-  @property({type: Array, computed: '_computeMappedErrors(errors)'})
-  mappedErrors: GenericObject[] = [];
+  @property({type: Array})
+  mappedErrors: any[] = [];
 
-  @property({type: Boolean, computed: '_computeHidden(mappedErrors)'})
+  @property({type: Boolean})
   _hidden = true;
 
-  _computeMappedErrors(errors: GenericObject[]) {
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errors')) {
+      this.mappedErrors = this._computeMappedErrors(this.errors);
+    }
+    if (changedProperties.has('mappedErrors')) {
+      this._hidden = this._computeHidden(this.mappedErrors);
+    }
+  }
+
+  _computeMappedErrors(errors: any[]) {
     return this.errorMapper(errors);
   }
 
@@ -61,7 +70,7 @@ class ErrorBox extends UtilsMixin(PolymerElement) {
     });
   }
 
-  _computeHidden(mappedErrors: GenericObject[]) {
+  _computeHidden(mappedErrors: any[]) {
     return !mappedErrors.length;
   }
 
@@ -85,13 +94,13 @@ class ErrorBox extends UtilsMixin(PolymerElement) {
           .map((key) => {
             return {
               field: key,
-              details: error[key].reduce((acc: any, err: GenericObject) => {
-                return acc.concat(this.errorMapper(err));
-              }, [])
+              details: error[key].reduce
+                ? error[key].reduce((acc: any, err: any) => {
+                    return acc.concat(this.errorMapper(err));
+                  }, [])
+                : this.errorMapper(error[key])
             };
           });
     }
   }
 }
-
-window.customElements.define('error-box', ErrorBox);

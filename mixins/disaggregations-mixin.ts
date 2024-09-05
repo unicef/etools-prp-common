@@ -1,21 +1,17 @@
-import {PolymerElement} from '@polymer/polymer';
-import {Constructor, GenericObject} from '../typings/globals.types';
+import {LitElement} from 'lit';
+import {Constructor} from '../typings/globals.types';
 
-/**
- * @polymer
- * @mixinFunction
- */
-function DisaggregationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function DisaggregationMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DisaggregationClass extends baseClass {
     // Used to display rows for two and three disaggregations.
     // It will NOT work for one and zero disaggregations.
-    _determineRows(self: any, rows: GenericObject[], columns: GenericObject[]) {
-      const rowsForDisplay: GenericObject[] = [];
+    _determineRows(self: any, rows: any[], columns: any[]) {
+      const rowsForDisplay: any[] = [];
 
-      rows.forEach(function (x) {
+      rows.forEach((x) => {
         let formatted = '';
 
-        const rowData = columns.map(function (z: GenericObject) {
+        const rowData = columns.map((z: any) => {
           formatted = self._formatDisaggregationIds([x.id, z.id]);
 
           return {
@@ -44,9 +40,7 @@ function DisaggregationMixin<T extends Constructor<PolymerElement>>(baseClass: T
     // structures them in "()" format for lookup.
     _formatDisaggregationIds(unsortedIds: any[]) {
       // IDs must be in ascending order.
-      const ids = unsortedIds.sort(function (a, b) {
-        return a - b;
-      });
+      const ids = unsortedIds.sort((a, b) => a - b);
       let sortedString = '';
 
       if (ids.length === 1) {
@@ -55,9 +49,10 @@ function DisaggregationMixin<T extends Constructor<PolymerElement>>(baseClass: T
         sortedString = ids.join(', ');
       }
 
-      return '(' + sortedString + ')';
+      return `(${sortedString})`;
     }
   }
+
   return DisaggregationClass;
 }
 

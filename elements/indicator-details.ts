@@ -1,73 +1,63 @@
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@unicef-polymer/etools-loading/etools-loading';
-import '@polymer/paper-tabs/paper-tab';
-import '@polymer/paper-tabs/paper-tabs';
-import '@polymer/iron-pages/iron-pages';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-icons/maps-icons';
-import '@polymer/paper-button/paper-button';
-import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/paper-listbox/paper-listbox';
-import '@polymer/paper-item/paper-item';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {repeat} from 'lit/directives/repeat.js';
+import {connect} from 'pwa-helpers';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@shoelace-style/shoelace/dist/components/menu-item/menu-item';
+import '@shoelace-style/shoelace/dist/components/menu/menu';
+import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
+import '@shoelace-style/shoelace/dist/components/tab/tab.js';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
-import './etools-prp-ajax';
 import '../elements/etools-prp-number';
 import './status-badge';
 import '../elements/etools-prp-printer';
-import './disaggregations/disaggregation-table';
 import './disaggregations/disaggregation-modal';
-import {DisaggregationModalEl} from './disaggregations/disaggregation-modal';
 import '../elements/report-status';
 import './pull-modal';
-import {PullModalEl} from './pull-modal';
 import UtilsMixin from '../mixins/utils-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {GenericObject} from '../typings/globals.types';
 import Endpoints from '../endpoints';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {disaggregationsFetch} from '../../redux/actions/disaggregations';
 import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
 import {RootState} from '../../typings/redux.types';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
+import {store} from '../../redux/store';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
  */
-class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
-  static get template() {
+@customElement('indicator-details')
+export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
+  static get styles() {
+    return [layoutStyles];
+  }
+
+  render() {
+    if (!this.dataLoaded) {
+      return;
+    }
     return html`
       ${buttonsStyles}
-      <style include="iron-flex iron-flex-alignment app-grid-style">
+      <style>
         :host {
           display: block;
           width: 100%;
           min-height: 150px;
           position: relative;
-
-          --app-grid-columns: 2;
-          --app-grid-gutter: 25px;
-          --app-grid-item-height: auto;
-
-          --paper-tabs: {
-            padding-left: 12px;
-            border-bottom: 1px solid var(--paper-grey-300);
-          }
         }
 
         .header {
           padding: 20px 75px 0 25px;
           position: relative;
-          height: 40px;
+          height: 56px;
         }
 
         .locations-heading {
@@ -83,17 +73,17 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
 
         .tab-header {
           padding: 10px 25px;
-          border-bottom: 1px solid var(--paper-grey-300);
-          background: var(--paper-grey-100);
+          border-bottom: 1px solid var--sl-color-gray-300);
+          background: var(--sl-color-gray-100);
         }
 
-        .tab-header paper-button {
+        .tab-header etools-button {
           margin: 0;
         }
 
         .table-container {
           max-height: 500px;
-          padding-bottom: 25px;
+          padding: 25px;
           overflow: inherit;
         }
 
@@ -137,6 +127,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
           padding: 0;
           height: 300px; /* 360px - 60px */
           overflow: auto;
+          border: none;
         }
         #tabs-list #tab-item {
           padding-left: 10%;
@@ -144,8 +135,12 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
           padding: 0px 16px;
         }
 
-        #tabs-list #tab-item.iron-selected {
-          background-color: var(--theme-secondary-color-d);
+        #tabs-list #tab-item::part(base):hover {
+          background-color: #DBDBDB;
+        }
+
+        #tabs-list #tab-item.selected::part(base) {
+          background-color: var(--primary-color, #0099FF);
         }
 
         #pages-container {
@@ -174,7 +169,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
           font-weight: bold;
         }
 
-        .location iron-icon {
+        .location etools-icon {
           margin-left: -3px;
           color: var(--theme-primary-color);
         }
@@ -203,6 +198,9 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
         disaggregation-modal disaggregation-table {
           margin-top: 1em;
         }
+        .justified {
+          justify-content: space-between;
+        }
         @media print {
           .print-styles {
             display: flex;
@@ -210,243 +208,204 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
         }
       </style>
 
-      <etools-prp-ajax id="disaggregations" url="[[disaggregationsUrl]]" params="[[params]]"> </etools-prp-ajax>
-
-      <template is="dom-if" if="[[dataLoaded]]">
-        <div>
-          <template is="dom-if" if="[[showPullDataFromHR(isHfIndicator, mode)]]">
-            <div class="tab-header layout horizontal justified">
-              <div class="self-center">[[localize('for_this_indicator')]]</div>
-              <div>
-                <paper-button
-                  class="btn-primary"
-                  modal-index="[[indicatorId]]"
-                  on-tap="_openPullModal"
-                  disabled="[[disablePull]]"
-                >
-                  [[localize('pull_data')]]
-                </paper-button>
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <etools-prp-printer selector=".printme">
-          <div id="tabs-pages-container">
-            <div id="tabs-list-container">
-              <div class="tabs-header-container">
-                <div class="header">
-                  <h3 class="locations-heading">[[localize('data_for_locations')]]</h3>
-
-                  <paper-icon-button class="print-btn" icon="icons:print"> </paper-icon-button>
-                </div>
-
-                <div hidden aria-hidden="true">
-                  <template is="dom-if" if="[[currentPd.title]]">
-                    <dl class="printme" style="margin: 0;">
-                      <dt style="display: inline;">[[_singularLocalized('programme_documents', localize)]]:</dt>
-                      <dd style="display: inline; margin: 0;">[[currentPd.title]]</dd>
-                    </dl>
-                  </template>
-
-                  <template is="dom-if" if="[[indicatorName]]">
-                    <dl class="printme" style="margin: 0;">
-                      <dt style="display: inline;">[[localize('indicator')]]:</dt>
-                      <dd style="display: inline; margin: 0;">[[indicatorName]]</dd>
-                    </dl>
-                  </template>
-
-                  <template is="dom-if" if="[[indicatorStatus]]">
-                    <span class="printme" style="margin-right: .5em;">[[localize('indicator_status')]]:</span>
-                    <report-status class="printme" status="[[indicatorStatus]]" report-type="[[reportType]]">
-                    </report-status>
-                  </template>
-
-                  <div class="printme" style="margin-bottom: 2em;"></div>
-                </div>
-              </div>
-
-              <paper-listbox selected="{{selected}}" id="tabs-list">
-                <template
-                  is="dom-repeat"
-                  items="[[locationData]]"
-                  as="topLevelLocation"
-                  on-rendered-item-count-changed="onLocationRendered"
-                >
-                  <paper-item id="tab-item">
-                    <status-badge type="[[_computeLocationStatus(topLevelLocation)]]"></status-badge>
-                    [[topLevelLocation.name]]
-                  </paper-item>
-                </template>
-              </paper-listbox>
-            </div>
-
-            <iron-pages selected="{{selected}}" id="pages-container">
-              <template is="dom-repeat" items="[[locationData]]" as="topLevelLocation" index-as="topLevelLocationIndex">
-                <div>
-                  <div id="page-header-container">
-                    <template is="dom-if" if="[[_canEnterData(computedMode, topLevelLocation.byEntity.0.is_locked)]]">
-                      <div class="tab-header layout horizontal justified">
-                        <div class="self-center">[[localize('enter_data_location')]]</div>
-                        <div>
-                          <paper-button
-                            class="btn-primary"
-                            modal-index="[[topLevelLocationIndex]]"
-                            on-tap="_openModal"
-                            raised
-                          >
-                            [[localize('enter_data')]]
-                          </paper-button>
-                        </div>
+      ${this.dataLoaded
+        ? html`
+            <div>
+              ${this.showPullDataFromHR(this.isHfIndicator, this.mode)
+                ? html`
+                    <div class="tab-header layout-horizontal justified">
+                      <div class="center-align">${translate('FOR_THIS_INDICATOR')}</div>
+                      <div>
+                        <etools-button
+                          variant="primary"
+                          modal-index="${this.indicatorId}"
+                          @click="${this._openPullModal}"
+                          ?disabled="${this.disablePull}"
+                        >
+                          ${translate('PULL_DATA')}
+                        </etools-button>
                       </div>
-                    </template>
+                    </div>
+                  `
+                : ``}
+            </div>
 
-                    <div id="reporting-tabs-list">
-                      <paper-tabs
-                        selected="{{topLevelLocation.selected}}"
-                        hide-scroll-buttons
-                        id="reporting-tabs-container"
-                      >
-                        <template is="dom-repeat" items="[[topLevelLocation.byEntity]]" as="location">
-                          <paper-tab>[[_localizeLowerCased(location.reporting_entity.title, localize)]]</paper-tab>
-                        </template>
-                      </paper-tabs>
+            <etools-prp-printer selector=".printme">
+              <div id="tabs-pages-container">
+                <div id="tabs-list-container">
+                  <div class="tabs-header-container">
+                    <div class="header">
+                      <h3 class="locations-heading">${translate('DATA_FOR_LOCATIONS')}</h3>
+
+                      <etools-icon-button class="print-btn" name="print"> </etools-icon-button>
+                    </div>
+
+                    <div hidden aria-hidden="true">
+                      ${this.currentPd.title
+                        ? html`
+                            <dl class="printme" style="margin: 0;">
+                              <dt style="display: inline;">${this._singularLocalized('programme_documents')}:</dt>
+                              <dd style="display: inline; margin: 0;">${this.currentPd.title}</dd>
+                            </dl>
+                          `
+                        : ``}
+                      ${this.indicatorName
+                        ? html`
+                            <dl class="printme" style="margin: 0;">
+                              <dt style="display: inline;">${translate('INDICATOR')}:</dt>
+                              <dd style="display: inline; margin: 0;">${this.indicatorName}</dd>
+                            </dl>
+                          `
+                        : ``}
+                      ${this.indicatorStatus
+                        ? html`
+                            <span class="printme" style="margin-right: .5em;">${translate('INDICATOR_STATUS')}:</span>
+                            <report-status
+                              class="printme"
+                              .status="${this.indicatorStatus}"
+                              .reportType="${this.reportType}"
+                            >
+                            </report-status>
+                          `
+                        : ``}
+
+                      <div class="printme" style="margin-bottom: 2em;"></div>
                     </div>
                   </div>
 
-                  <iron-pages selected="{{topLevelLocation.selected}}" id="page-view-container">
-                    <template is="dom-repeat" items="[[topLevelLocation.byEntity]]" as="location">
-                      <div>
-                        <div class="table-container app-grid">
-                          <div class="item">
-                            <div hidden aria-hidden="true">
-                              <dl class="printme">
-                                <dt style="display: inline;">[[localize('location')]]:</dt>
-                                <dd style="display: inline; margin: 0;">
-                                  [[location.location.name]] - [[location.reporting_entity.title]]
-                                </dd>
-                              </dl>
-                            </div>
+                  <sl-menu id="tabs-list">
+                    ${repeat(
+                      this.locationData || [],
+                      (topLevelLocation: any, topLevelLocationIndex: number) => html`
+                        <sl-menu-item
+                          id="tab-item"
+                          class="${this.selected === topLevelLocationIndex ? 'selected' : ''}"
+                          @click="${() => (this.selected = topLevelLocationIndex)}"
+                        >
+                          <status-badge .type="${this._computeLocationStatus(topLevelLocation)}"></status-badge>
+                          ${topLevelLocation.name}
+                        </sl-menu-item>
+                      `
+                    )}
+                  </sl-menu>
+                </div>
 
-                            <dl>
-                              <template is="dom-if" if="[[_equals(location.display_type, 'number')]]" restamp="true">
-                                <dt>
-                                  [[localize('location_progress_against')]]
-                                  [[_localizeLowerCased(location.reporting_entity.title, localize)]]:
-                                </dt>
-                                <dd>
-                                  <etools-prp-number value="[[location.location_progress.v]]"></etools-prp-number>
-                                </dd>
-                                <dt>[[localize('previous_location_progress')]]:</dt>
-                                <dd>
-                                  <etools-prp-number
-                                    value="[[location.previous_location_progress.v]]"
-                                  ></etools-prp-number>
-                                </dd>
-                              </template>
-                              <template is="dom-if" if="[[!_equals(location.display_type, 'number')]]" restamp="true">
-                                <dt>[[localize('location_progress')]]:</dt>
-                                <dd>[[_formatIndicatorValue(location.display_type, location.location_progress.c)]]</dd>
-                                <dt>[[localize('previous_location_progress')]]:</dt>
-                                <dd>
-                                  [[_formatIndicatorValue(location.display_type,
-                                  location.previous_location_progress.c)]]
-                                </dd>
-                              </template>
-                            </dl>
-                            <disaggregation-table
-                              class="printme print-styles"
-                              data="[[location]]"
-                              mapping="[[disaggregations.disagg_lookup_map]]"
-                              labels="[[disaggregations.labels]]"
+                <div id="pages-container">
+                  ${repeat(
+                    this.locationData || [],
+                    (topLevelLocation: any, topLevelLocationIndex: number) => html`
+                      <div ?hidden="${this.selected !== topLevelLocationIndex}">
+                        <div id="page-header-container">
+                          ${this._canEnterData(this.computedMode, topLevelLocation.byEntity[0].is_locked)
+                            ? html`
+                                <div class="tab-header layout-horizontal justified">
+                                  <div class="center-align">${translate('ENTER_DATA_LOCATION')}</div>
+                                  <div>
+                                    <etools-button
+                                      variant="primary"
+                                      @click="${() => this._openModal(topLevelLocationIndex)}"
+                                    >
+                                      ${translate('ENTER_DATA')}
+                                    </etools-button>
+                                  </div>
+                                </div>
+                              `
+                            : ``}
+
+                          <div id="reporting-tabs-list">
+                            <sl-tab-group
+                              @sl-tab-show="${this.onSelectedTopLevelLocationTabChanged}"
+                              hide-scroll-buttons
+                              id="reporting-tabs-container"
                             >
-                            </disaggregation-table>
+                              ${repeat(
+                                topLevelLocation.byEntity || [],
+                                (location: any, index: number) =>
+                                  html`<sl-tab
+                                    slot="nav"
+                                    panel="tab_${location.id}"
+                                    ?active="${this.topLevelLocationSelected === `tab_${index}`}"
+                                  >
+                                    ${this._localizeLowerCased(location.reporting_entity.title)}
+                                  </sl-tab>`
+                              )}
+                            </sl-tab-group>
                           </div>
                         </div>
-                      </div>
-                    </template>
-                  </iron-pages>
 
-                  <template is="dom-if" if="[[!_equals(computedMode, 'view')]]">
-                    <disaggregation-modal
-                      id="modal-[[topLevelLocationIndex]]"
-                      reporting-period="[[reportingPeriod]]"
-                      on-opened-changed="_updateModals"
-                    >
-                      <div slot="meta" class="layout horizontal justified">
-                        <div>
-                          <h3>[[indicatorName]]</h3>
-                          <p class="location">
-                            <iron-icon icon="maps:place"></iron-icon>
-                            [[topLevelLocation.name]]
-                          </p>
-                          <template is="dom-if" if="[[hasPD]]" restamp="true">
-                            <p class="current-pd">[[currentPd.agreement]] | [[currentPd.title]]</p>
-                          </template>
-                        </div>
-                        <div class="layout vertical end-justified">
-                          <dl class="location-progress">
-                            <dt>[[localize('location_progress')]]</dt>
-                            <dd>
-                              <template
-                                is="dom-if"
-                                if="[[_equals(topLevelLocation.byEntity.0.display_type, 'number')]]"
-                                restamp="true"
-                              >
-                                <etools-prp-number
-                                  value="[[topLevelLocation.byEntity.0.location_progress.v]]"
-                                ></etools-prp-number>
-                              </template>
-                              <template
-                                is="dom-if"
-                                if="[[!_equals(topLevelLocation.byEntity.0.display_type, 'number')]]"
-                                restamp="true"
-                              >
-                                <span
-                                  >[[_formatIndicatorValue(topLevelLocation.byEntity.0.display_type,
-                                  topLevelLocation.byEntity.0.location_progress.c, 1)]]</span
-                                >
-                              </template>
-                            </dd>
-                          </dl>
+                        <div id="page-view-container">
+                          ${repeat(
+                            topLevelLocation.byEntity || [],
+                            (location: any, index: number) => html`
+                              <div name="tab_${index}" ?hidden="${this.topLevelLocationSelected !== `tab_${index}`}">
+                                <div class="table-container ">
+                                  <div class="item">
+                                    <div hidden aria-hidden="true">
+                                      <dl class="printme">
+                                        <dt style="display: inline;">${translate('LOCATION')}:</dt>
+                                        <dd style="display: inline; margin: 0;">
+                                          ${location.location.name} - ${location.reporting_entity.title}
+                                        </dd>
+                                      </dl>
+                                    </div>
+
+                                    <dl>
+                                      ${this._equals(location.display_type, 'number')
+                                        ? html` <dt>
+                                              ${translate('LOCATION_PROGRESS_AGAINST')}
+                                              ${this._localizeLowerCased(location.reporting_entity?.title)}:
+                                            </dt>
+                                            <dd>
+                                              <etools-prp-number
+                                                .value="${location.location_progress?.v}"
+                                              ></etools-prp-number>
+                                            </dd>
+                                            <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
+                                            <dd>
+                                              <etools-prp-number
+                                                .value="${location.previous_location_progress?.v}"
+                                              ></etools-prp-number>
+                                            </dd>`
+                                        : html`
+                                            <dt>${translate('LOCATION_PROGRESS')}:</dt>
+                                            <dd>
+                                              ${this._formatIndicatorValue(
+                                                location.display_type,
+                                                location.location_progress?.c
+                                              )}
+                                            </dd>
+                                            <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
+                                            <dd>
+                                              ${this._formatIndicatorValue(
+                                                location.display_type,
+                                                location.previous_location_progress?.c
+                                              )}
+                                            </dd>
+                                          `}
+                                    </dl>
+                                    <disaggregation-table
+                                      class="printme print-styles"
+                                      .data="${location}"
+                                      .mapping="${this.disaggregations.disagg_lookup_map}"
+                                      .labels="${this.disaggregations.labels}"
+                                    >
+                                    </disaggregation-table>
+                                  </div>
+                                </div>
+                              </div>
+                            `
+                          )}
                         </div>
                       </div>
-
-                      <template
-                        is="dom-if"
-                        if="[[_computeTableVisibility(opened, topLevelLocationIndex)]]"
-                        restamp="true"
-                      >
-                        <disaggregation-table
-                          slot="disaggregation-table"
-                          data="[[topLevelLocation.byEntity.0]]"
-                          by-entity="[[topLevelLocation.byEntity]]"
-                          mapping="[[disaggregations.disagg_lookup_map]]"
-                          labels="[[disaggregations.labels]]"
-                          indicator-id="[[indicatorId]]"
-                          editable="1"
-                        >
-                        </disaggregation-table>
-                      </template>
-                    </disaggregation-modal>
-                  </template>
+                    `
+                  )}
                 </div>
-              </template>
-            </iron-pages>
-          </div>
-        </etools-prp-printer>
-      </template>
+              </div>
+            </etools-prp-printer>
+          `
+        : ``}
 
-      <pull-modal
-        id="pull-modal-[[indicatorId]]"
-        indicator-name="[[indicatorName]]"
-        reporting-period="[[reportingPeriod]]"
-        indicator-id="[[indicatorId]]"
-        report-id="[[reportId]]"
-      >
-      </pull-modal>
-
-      <etools-loading active="[[loading]]"></etools-loading>
+      <etools-loading ?active="${this.loading}"></etools-loading>
     `;
   }
 
@@ -481,7 +440,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
   reportingPeriod!: string;
 
   @property({type: Object})
-  opened!: GenericObject;
+  opened = {};
 
   @property({type: Number})
   selected = 0;
@@ -489,35 +448,38 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
   @property({type: Boolean})
   initialized = false;
 
-  @property({type: Object, computed: '_currentProgrammeDocument(rootState)'})
-  currentPd!: GenericObject;
+  @property({type: Object})
+  currentPd!: any;
 
-  @property({type: Boolean, computed: '_computeHasPD(currentPd)'})
+  @property({type: Boolean})
   hasPD!: boolean;
 
-  @property({type: String, computed: '_computeDisaggregationsUrl(reportableId)'})
+  @property({type: String})
   disaggregationsUrl!: string;
 
-  @property({type: Object, computed: '_computeParams(indicatorId, currentPd)'})
-  params!: GenericObject;
+  @property({type: Object})
+  params!: any | undefined;
 
-  @property({type: Object, computed: 'getReduxStateObject(rootState.disaggregations.byIndicator)'})
-  data!: GenericObject;
+  @property({type: Object})
+  data!: any;
 
-  @property({type: Object, computed: '_computeDisaggregations(data, indicatorId)'})
-  disaggregations!: GenericObject;
+  @property({type: Object})
+  disaggregations!: any;
 
-  @property({type: Array, computed: '_computeLocationData(disaggregations.indicator_location_data)'})
-  locationData!: GenericObject[];
+  @property({type: Array})
+  locationData: any[] = [];
 
-  @property({type: String, computed: 'getReduxStateValue(rootState.programmeDocumentReports.current.mode)'})
+  @property({type: String})
   mode = '';
 
   @property({type: String})
   overrideMode = '';
 
-  @property({type: String, computed: '_computeMode(mode, overrideMode)'})
+  @property({type: String})
   computedMode!: string;
+
+  @property({type: String})
+  topLevelLocationSelected = 'tab_0';
 
   @property({type: Boolean})
   reportIsQpr!: boolean;
@@ -525,22 +487,67 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
   @property({type: String})
   reportStatus!: string;
 
-  @property({type: Boolean, computed: '_computeDisablePull(reportStatus)'})
+  @property({type: Boolean})
   disablePull!: boolean;
 
-  @property({type: Boolean, computed: '_computeIsHfIndicator(disaggregations)'})
+  @property({type: Boolean})
   isHfIndicator!: boolean;
 
   _currentProgrammeDocument(rootState: RootState) {
     return currentProgrammeDocument(rootState);
   }
 
-  _fetchData() {
-    const disaggregationsThunk = (this.$.disaggregations as EtoolsPrpAjaxEl).thunk();
-    // Cancel the pending request, if any
-    (this.$.disaggregations as EtoolsPrpAjaxEl).abort();
+  stateChanged(state: RootState) {
+    if (state) {
+      this.currentPd = this._currentProgrammeDocument(state);
+    }
+    if (!isJsonStrMatch(state?.disaggregations?.byIndicator, this.data)) {
+      this.data = state.disaggregations.byIndicator;
+    }
+    if (!isJsonStrMatch(state?.programmeDocumentReports?.current?.mode, this.mode)) {
+      this.mode = state.programmeDocumentReports.current.mode;
+    }
+  }
 
-    return this.reduxStore.dispatch(disaggregationsFetch(disaggregationsThunk, String(this.indicatorId)));
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('currentPd')) {
+      this.hasPD = this._computeHasPD(this.currentPd);
+    }
+    if (changedProperties.has('reportableId')) {
+      this.disaggregationsUrl = this._computeDisaggregationsUrl(String(this.reportableId));
+    }
+    if (changedProperties.has('indicatorId') || changedProperties.has('currentPd')) {
+      this.params = this._computeParams(this.indicatorId, this.currentPd);
+    }
+    if (changedProperties.has('data') || changedProperties.has('indicatorId')) {
+      this.disaggregations = this._computeDisaggregations(this.data, this.indicatorId);
+    }
+    if (changedProperties.has('disaggregations')) {
+      this.locationData = this._computeLocationData(this.disaggregations.indicator_location_data);
+      this.loading = false;
+      this.isHfIndicator = this._computeIsHfIndicator(this.disaggregations);
+    }
+    if (changedProperties.has('mode') || changedProperties.has('overrideMode')) {
+      this.computedMode = this._computeMode(this.mode, this.overrideMode);
+    }
+    if (changedProperties.has('reportStatus')) {
+      this.disablePull = this._computeDisablePull(this.reportStatus);
+    }
+  }
+
+  _fetchData() {
+    return store.dispatch(
+      disaggregationsFetch(
+        sendRequest({
+          method: 'GET',
+          endpoint: {url: this.disaggregationsUrl},
+          params: this.params
+        }),
+        String(this.indicatorId)
+      )
+    );
   }
 
   init() {
@@ -548,34 +555,34 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
       if (this.initialized) {
         return;
       }
-      this.set('initialized', true);
+
+      this.initialized = true;
       this._fetchData()
         // @ts-ignore
         .then(() => {
-          this.set('dataLoaded', true);
+          this.dataLoaded = true;
         })
         // @ts-ignore
         .catch((_err) => {
+          console.log('indicator-details error', _err);
           // TODO: error handling
         });
     }
   }
 
-  onLocationRendered(e: CustomEvent) {
-    if (this.locationData.length === e.detail.value) {
-      this.set('loading', false);
-    }
+  onSelectedTopLevelLocationTabChanged(e: CustomEvent) {
+    this.topLevelLocationSelected = e.detail.name;
   }
 
   _computeDisaggregationsUrl(reportableId: string) {
     return Endpoints.indicatorReports(reportableId);
   }
 
-  _computeParams(indicatorId: number, currentPD: GenericObject) {
+  _computeParams(indicatorId: number, currentPD: any) {
     if (!currentPD) {
       return;
     }
-    const params: GenericObject = {
+    const params: any = {
       pks: indicatorId,
       limit: 1
     };
@@ -587,7 +594,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
     return params;
   }
 
-  _computeDisaggregations(data: GenericObject, key: number) {
+  _computeDisaggregations(data: any, key: number) {
     if (!data || !key) {
       return;
     }
@@ -599,7 +606,7 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
     return disaggregations;
   }
 
-  _computeIsHfIndicator(disaggregations: GenericObject) {
+  _computeIsHfIndicator(disaggregations: any) {
     return disaggregations !== undefined && this.reportIsQpr === true && disaggregations.is_hf_indicator === true;
   }
 
@@ -611,51 +618,74 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
     return overrideMode || mode;
   }
 
-  _openModal(e: CustomEvent) {
-    (this.shadowRoot!.querySelector('#modal-' + (e.target as any).modalIndex) as DisaggregationModalEl).open();
+  _openModal(index: number) {
+    openDialog({
+      dialog: 'disaggregation-modal',
+      dialogData: {
+        reportingPeriod: this.reportingPeriod,
+        topLevelLocation: this.locationData[index],
+        currentPd: this.currentPd,
+        indicatorName: this.indicatorName,
+        disaggregations: this.disaggregations,
+        indicatorId: this.indicatorId
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this._onLocationsUpdated();
+      }
+    });
   }
 
-  _openPullModal(e: CustomEvent) {
-    (this.shadowRoot!.querySelector('#pull-modal-' + (e.target as any).modalIndex) as PullModalEl).open();
+  _openPullModal() {
+    openDialog({
+      dialog: 'pull-modal',
+      dialogData: {
+        indicatorName: this.indicatorName,
+        reportingPeriod: this.reportingPeriod,
+        indicatorId: this.indicatorId,
+        reportId: this.reportId
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this._onLocationsUpdated();
+      }
+    });
   }
 
-  _updateModals(e: CustomEvent, data: GenericObject) {
-    const id = (e.target as any).id;
-
+  _updateModals(e: CustomEvent, id: string) {
     if (!id) {
       return;
     }
 
-    const change: GenericObject = {};
-    change[id] = data.value;
+    const change: any = {};
+    change[id] = e.detail.opened;
 
-    this.set('opened', Object.assign({}, this.opened, change));
+    this.opened = Object.assign({}, this.opened, change);
   }
 
-  _computeTableVisibility(opened: GenericObject, index: string) {
+  _computeTableVisibility(opened: any, index: string) {
     return !!opened['modal-' + index];
   }
 
-  _computeLocationStatus(location: GenericObject) {
+  _computeLocationStatus(location: any) {
     return location.byEntity[0].is_complete ? 'success' : 'error';
   }
 
-  _computeHasPD(currentPD: GenericObject) {
+  _computeHasPD(currentPD: any) {
     return !!Object.keys(currentPD).length;
   }
 
-  _onLocationsUpdated(e: CustomEvent) {
-    e.stopPropagation();
+  _onLocationsUpdated() {
     this._fetchData();
     this.updatedIndicatorId = this.indicatorId;
     fireEvent(this, 'refresh-report', String(this.indicatorId));
   }
 
-  checkReportIsComplete(disaggregations: GenericObject) {
+  checkReportIsComplete(disaggregations: any) {
     if (!disaggregations) {
       return;
     }
-    const allComplete = (disaggregations.indicator_location_data || []).every(function (location: GenericObject) {
+    const allComplete = (disaggregations.indicator_location_data || []).every(function (location: any) {
       return location.is_complete;
     });
 
@@ -706,29 +736,6 @@ class IndicatorDetails extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) 
   _computeDisablePull(reportStatus: string) {
     return reportStatus === 'Sub' || reportStatus === 'Acc';
   }
-
-  _addEventListeners() {
-    this._onLocationsUpdated = this._onLocationsUpdated.bind(this);
-    this.addEventListener('locations-updated', this._onLocationsUpdated as any);
-  }
-
-  _removeEventListeners() {
-    this.removeEventListener('locations-updated', this._onLocationsUpdated as any);
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.set('opened', {});
-    this._addEventListeners();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-
-    this._removeEventListeners();
-  }
 }
-window.customElements.define('indicator-details', IndicatorDetails);
 
 export {IndicatorDetails as IndicatorDetailsEl};

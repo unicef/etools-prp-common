@@ -1,90 +1,15 @@
-import {ReduxConnectedElement} from '../../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '@unicef-polymer/etools-data-table/etools-data-table';
+import {LitElement, html, PropertyValues} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
-import LocalizeMixin from '../../mixins/localize-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import {property} from '@polymer/decorators/lib/decorators';
-import {GenericObject} from '../../typings/globals.types';
 import './disaggregation-table-cell-number';
 import './disaggregation-table-cell-percentage';
 import './disaggregation-table-cell-ratio';
 
-/**
- * @polymer
- * @customElement
- * @appliesMixin LocalizeMixin
- * @appliesMixin UtilsMixin
- */
-class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(ReduxConnectedElement)) {
-  public static get template() {
-    return html`
-      ${disaggregationTableStyles}
-      <style></style>
-
-      <tr class$="[[_computeClass(rowType)]]">
-        <td class="cellTitle">
-          <span class="cellValue">[[_capitalizeFirstLetter(data.title)]]</span>
-        </td>
-
-        <template is="dom-repeat" items="[[data.data]]">
-          <td>
-            <template is="dom-if" if="[[_equals(indicatorType, 'number')]]" restamp="true">
-              <disaggregation-table-cell-number coords="[[item.key]]" data="[[item.data]]" editable="[[editable]]">
-              </disaggregation-table-cell-number>
-            </template>
-
-            <template is="dom-if" if="[[_equals(indicatorType, 'percentage')]]" restamp="true">
-              <disaggregation-table-cell-percentage coords="[[item.key]]" data="[[item.data]]" editable="[[editable]]">
-              </disaggregation-table-cell-percentage>
-            </template>
-            <template is="dom-if" if="[[_equals(indicatorType, 'ratio')]]" restamp="true">
-              <disaggregation-table-cell-ratio coords="[[item.key]]" data="[[item.data]]" editable="[[editable]]">
-              </disaggregation-table-cell-ratio>
-            </template>
-          </td>
-        </template>
-
-        <template is="dom-if" if="[[data.total]]">
-          <td class="cellTotal">
-            <template is="dom-if" if="[[_equals(indicatorType, 'number')]]" restamp="true">
-              <disaggregation-table-cell-number
-                coords="[[data.total.key]]"
-                data="[[data.total.data]]"
-                editable="[[totalEditable]]"
-              >
-              </disaggregation-table-cell-number>
-            </template>
-
-            <template is="dom-if" if="[[_equals(indicatorType, 'percentage')]]" restamp="true">
-              <disaggregation-table-cell-percentage
-                coords="[[data.total.key]]"
-                data="[[data.total.data]]"
-                editable="[[totalEditable]]"
-              >
-              </disaggregation-table-cell-percentage>
-            </template>
-            <template is="dom-if" if="[[_equals(indicatorType, 'ratio')]]" restamp="true">
-              <disaggregation-table-cell-ratio
-                coords="[[data.total.key]]"
-                data="[[data.total.data]]"
-                editable="[[totalEditable]]"
-              >
-              </disaggregation-table-cell-ratio>
-            </template>
-          </td>
-        </template>
-      </tr>
-    `;
-  }
-
-  static get observers() {
-    return ['_setTotalEditable(data.total.key, levelReported, editable)'];
-  }
-
+@customElement('disaggregation-table-row')
+class DisaggregationTableRow extends UtilsMixin(LitElement) {
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
   @property({type: Number})
   levelReported!: number;
@@ -101,13 +26,104 @@ class DisaggregationTableRow extends UtilsMixin(LocalizeMixin(ReduxConnectedElem
   @property({type: Number})
   totalEditable = 0;
 
+  render() {
+    return html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      ${disaggregationTableStyles}
+      <tr class="${this._computeClass(this.rowType)}">
+        <td class="cellTitle">
+          <span class="cellValue">${this._capitalizeFirstLetter(this.data?.title)}</span>
+        </td>
+
+        ${(this.data?.data || []).map(
+          (item) => html`
+            <td>
+              ${this.indicatorType === 'number'
+                ? html`
+                    <disaggregation-table-cell-number
+                      .coords="${item.key}"
+                      .data="${item.data}"
+                      .editable="${this.editable}"
+                    ></disaggregation-table-cell-number>
+                  `
+                : ''}
+              ${this.indicatorType === 'percentage'
+                ? html`
+                    <disaggregation-table-cell-percentage
+                      .coords="${item.key}"
+                      .data="${item.data}"
+                      .editable="${this.editable}"
+                    ></disaggregation-table-cell-percentage>
+                  `
+                : ''}
+              ${this.indicatorType === 'ratio'
+                ? html`
+                    <disaggregation-table-cell-ratio
+                      .coords="${item.key}"
+                      .data="${item.data}"
+                      .editable="${this.editable}"
+                    ></disaggregation-table-cell-ratio>
+                  `
+                : ''}
+            </td>
+          `
+        )}
+        ${this.data?.total
+          ? html`
+              <td class="cellTotal">
+                ${this.indicatorType === 'number'
+                  ? html`
+                      <disaggregation-table-cell-number
+                        .coords="${this.data?.total.key}"
+                        .data="${this.data?.total.data}"
+                        .editable="${this.totalEditable}"
+                      ></disaggregation-table-cell-number>
+                    `
+                  : ''}
+                ${this.indicatorType === 'percentage'
+                  ? html`
+                      <disaggregation-table-cell-percentage
+                        .coords="${this.data?.total.key}"
+                        .data="${this.data?.total.data}"
+                        .editable="${this.totalEditable}"
+                      ></disaggregation-table-cell-percentage>
+                    `
+                  : ''}
+                ${this.indicatorType === 'ratio'
+                  ? html`
+                      <disaggregation-table-cell-ratio
+                        .coords="${this.data?.total.key}"
+                        .data="${this.data?.total.data}"
+                        .editable="${this.totalEditable}"
+                      ></disaggregation-table-cell-ratio>
+                    `
+                  : ''}
+              </td>
+            `
+          : ''}
+      </tr>
+    `;
+  }
+
   _computeClass(rowType: string) {
     return rowType;
   }
 
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('data') || changedProperties.has('levelReported') || changedProperties.has('editable')) {
+      this._setTotalEditable(this.data?.total?.key, this.levelReported, this.editable);
+    }
+  }
+
   _setTotalEditable(coords: string, levelReported: number, editable: number) {
-    this.set('totalEditable', coords === '()' && levelReported === 0 ? editable : 0);
+    this.totalEditable = coords === '()' && levelReported === 0 ? editable : 0;
   }
 }
 
-window.customElements.define('disaggregation-table-row', DisaggregationTableRow);
+export default DisaggregationTableRow;

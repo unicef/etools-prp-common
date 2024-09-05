@@ -1,114 +1,85 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/paper-dialog/paper-dialog';
-import '@polymer/paper-button/paper-button';
-import '@polymer/paper-dialog-scrollable/paper-dialog-scrollable';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/paper-styles/typography';
-import '@polymer/iron-location/iron-location';
-import '@polymer/paper-input/paper-input';
-import '@polymer/app-layout/app-grid/app-grid-style';
-import '@polymer/polymer/lib/elements/dom-if';
-import {GenericObject} from '../typings/globals.types';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import ModalMixin from '../mixins/modal-mixin';
-import RoutingMixin from '../mixins/routing-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import './error-modal';
 import './etools-prp-number';
-import './etools-prp-ajax';
-import {buttonsStyles} from '../styles/buttons-styles';
-import {modalStyles} from '../styles/modal-styles';
-import {EtoolsPrpAjaxEl} from './etools-prp-ajax';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
  * @customElement
- * @appliesMixin ModalMixin
  * @appliesMixin UtilsMixin
  * @appliesMixin RoutingMixin
- * @appliesMixin LocalizeMixin
  */
-class RefreshReportModal extends LocalizeMixin(RoutingMixin(UtilsMixin(ModalMixin(ReduxConnectedElement)))) {
-  static get template() {
+@customElement('refresh-report-modal')
+export class RefreshReportModal extends UtilsMixin(LitElement) {
+  render() {
     return html`
-      ${buttonsStyles} ${modalStyles}
-      <style include="app-grid-style iron-flex iron-flex-alignment iron-flex-reverse">
-        :host {
-          display: block;
-          --paper-dialog: {
-            width: 750px;
-          }
+      <style>
+        etools-dialog {
+          --divider-color: transparent;
         }
       </style>
 
-      <iron-location path="{{path}}"> </iron-location>
-
-      <etools-prp-ajax
-        id="refreshReport"
-        url="[[refreshUrl]]"
-        body="[[data]]"
-        method="post"
-        content-type="application/json"
+      <etools-dialog
+        size="lg"
+        keep-dialog-open
+        dialog-title="${translate('ARE_YOU_SURE')}"
+        .okBtnText="${translate('REFRESH')}"
+        @confirm-btn-clicked="${this._refresh}"
+        ?disableConfirmBtn="${this.busy}"
+        ?disableDismissBtn="${this.busy}"
       >
-      </etools-prp-ajax>
-
-      <paper-dialog modal opened="[[opened]]">
-        <div class="header layout horizontal justified">
-          <h2>[[localize('are_you_sure')]]?</h2>
-
-          <paper-icon-button class="self-center" on-tap="close" icon="icons:close"> </paper-icon-button>
-        </div>
-        <paper-dialog-scrollable>
-          <h3>
-            <template is="dom-if" if="[[_equals(data.report_type, 'PR')]]" restamp="true">
-              [[localize('you_are_about_to_delete')]]
-            </template>
-
-            <template is="dom-if" if="[[_equals(data.report_type, 'IR')]]" restamp="true">
-              [[localize('you_are_about_to_location')]]
-            </template>
-          </h3>
-        </paper-dialog-scrollable>
-
-        <div class="buttons layout horizontal-reverse">
-          <paper-button class="btn-primary" on-tap="_refresh" raised disabled="[[busy]]">
-            [[localize('refresh')]]
-          </paper-button>
-          <paper-button class="btn-primary" on-tap="_cancel" disabled="[[busy]]"> [[localize('cancel')]] </paper-button>
-        </div>
-      </paper-dialog>
-      <error-modal id="error"></error-modal>
+        <h3>
+          ${this._equals(this.data?.report_type, 'PR') ? html`${translate('YOU_ARE_ABOUT_TO_DELETE')}` : ``}
+          ${this._equals(this.data?.report_type, 'IR') ? html`${translate('YOU_ARE_ABOUT_TO_LOCATION')}` : ``}
+        </h3>
+      </etools-dialog>
     `;
   }
 
   @property({type: Object})
-  data!: GenericObject;
+  data: any = {};
+
+  @property({type: String})
+  refreshUrl?: string;
 
   @property({type: Boolean})
   busy = false;
 
-  _refresh() {
-    this.set('busy', true);
+  set dialogData(data: any) {
+    const {refreshData, refreshUrl}: any = data;
 
-    const refreshThunk = (this.$.refreshReport as EtoolsPrpAjaxEl).thunk();
-    refreshThunk()
+    this.data = refreshData;
+    this.refreshUrl = refreshUrl;
+  }
+
+  _refresh() {
+    if (!this.refreshUrl) {
+      return;
+    }
+
+    this.busy = true;
+
+    sendRequest({
+      method: 'POST',
+      endpoint: {url: this.refreshUrl},
+      body: this.data
+    })
       .then(() => {
         window.location.reload();
       })
-      .catch((res: any) => {
-        console.log(res);
-        this.set('busy', false);
+      .catch((err: any) => {
+        this.busy = false;
+        openDialog({
+          dialog: 'error-modal',
+          dialogData: {
+            errors: err.response.non_field_errors
+          }
+        });
       });
   }
-
-  _cancel() {
-    this.close();
-  }
 }
-
-window.customElements.define('refresh-report-modal', RefreshReportModal);
 
 export {RefreshReportModal as RefreshReportModalEl};

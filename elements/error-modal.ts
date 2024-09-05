@@ -1,98 +1,73 @@
-import {html} from '@polymer/polymer';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
-import UtilsMixin from '../mixins/utils-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
-import {GenericObject} from '../typings/globals.types';
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {buttonsStyles} from '../styles/buttons-styles';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {get as getTranslation, translate} from 'lit-translate';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
  */
-class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
-  public static get template() {
+@customElement('error-modal')
+export class ErrorModal extends LitElement {
+  render() {
     return html`
-      ${buttonsStyles}
-      <style include="iron-flex iron-flex-reverse iron-flex-alignment">
-        :host {
-          --paper-dialog: {
-            width: 500px;
-            padding: 24px;
-            margin: 0;
-          }
+      <style>
+        etools-dialog {
+          --divider-color: transparent;
+        }
+        etools-dialog::part(header) {
+          display: none;
         }
       </style>
-
-      <paper-dialog modal opened="{{opened}}">
+      <etools-dialog hide-confirm-btn .cancelBtnText="${translate('CLOSE')}">
         <div>
           <ul>
-            <template is="dom-repeat" items="[[localizedErrors]]" as="localizedError">
-              <li>[[localizedError]]</li>
-            </template>
+            ${(this.localizedErrors || []).map((localizedError: any) => html`<li>${localizedError}</li>`)}
           </ul>
-          <div class="layout horizontal-reverse">
-            <paper-button class="btn-primary" dialog-dismiss> Close </paper-button>
-          </div>
         </div>
-      </paper-dialog>
+      </etools-dialog>
     `;
   }
 
   @property({type: Array})
-  errors!: GenericObject[];
+  errors!: string[];
 
-  @property({type: Array, computed: '_localizeErrors(errors, localize)'})
-  localizedErrors!: string[];
+  @property({type: Array})
+  localizedErrors!: any[];
 
-  @property({type: Boolean})
-  opened = false;
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
 
-  @property({type: Object})
-  _result!: GenericObject;
-
-  open(errors: GenericObject[]) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-
-    this.set('errors', errors);
-    this.set('opened', true);
-
-    this.set(
-      '_result',
-      new Promise((resolve) => {
-        self.addEventListener('opened-changed', function onOpenedChanged() {
-          self.removeEventListener('opened-changed', onOpenedChanged);
-          resolve(true);
-        });
-      })
-    );
-
-    return this._result;
+    if (changedProperties.has('errors')) {
+      this.localizedErrors = this._localizeErrors(this.errors);
+    }
   }
 
-  _localizeErrors(errors: string[], localize: any) {
+  set dialogData(data: any) {
+    const {errors}: any = data;
+
+    this.errors = errors;
+  }
+
+  _localizeErrors(errors: string[]) {
     if (!errors || errors.length === 0) {
-      return;
+      return [];
     }
 
     const localizedErrors = errors.map(function (error) {
       switch (error) {
         case 'You have not selected overall status for one of Outputs':
-          return localize('not_selected_overall_status');
+          return getTranslation('NOT_SELECTED_OVERALL_STATUS');
         case 'You have not completed Partner Contribution To Date field on Other Info tab.':
-          return localize('not_completed_partner_contribution');
+          return getTranslation('NOT_COMPLETED_PARTNER_CONTRIBUTION');
         case 'You have not completed Challenges / bottlenecks in the reporting period field on Other Info tab.':
-          return localize('not_completed_challenges_bottlenecks');
+          return getTranslation('NOT_COMPLETED_CHALLENGES_BOTTLENECKS');
         case 'You have not completed Proposed way forward field on Other Info tab.':
-          return localize('not_completed_proposed_way');
+          return getTranslation('NOT_COMPLETED_PROPOSED_WAY');
         case 'You have not completed all indicator location data across all indicator reports for this progress' +
           ' report.':
-          return localize('not_completed_indicator_location');
+          return getTranslation('NOT_COMPLETED_INDICATOR_LOCATION');
         default:
           return error;
       }
@@ -100,13 +75,6 @@ class ErrorModal extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
 
     return localizedErrors;
   }
-
-  close() {
-    this.set('errors', []);
-    this.set('opened', false);
-  }
 }
-
-window.customElements.define('error-modal', ErrorModal);
 
 export {ErrorModal as ErrorModalEl};

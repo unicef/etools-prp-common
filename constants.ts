@@ -1,3 +1,12 @@
+const LANGUAGES = [
+  {value: 'en', display_name: 'English'},
+  {value: 'ar', display_name: 'Arabic'},
+  {value: 'pt', display_name: 'Portuguese'},
+  {value: 'fr', display_name: 'French'},
+  {value: 'es', display_name: 'Spanish'},
+  {value: 'ru', display_name: 'Russian'}
+];
+
 const PRP_ROLE = {
   ALL: 'ALL',
   IP_AUTHORIZED_OFFICER: 'IP_AUTHORIZED_OFFICER',
@@ -29,6 +38,8 @@ const Constants = {
   SET_LOCATION: 'SET_LOCATION',
 
   SET_APP: 'SET_APP',
+
+  UPDATE_ROUTE_DETAILS: 'UPDATE_ROUTE_DETAILS',
 
   SET_INDICATORS: 'SET_INDICATORS',
   SET_INDICATORS_COUNT: 'SET_INDICATORS_COUNT',
@@ -75,6 +86,7 @@ const Constants = {
   PROGRAMME_DOCUMENTS_LOADING_START: 'PROGRAMME_DOCUMENTS_LOADING_START',
   PROGRAMME_DOCUMENTS_LOADING_STOP: 'PROGRAMME_DOCUMENTS_LOADING_STOP',
 
+  SET_CURRENT_PD_ID: 'SET_CURRENT_PD_ID',
   SET_CURRENT_PD: 'SET_CURRENT_PD',
 
   SET_PD_REPORT: 'SET_PD_REPORT',
@@ -182,6 +194,8 @@ const Constants = {
   SET_CURRENCIES: 'SET_CURRENCIES',
 
   PRP_ROLE: PRP_ROLE,
+
+  LANGUAGES: LANGUAGES,
 
   PARTNER_ROLES: [PRP_ROLE.CLUSTER_VIEWER, PRP_ROLE.CLUSTER_COORDINATOR, PRP_ROLE.CLUSTER_MEMBER],
 

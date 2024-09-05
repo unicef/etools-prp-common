@@ -1,10 +1,8 @@
-import {html} from '@polymer/polymer';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
-import '@polymer/iron-flex-layout/iron-flex-layout';
+import {html} from 'lit';
 import {printStyles} from './print-styles';
 
 export const disaggregationTableStyles = html` ${printStyles}
-  <style include="iron-flex iron-flex-alignment">
+  <style>
     :host {
       display: block;
     }
@@ -15,7 +13,7 @@ export const disaggregationTableStyles = html` ${printStyles}
       flex-wrap: wrap;
     }
     .item {
-      padding: 10px;
+      padding: 0;
     }
 
     table {
@@ -26,11 +24,11 @@ export const disaggregationTableStyles = html` ${printStyles}
     /*  Text above the table  */
     h4 {
       font-weight: 400;
-      color: var(--paper-grey-600);
+      color: var(--sl-color-neutral-600);
       margin: 0 0 15px 0;
     }
     h4 strong {
-      color: var(--paper-grey-800);
+      color: var(--sl-color-neutral-800);
     }
     span.total {
       float: right;
@@ -48,7 +46,7 @@ export const disaggregationTableStyles = html` ${printStyles}
     /*   Rows   */
     tr {
       display: flex;
-      @apply --layout-center;
+      align-items: center;
       border-bottom: 1px solid white;
     }
 
@@ -98,7 +96,7 @@ export const disaggregationTableStyles = html` ${printStyles}
 
     .cellTitle,
     .cellTotal {
-      background-color: var(--paper-grey-100);
+      background-color: var(--sl-color-neutral-100);
     }
 
     disaggregation-table-cell-ratio,

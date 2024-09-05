@@ -1,35 +1,47 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 
 /**
- * @polymer
  * @customElement
  * @mixinFunction
  * @appliesMixin UtilsMixin
  */
-class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
-  public static get template() {
+@customElement('etools-prp-printer')
+export class EtoolsPrpPrinter extends UtilsMixin(LitElement) {
+  render() {
     return html` <slot></slot> `;
   }
 
   @property({type: String})
-  selector!: string;
+  selector!: any;
 
   @property({type: Object})
-  printWindow!: Window;
+  printWindow!: Window | null;
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('tap', this._onTap.bind(this));
+    this.addEventListener('click', this._onClick.bind(this));
   }
 
-  _onTap(e: any) {
+  _onClick(e: any) {
     if (!(e.target! as HTMLElement).classList.contains('print-btn')) {
       return;
     }
 
     const toPrint = this.querySelectorAll(this.selector);
+
+    var appTheme = document.createElement('link');
+    appTheme.rel = 'stylesheet';
+    appTheme.type = 'text/css';
+    appTheme.href = Environment.baseUrl + 'assets/css/app-theme.css';
+
+    var shoelaceStyles = document.createElement('link');
+    shoelaceStyles.rel = 'stylesheet';
+    shoelaceStyles.type = 'text/css';
+    shoelaceStyles.href = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/themes/light.css';
+
     const style = document.createElement('style');
 
     style.innerHTML = 'body { color: #212121; font: 14px/1.5 Roboto, Noto, sans-serif; }';
@@ -38,26 +50,28 @@ class EtoolsPrpPrinter extends UtilsMixin(PolymerElement) {
       return this.printWindow.focus();
     }
 
-    this.set('printWindow', window.open('', '', ['width=640', 'height=480', 'left=0', 'top=0'].join()));
+    this.printWindow = window.open('', '', ['width=640', 'height=480', 'left=0', 'top=0'].join());
 
     // @ts-ignore
+    this.printWindow!.document.head.appendChild(shoelaceStyles);
+    this.printWindow!.document.head.appendChild(appTheme);
     this.printWindow!.document.head.appendChild(style);
 
+    const restores: any = {};
     toPrint.forEach((node) => {
-      try {
-        const clonedNode = this._cloneNode(node);
-        this.printWindow.document.body.appendChild(clonedNode);
-      } catch (error) {
-        console.log(error);
-      }
+      const clonedNode = this._cloneNode(node, restores);
+      this.printWindow!.document.body.appendChild(clonedNode);
     }, this);
 
     setTimeout(() => {
-      this.printWindow.print();
-      this.printWindow.close();
-      this.set('printWindow', null);
+      if (this.printWindow) {
+        Object.values(restores).forEach((restoreLifecycleMethods: any) => restoreLifecycleMethods());
+        this.printWindow.print();
+        this.printWindow.onafterprint = this.printWindow.close;
+        this.printWindow = null;
+      }
     }, 100);
   }
 }
 
-window.customElements.define('etools-prp-printer', EtoolsPrpPrinter);
+export {EtoolsPrpPrinter as EtoolsPrpPrinterEl};

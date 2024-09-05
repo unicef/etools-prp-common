@@ -1,12 +1,11 @@
 // @ts-nocheck
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import LocalizeMixin from '../mixins/localize-mixin';
-import {GenericObject} from '../typings/globals.types';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {translate} from 'lit-translate';
 
-class ListPlaceholder extends LocalizeMixin(ReduxConnectedElement) {
-  public static get template() {
+@customElement('list-placeholder')
+export class ListPlaceholder extends LitElement {
+  render() {
     return html`
       <style>
         .msg {
@@ -15,7 +14,7 @@ class ListPlaceholder extends LocalizeMixin(ReduxConnectedElement) {
         }
       </style>
 
-      <div class="msg">[[getMessageToDisplay(localize)]]</div>
+      <div class="msg">${this.getMessageToDisplay()}</div>
     `;
   }
 
@@ -28,13 +27,24 @@ class ListPlaceholder extends LocalizeMixin(ReduxConnectedElement) {
   @property({type: String})
   message!: string;
 
-  @property({type: Boolean, reflectToAttribute: true, computed: '_computeHidden(data, loading)'})
+  @property({type: Boolean, reflect: true})
   hidden!: boolean;
 
-  @property({type: Boolean, reflectToAttribute: true, computed: '_computeAriaHidden(hidden)'})
+  @property({type: Boolean, reflect: true})
   ariaHidden!: boolean;
 
-  _computeHidden(data: GenericObject[], loading: boolean) {
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('data') || changedProperties.has('loading')) {
+      this.hidden = this._computeHidden(this.data, this.loading);
+    }
+    if (changedProperties.has('hidden')) {
+      this.ariaHidden = this._computeAriaHidden(this.hidden);
+    }
+  }
+
+  _computeHidden(data: any[], loading: boolean) {
     return loading || (data && !!data.length);
   }
 
@@ -42,9 +52,9 @@ class ListPlaceholder extends LocalizeMixin(ReduxConnectedElement) {
     return hidden ? 'true' : 'false';
   }
 
-  getMessageToDisplay(localize: any) {
-    return this.message ? this.message : localize('no_results_found');
+  getMessageToDisplay() {
+    return this.message ? this.message : translate('NO_RESULTS_FOUND');
   }
 }
 
-window.customElements.define('list-placeholder', ListPlaceholder);
+export {ListPlaceholder as ListPlaceholderEl};

@@ -1,4 +1,4 @@
-import {html} from '@polymer/polymer';
+import {html} from 'lit';
 
 export const modalStyles = html` <style>
   .header {
@@ -10,12 +10,11 @@ export const modalStyles = html` <style>
   }
 
   .header h2 {
-    @apply --paper-font-title;
     margin: 0;
     line-height: 48px;
   }
 
-  .header paper-icon-button {
+  .header etools-icon-button {
     margin: 0 -13px 0 20px;
     color: white;
   }
@@ -26,30 +25,10 @@ export const modalStyles = html` <style>
   }
 
   .item.full-width {
-    @apply --app-grid-expandible-item;
   }
 
   .item {
     padding-right: 20px;
     margin-bottom: 20px !important;
   }
-
-  datepicker-lite {
-    position: relative;
-  }
-
-  paper-textarea {
-    --paper-input-container-input: {
-      display: block;
-    }
-    --iron-autogrow-textarea: {
-      overflow: auto;
-      padding: 0;
-      max-height: 96px;
-    }
-  }
-
-  // .full-width {
-  //   @apply --app-grid-expandible-item;
-  // }
 </style>`;

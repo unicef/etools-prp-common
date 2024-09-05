@@ -1,40 +1,37 @@
-import {ReduxConnectedElement} from '../ReduxConnectedElement';
-import {html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/paper-radio-group/paper-radio-group';
-import '@polymer/paper-radio-button/paper-radio-button';
-import '@polymer/paper-input/paper-input';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
+import '@shoelace-style/shoelace/dist/components/radio/radio.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import './labelled-item';
 import './report-status';
-import {RefreshReportModalEl} from './refresh-report-modal';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './refresh-report-modal';
-import '@polymer/app-layout/app-grid/app-grid-style';
-import {GenericObject} from '../typings/globals.types';
 import UtilsMixin from '../mixins/utils-mixin';
-import LocalizeMixin from '../mixins/localize-mixin';
+import {translate} from 'lit-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
-import {PaperInputElement} from '@polymer/paper-input/paper-input';
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
+
  * @customElement
  * @appliesMixin UtilsMixin
- * @appliesMixin LocalizeMixin
  */
-class ReportableMeta extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
-  static get template() {
+@customElement('reportable-meta')
+export class ReportableMeta extends UtilsMixin(LitElement) {
+  static get styles() {
+    return [layoutStyles];
+  }
+
+  public render() {
     return html`
       ${buttonsStyles}
       <style>
         :host {
           display: block;
-
-          --paper-input-container-disabled: {
-            opacity: 0.67;
-          }
         }
 
         labelled-item {
@@ -43,6 +40,7 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
 
         labelled-item:not(:last-child) {
           margin-bottom: 25px;
+          margin-inline-start: 10px;
         }
 
         #input-button-container {
@@ -52,12 +50,15 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
           flex-direction: row;
         }
 
-        paper-input {
+        etools-input {
           width: 100%;
           padding-right: 18px;
         }
+        etools-input::part(readonly-input-value) {
+          border-bottom: 2px dotted var(--list-second-bg-color);
+        }
 
-        paper-radio-group {
+        etools-radio-group {
           margin-left: -12px;
         }
 
@@ -75,55 +76,61 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
         }
       </style>
 
-      <template is="dom-if" if="[[canRefresh]]" restamp="true">
-        <paper-button id="refresh-button" class="btn-primary" on-tap="_refresh" disabled="[[busy]]" raised>
-          [[localize('refresh')]]
-        </paper-button>
-      </template>
+      ${this.canRefresh
+        ? html`<etools-button id="refresh-button" variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
+            ${translate('REFRESH')}
+          </etools-button>`
+        : ``}
 
-      <labelled-item label="[[localize('overall_status')]]">
-        <template is="dom-if" if="[[!_equals(mode, 'view')]]" restamp="true">
-          <paper-radio-group id="overall_status" selected="[[data.overall_status]]" on-selected-changed="_handleInput">
-            <paper-radio-button name="Met">[[_computeMetLabel(completed, localize)]]</paper-radio-button>
-            <template is="dom-if" if="[[!completed]]" restamp="true">
-              <paper-radio-button name="OnT">[[localize('on_track')]]</paper-radio-button>
-              <paper-radio-button name="NoP">[[localize('no_progress')]]</paper-radio-button>
-            </template>
-            <paper-radio-button name="Con">[[_computeConstrainedLabel(completed, localize)]]</paper-radio-button>
-            <template is="dom-if" if="[[allowNoStatus]]" restamp="true">
-              <paper-radio-button name="NoS">[[localize('no_status')]]</paper-radio-button>
-            </template>
-          </paper-radio-group>
-        </template>
-
-        <template is="dom-if" if="[[_equals(mode, 'view')]]" restamp="true">
-          <report-status final="[[completed]]" status="[[data.overall_status]]"></report-status>
-        </template>
+      <labelled-item .label="${translate('OVERALL_STATUS')}">
+        ${this._equals(this.mode, 'view')
+          ? html`<report-status .final="${this.completed}" .status="${this.data.overall_status}"></report-status>`
+          : html`
+              <etools-radio-group
+                id="overall_status"
+                .value="${this.data.overall_status}"
+                @sl-change="${(e: any) => {
+                  this.localData.overall_status = e.target.value;
+                  this._localDataChanged(this.localData);
+                }}"
+              >
+                <sl-radio value="Met">${this._computeMetLabel(this.completed)}</sl-radio>
+                ${this.completed
+                  ? ``
+                  : html`<sl-radio value="OnT">${translate('ON_TRACK')}</sl-radio>
+                      <sl-radio value="NoP">${translate('NO_PROGRESS')}</sl-radio>`}
+                <sl-radio value="Con">${this._computeConstrainedLabel(this.completed)}</sl-radio>
+                ${this.allowNoStatus ? html`<sl-radio value="NoS">${translate('NO_STATUS')}</sl-radio>` : ``}
+              </etools-radio-group>
+            `}
       </labelled-item>
 
-      <labelled-item id="labelled-narrative" label="[[localize('narrative_assessment')]]">
-        <template is="dom-if" if="[[!_equals(mode, 'view')]]" restamp="true">
-          <div id="input-button-container">
-            <paper-input
-              id="narrative_assessment"
-              value="[[data.narrative_assessment]]"
-              disabled
-              char-counter
-              no-label-float
-              maxlength="2000"
-            >
-            </paper-input>
-            <paper-button class="btn-primary" id="toggle-button" on-tap="_handleInput" raised>
-              {{localizedToggle}}
-            </paper-button>
-          </div>
-        </template>
-
-        <template is="dom-if" if="[[_equals(mode, 'view')]]" restamp="true"> [[data.narrative_assessment]] </template>
+      <labelled-item id="labelled-narrative" .label="${translate('NARRATIVE_ASSESSMENT')}">
+        ${this._equals(this.mode, 'view')
+          ? html`${this.data.narrative_assessment}`
+          : html`
+              <div id="input-button-container">
+                <etools-input
+                  id="narrative_assessment"
+                  .value="${this.data.narrative_assessment}"
+                  ?readonly="${!this.enableNarrativeAssessment}"
+                  @value-changed="${({detail}) => (this.localData.narrative_assessment = detail.value)}"
+                  char-counter
+                  .charCount=${this.data?.narrative_assessment?.length}
+                  maxlength="2000"
+                >
+                </etools-input>
+                <etools-button variant="primary" id="toggle-button" @click="${this._handleButtonClick}">
+                  ${this.localizedToggle}
+                </etools-button>
+              </div>
+            `}
       </labelled-item>
-      <refresh-report-modal id="refresh" data="[[refreshData]]" refresh-url="[[refreshUrl]]"> </refresh-report-modal>
     `;
   }
+
+  @property({type: Boolean})
+  enableNarrativeAssessment = false;
 
   @property({type: String})
   mode!: string;
@@ -131,145 +138,124 @@ class ReportableMeta extends LocalizeMixin(UtilsMixin(ReduxConnectedElement)) {
   @property({type: String})
   toggle = 'Edit';
 
-  @property({type: String, computed: '_localizeToggle(toggle, localize)'})
+  @property({type: String})
   localizedToggle!: string;
 
   @property({type: Object})
-  data!: GenericObject;
+  data!: any;
 
   @property({type: Object})
-  localData!: GenericObject;
+  localData!: any;
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean, reflect: true})
   allowNoStatus = false;
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean, reflect: true})
   isCluster = false;
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean, reflect: true})
   completed = false;
 
-  @property({type: Object, computed: '_computeRefreshData(data.id)'})
-  refreshData!: GenericObject;
+  @property({type: Object})
+  refreshData!: any;
 
-  @property({type: Boolean, computed: '_computeCanRefresh(isCluster, data)'})
+  @property({type: Boolean})
   canRefresh = false;
 
   @property({type: String})
   refreshUrl: string = Endpoints.reportProgressReset();
 
-  static get observers() {
-    return ['_localDataChanged(localData.*)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('toggle')) {
+      this.localizedToggle = this._localizeToggle(this.toggle);
+    }
+    if (changedProperties.has('data')) {
+      this.refreshData = this._computeRefreshData(this.data?.id);
+    }
+    if (changedProperties.has('isCluster') || changedProperties.has('data')) {
+      this.canRefresh = this._computeCanRefresh(this.isCluster, this.data);
+    }
   }
 
-  _handleInput(event: CustomEvent) {
-    let field = event.target as GenericObject;
-    const narrativeTextInput = this.shadowRoot!.querySelector('#narrative_assessment') as PaperInputElement;
-
-    if (narrativeTextInput && this.toggle === 'Edit' && field.id === 'toggle-button') {
-      narrativeTextInput.disabled = false;
-      narrativeTextInput.focus();
-      this.set('toggle', 'Save');
+  _handleButtonClick() {
+    if (this.toggle === 'Edit') {
+      this.enableNarrativeAssessment = true;
+      (this.shadowRoot?.querySelector('#narrative_assessment') as EtoolsInput).focus();
+      this.toggle = 'Save';
       return;
+    } else {
+      this.enableNarrativeAssessment = false;
+      this.toggle = 'Edit';
+      this._localDataChanged(this.localData);
     }
-
-    if (field.id === 'toggle-button') {
-      const parent: any = event.composedPath().find((node: any) => {
-        return node.id === 'labelled-narrative';
-      });
-      if (parent) {
-        field = parent.querySelector('paper-input');
-      }
-    }
-
-    const id = field.id;
-    switch (id) {
-      case 'overall_status':
-        this.set(['localData', id], field.selected);
-        break;
-
-      case 'narrative_assessment':
-        if (
-          (field.value !== null && this.data.narrative_assessment === field.value.trim()) ||
-          (field.value === null && this.data.narrative_assessment === null)
-        ) {
-          this.set('toggle', 'Edit');
-          narrativeTextInput.disabled = true;
-          break;
-        }
-        this.set(['localData', id], field.value.trim());
-        this.set('toggle', 'Edit');
-        narrativeTextInput.disabled = true;
-        break;
-    }
+    this.requestUpdate();
   }
 
-  _computeMetLabel(completed: boolean, localize: (x: string) => string) {
+  _computeMetLabel(completed: boolean) {
     if (completed) {
-      return localize('met_results');
+      return translate('ACHIEVED_AS_PLANNED');
     }
-    return localize('met');
+    return translate('MET');
   }
 
-  _computeConstrainedLabel(completed: boolean, localize: (x: string) => string) {
+  _computeConstrainedLabel(completed: boolean) {
     if (completed) {
-      return localize('constrained_partially');
+      return translate('NOT_ACHIEVED_AS_PLANNED');
     }
-    return localize('constrained');
+    return translate('CONSTRAINED');
   }
 
-  _localizeToggle(toggle: string, localize: (x: string) => string) {
-    return localize(toggle.toLowerCase());
+  _localizeToggle(toggle: string) {
+    return translate(toggle.toLowerCase()) as any as string;
   }
 
-  _localDataChanged(change: GenericObject) {
-    if (change.path.split('.').length < 2) {
-      return;
-    }
-
-    fireEvent(this, 'reportable-meta-changed', this.localData);
+  _localDataChanged(data) {
+    fireEvent(this, 'reportable-meta-changed', data);
   }
 
   _computeRefreshData(reportId: string) {
     return {report_id: reportId, report_type: 'IR'};
   }
 
-  _computeCanRefresh(isCluster: boolean, data: GenericObject) {
+  _computeCanRefresh(isCluster: boolean, data: any) {
     return isCluster && data.can_submit;
   }
 
   _refresh() {
-    (this.$.refresh as RefreshReportModalEl).open();
+    openDialog({
+      dialog: 'refresh-report-modal',
+      dialogData: {
+        refreshData: this.refreshData,
+        refreshUrl: this.refreshUrl
+      }
+    });
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    this.set('localData', {});
+    this.localData = {};
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
+    // @dci - check logic below...
     const labelledItem = this.shadowRoot!.querySelectorAll('labelled-item');
     if (
       labelledItem &&
       labelledItem.length > 1 &&
       labelledItem[1] &&
-      labelledItem[1].querySelector('paper-input') !== null
+      labelledItem[1].querySelector('etools-input') !== null
     ) {
-      const paperButton = labelledItem[1].querySelector('paper-button');
+      const paperButton = labelledItem[1].querySelector('etools-button');
       if (paperButton && paperButton.textContent!.trim() === 'Save') {
-        this.set(
-          ['localData', 'narrative_assessment'],
-          (labelledItem[1].querySelector('paper-input') as PaperInputElement).value
-        );
+        this.localData.narrative_assessment = (labelledItem[1].querySelector('etools-input') as EtoolsInput).value;
       }
-
-      (this.$.refresh as RefreshReportModalEl).close();
     }
   }
 }
-window.customElements.define('reportable-meta', ReportableMeta);
 
 export {ReportableMeta as ReportableMetaEl};

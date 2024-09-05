@@ -1,31 +1,27 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/iron-icons/image-icons';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
 /**
- * @polymer
  * @customElement
  */
-class StatusBadge extends PolymerElement {
-  public static get template() {
+@customElement('status-badge')
+class StatusBadge extends LitElement {
+  render() {
     return html` <style>
         :host {
           display: inline-block;
           vertical-align: top;
 
-          --iron-icon-height: var(--status-badge-size, 16px);
-          --iron-icon-width: var(--status-badge-size, 16px);
-
           margin-right: 4px;
         }
-        :host iron-icon {
+        :host etools-icon {
           line-height: 1;
+          --etools-icon-font-size: var(--status-badge-size, var(--etools-font-size-16, 16px));
         }
       </style>
 
-      <iron-icon icon="[[icon]]" style="color: [[color]];"> </iron-icon>`;
+      <etools-icon name="${this.icon}" style="color: ${this.color};"> </etools-icon>`;
   }
 
   @property({type: String})
@@ -34,11 +30,20 @@ class StatusBadge extends PolymerElement {
   @property({type: Boolean})
   hideIcon!: boolean;
 
-  @property({type: String, computed: '_computeIcon(type)'})
+  @property({type: String})
   icon!: string;
 
-  @property({type: String, computed: '_computeColor(type)'})
+  @property({type: String})
   color!: string;
+
+  updated(changedProperties): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('type')) {
+      this.icon = this._computeIcon(this.type);
+      this.color = this._computeColor(this.type);
+    }
+  }
 
   _computeIcon(type: string) {
     if (!this.hideIcon) {
@@ -72,4 +77,4 @@ class StatusBadge extends PolymerElement {
   }
 }
 
-window.customElements.define('status-badge', StatusBadge);
+export {StatusBadge as StatusBadgeEl};
