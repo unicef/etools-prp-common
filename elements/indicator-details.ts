@@ -323,7 +323,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                 (location: any, index: number) =>
                                   html`<sl-tab
                                     slot="nav"
-                                    panel="tab_${location.id}"
+                                    panel="tab_${index}"
                                     ?active="${this.topLevelLocationSelected === `tab_${index}`}"
                                   >
                                     ${this._localizeLowerCased(location.reporting_entity.title)}
