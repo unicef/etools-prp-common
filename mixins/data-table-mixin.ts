@@ -7,7 +7,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 
 function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {
-    @property({type: Object}) queryParams = {};
+    @property({type: Object}) queryParams: any = {};
 
     @state()
     _localPaginator = null;
