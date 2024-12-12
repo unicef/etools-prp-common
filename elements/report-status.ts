@@ -1,8 +1,8 @@
 import {LitElement, html} from 'lit';
-import {connect} from 'pwa-helpers';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
 import {customElement, property} from 'lit/decorators.js';
 import '../elements/status-badge';
-import {translate} from 'lit-translate';
+import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
 

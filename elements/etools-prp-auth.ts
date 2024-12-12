@@ -1,7 +1,7 @@
 import {LitElement, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {connect} from 'pwa-helpers';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
 import {setToken} from '../../redux/actions';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';

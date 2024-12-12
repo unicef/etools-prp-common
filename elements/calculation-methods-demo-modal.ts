@@ -8,7 +8,7 @@ import UtilsMixin from '../mixins/utils-mixin';
 import './calculation-methods-demo-locations';
 import './calculation-methods-demo-periods';
 import './etools-prp-number';
-import {translate} from 'lit-translate';
+import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 
 /**
  * @customElement

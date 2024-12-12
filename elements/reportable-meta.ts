@@ -8,7 +8,7 @@ import './report-status';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './refresh-report-modal';
 import UtilsMixin from '../mixins/utils-mixin';
-import {translate} from 'lit-translate';
+import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
