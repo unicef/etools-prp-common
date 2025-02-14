@@ -41,18 +41,17 @@ export class CalculationMethodsDemoPeriods extends LitElement {
 
       <div class="row">
         ${(this.totals || []).map(
-          (item: any) =>
-            html`
-              <div class="col-6 content-box">
-                ${item
-                  ? html` <div class="bold-text">Reporting period ${item.id}</div>
-                      <div class="layout-horizontal space-bt">
-                        <div>progress in reporting period</div>
-                        <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
-                      </div>`
-                  : html``}
-              </div>
-            `
+          (item: any) => html`
+            <div class="col-6 content-box">
+              ${item
+                ? html` <div class="bold-text">Reporting period ${item.id}</div>
+                    <div class="layout-horizontal space-bt">
+                      <div>progress in reporting period</div>
+                      <etools-prp-number class="bold-text" value="${item.value}"></etools-prp-number>
+                    </div>`
+                : html``}
+            </div>
+          `
         )}
       </div>
     `;

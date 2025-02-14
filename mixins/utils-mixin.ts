@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import Settings from '../settings';
-import {get as getTranslation} from 'lit-translate';
+import {get as getTranslation} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import dayjs from 'dayjs';
 
 const pdListStatuses: any = {
@@ -251,7 +251,7 @@ function UtilsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         if (Object.prototype.hasOwnProperty.call(node, prop)) {
           try {
             clone[prop] = node[prop];
-          } catch (err) {
+          } catch {
             // catch
           }
         }

@@ -120,12 +120,15 @@ function DisaggregationHelpersMixin<T extends Constructor<LitElement>>(baseClass
     private sumDisaggValues(fields: any[], transform: (x: number) => number = this.identity) {
       const result = fields
         .filter((field) => ['v', 'd'].every((key) => !isNaN(field[key])))
-        .reduce((acc, curr) => {
-          ['v', 'd'].forEach((key) => {
-            acc[key] = (acc[key] || 0) + transform!(curr[key]);
-          });
-          return acc;
-        }, {} as {[key: string]: number});
+        .reduce(
+          (acc, curr) => {
+            ['v', 'd'].forEach((key) => {
+              acc[key] = (acc[key] || 0) + transform!(curr[key]);
+            });
+            return acc;
+          },
+          {} as {[key: string]: number}
+        );
 
       const c = result.d > 0 ? result.v / result.d : 0;
       result.c = isNaN(c) ? 0 : c;

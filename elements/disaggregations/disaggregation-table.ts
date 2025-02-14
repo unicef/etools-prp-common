@@ -1,7 +1,7 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import UtilsMixin from '../../mixins/utils-mixin';
-import {translate} from 'lit-translate';
+import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import Endpoints from '../../endpoints';
