@@ -9,12 +9,11 @@ import {modalStyles} from '../styles/modal-styles';
  */
 @customElement('calculation-methods-demo-locations')
 export class CalculationMethodsDemoLocations extends LitElement {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   render() {
     return html`
+      <style>
+        ${layoutStyles}
+      </style>
       ${modalStyles}
       <style>
         :host {

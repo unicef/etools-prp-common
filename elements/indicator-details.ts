@@ -36,10 +36,6 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
  */
 @customElement('indicator-details')
 export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   render() {
     if (!this.dataLoaded) {
       return;
@@ -47,6 +43,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     return html`
       ${buttonsStyles}
       <style>
+        ${layoutStyles}
         :host {
           display: block;
           width: 100%;

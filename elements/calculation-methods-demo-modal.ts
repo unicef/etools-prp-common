@@ -16,12 +16,11 @@ import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
  */
 @customElement('calculation-methods-demo-modal')
 export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   render() {
     return html`
+      <style>
+        ${layoutStyles}
+      </style>
       <style>
         :host {
           display: block;

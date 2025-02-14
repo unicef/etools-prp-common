@@ -13,15 +13,11 @@ import {customElement} from 'lit/decorators.js';
  */
 @customElement('calculation-methods-info-bar')
 export class CalculationMethodsInfoBar extends LitElement {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   render() {
     return html`
       ${tableStyles}
       <style>
-        :host {
+        ${layoutStyles} :host {
           display: block;
           background: #fcfcfc;
           padding: 16px;

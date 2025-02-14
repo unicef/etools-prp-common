@@ -9,15 +9,11 @@ import {modalStyles} from '../styles/modal-styles';
  */
 @customElement('calculation-methods-demo-periods')
 export class CalculationMethodsDemoPeriods extends LitElement {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   render() {
     return html`
       ${modalStyles}
       <style>
-        :host {
+        ${layoutStyles} :host {
           display: block;
         }
 

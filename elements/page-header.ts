@@ -14,10 +14,6 @@ import {RootState} from '../../typings/redux.types';
  */
 @customElement('page-header')
 export class PageHeader extends connect(store)(LitElement) {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   @property({type: String, attribute: 'title'})
   title!: string;
 
@@ -37,7 +33,7 @@ export class PageHeader extends connect(store)(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        :host {
+        ${layoutStyles} :host {
           --header-gutter: 25px;
           display: block;
           padding: var(--header-gutter);

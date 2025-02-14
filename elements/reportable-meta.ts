@@ -22,15 +22,11 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
  */
 @customElement('reportable-meta')
 export class ReportableMeta extends UtilsMixin(LitElement) {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   public render() {
     return html`
       ${buttonsStyles}
       <style>
-        :host {
+        ${layoutStyles} :host {
           display: block;
         }
 

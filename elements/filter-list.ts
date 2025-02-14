@@ -16,14 +16,10 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
  */
 @customElement('filter-list')
 export class FilterList extends connect(store)(LitElement) {
-  static get styles() {
-    return [layoutStyles];
-  }
-
   render() {
     return html`
       <style>
-        :host {
+        ${layoutStyles} :host {
           background-color: #f9f9f9;
           display: block;
           position: relative;
