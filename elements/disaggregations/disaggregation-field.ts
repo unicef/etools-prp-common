@@ -65,6 +65,9 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
   protected firstUpdated(changedProperties: PropertyValues): void {
     super.firstUpdated(changedProperties);
 
+    const field = this.getField() as EtoolsInput;
+    field.validate = this.validate.bind(this);
+
     this.errMessage = '';
     fireEvent(this, 'register-field', this);
 
@@ -79,14 +82,12 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
         }
       }
     }, 20);
-    // this.validate();
   }
 
   validate() {
     const field = this.getField() as EtoolsInput;
-    const isValid = field.validate() && this._validateByValidator(field.value);
+    const isValid = field.slInput.reportValidity() && this._validateByValidator(field.value); /*field.validate() && */
     this.invalid = !isValid;
-    this.requestUpdate();
     return isValid;
   }
 
@@ -98,6 +99,7 @@ export class DisaggregationField extends DisaggregationFieldMixin(LitElement) {
     const change: any = {};
     const currentValue = (e.target as EtoolsInput).value;
     change[this.key] = currentValue;
+    this.value = Number(currentValue);
 
     if (!isSettingDefault) {
       this._validateByValidator(currentValue);
