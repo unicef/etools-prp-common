@@ -2,7 +2,7 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import UtilsMixin from '../mixins/utils-mixin';
 import {progressBarStyles} from '../styles/progress-bar-styles';
-import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar';
+import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 
 /**
  * @customElement
