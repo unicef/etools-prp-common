@@ -1,6 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import UtilsMixin from '../mixins/utils-mixin';
 import './error-box-errors';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
@@ -10,7 +9,7 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
  * @appliesMixin UtilsMixin
  */
 @customElement('error-box')
-export class ErrorBox extends UtilsMixin(LitElement) {
+export class ErrorBox extends LitElement {
   render() {
     return html`
       <style>

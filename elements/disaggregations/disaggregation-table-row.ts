@@ -1,13 +1,13 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
-import UtilsMixin from '../../mixins/utils-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import './disaggregation-table-cell-number';
 import './disaggregation-table-cell-percentage';
 import './disaggregation-table-cell-ratio';
+import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/dist/general.util';
 
 @customElement('disaggregation-table-row')
-class DisaggregationTableRow extends UtilsMixin(LitElement) {
+class DisaggregationTableRow extends LitElement {
   @property({type: Object})
   data!: any;
 
@@ -36,7 +36,7 @@ class DisaggregationTableRow extends UtilsMixin(LitElement) {
       ${disaggregationTableStyles}
       <tr class="${this._computeClass(this.rowType)}">
         <td class="cellTitle">
-          <span class="cellValue">${this._capitalizeFirstLetter(this.data?.title)}</span>
+          <span class="cellValue">${capitalizeFirstLetter(this.data?.title)}</span>
         </td>
 
         ${(this.data?.data || []).map(

@@ -7,7 +7,6 @@ import './labelled-item';
 import './report-status';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './refresh-report-modal';
-import UtilsMixin from '../mixins/utils-mixin';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import Endpoints from '../endpoints';
@@ -21,7 +20,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
  * @appliesMixin UtilsMixin
  */
 @customElement('reportable-meta')
-export class ReportableMeta extends UtilsMixin(LitElement) {
+export class ReportableMeta extends LitElement {
   public render() {
     return html`
       ${buttonsStyles}
@@ -73,13 +72,13 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
       </style>
 
       ${this.canRefresh
-        ? html`<etools-button id="refresh-button" variant="primary" @click="${this._refresh}" ?disabled="${this.busy}">
+        ? html`<etools-button id="refresh-button" variant="primary" @click="${this._refresh}">
             ${translate('REFRESH')}
           </etools-button>`
         : ``}
 
       <labelled-item .label="${translate('OVERALL_STATUS')}">
-        ${this._equals(this.mode, 'view')
+        ${this.mode === 'view'
           ? html`<report-status .final="${this.completed}" .status="${this.data.overall_status}"></report-status>`
           : html`
               <etools-radio-group
@@ -102,7 +101,7 @@ export class ReportableMeta extends UtilsMixin(LitElement) {
       </labelled-item>
 
       <labelled-item id="labelled-narrative" .label="${translate('NARRATIVE_ASSESSMENT')}">
-        ${this._equals(this.mode, 'view')
+        ${this.mode === 'view'
           ? html`${this.data.narrative_assessment}`
           : html`
               <div id="input-button-container">

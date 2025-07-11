@@ -1,10 +1,10 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
-import UtilsMixin from '../../../mixins/utils-mixin';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
 import '../disaggregation-table-row';
+import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
  * @customElement
@@ -12,7 +12,7 @@ import '../disaggregation-table-row';
  * @appliesMixin UtilsMixin
  */
 @customElement('two-disaggregations')
-class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
+class TwoDisaggregations extends DisaggregationMixin(LitElement) {
   @property({type: Number})
   editable!: number;
 
@@ -47,7 +47,7 @@ class TwoDisaggregations extends DisaggregationMixin(UtilsMixin(LitElement)) {
 
       <tr class="layout-horizontal headerRow">
         <th></th>
-        ${(this.columns || []).map((column) => html`<th>${this._capitalizeFirstLetter(column.value)}</th>`)}
+        ${(this.columns || []).map((column) => html`<th>${capitalizeFirstLetter(column.value)}</th>`)}
         <th>Total</th>
       </tr>
 

@@ -7,10 +7,10 @@ import {translate, get as getTranslation} from '@unicef-polymer/etools-unicef/sr
 import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {DisaggregationTableEl} from './disaggregation-table';
-import UtilsMixin from '../../mixins/utils-mixin';
+import {formatIndicatorValue} from '@unicef-polymer/etools-utils/dist/general.util';
 
 @customElement('disaggregation-modal')
-export class DisaggregationModal extends UtilsMixin(LitElement) {
+export class DisaggregationModal extends LitElement {
   static styles = css`
     ${layoutStyles}
     etools-icon {
@@ -108,10 +108,10 @@ export class DisaggregationModal extends UtilsMixin(LitElement) {
                         .value="${this.topLevelLocation?.byEntity[0].location_progress.v}"
                       ></etools-prp-number>`
                     : html`<span
-                        >${this._formatIndicatorValue(
+                        >${formatIndicatorValue(
                           this.topLevelLocation?.byEntity[0].display_type,
                           this.topLevelLocation?.byEntity[0].location_progress.c,
-                          1
+                          true
                         )}</span
                       >`}
                 </dd>

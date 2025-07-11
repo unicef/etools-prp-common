@@ -1,7 +1,6 @@
 import {LitElement, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
-import UtilsMixin from '../mixins/utils-mixin';
 import Constants from '../constants';
 import {store} from '../../redux/store';
 import {RootState} from '../../typings/redux.types';
@@ -191,7 +190,7 @@ export const permissions = {
  * @appliesMixin UtilsMixin
  */
 @customElement('etools-prp-permissions')
-export class EtoolsPrpPermissions extends connect(store)(UtilsMixin(LitElement)) {
+export class EtoolsPrpPermissions extends connect(store)(LitElement) {
   @property({type: Object})
   profile?: any;
 

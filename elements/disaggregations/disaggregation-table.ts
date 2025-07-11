@@ -1,6 +1,5 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
-import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
@@ -18,9 +17,11 @@ import {store} from '../../../redux/store';
 import {RootState} from '../../../typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
+import {cloneDeepIfHasValue, valueWithDefault} from '@unicef-polymer/etools-utils/dist/general.util';
+import {fieldsAreValid} from '@unicef-polymer/etools-utils/dist/validation.util';
 
 @customElement('disaggregation-table')
-export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(LitElement)) {
+export class DisaggregationTable extends DisaggregationHelpersMixin(LitElement) {
   @property({type: Object})
   data!: any;
 
@@ -153,10 +154,10 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
           ? html`<dl class="data-key">
               <dt>${translate('LABEL')} -</dt>
               ${this.data?.display_type === 'number'
-                ? html`<dd>${this._withDefault(this.labels?.label)}</dd>`
+                ? html`<dd>${valueWithDefault(this.labels?.label)}</dd>`
                 : html`<dd>
-                    ${this._withDefault(this.labels?.numerator_label)} /
-                    ${this._withDefault(this.labels?.denominator_label)}
+                    ${valueWithDefault(this.labels?.numerator_label)} /
+                    ${valueWithDefault(this.labels?.denominator_label)}
                   </dd>`}
             </dl>`
           : ''}
@@ -243,8 +244,8 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     }
 
     if (changedProperties.has('formattedData') && this.editableBool) {
-      this.localData = this._clone(this.formattedData);
-      this.totals = this._clone(this.formattedData.disaggregation);
+      this.localData = cloneDeepIfHasValue(this.formattedData);
+      this.totals = cloneDeepIfHasValue(this.formattedData.disaggregation);
     }
 
     if (changedProperties.has('editable')) {
@@ -254,7 +255,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
 
     if (changedProperties.has('data')) {
       this.indicatorType = this._computeIndicatorType(this.data);
-      this.formattedData = this._clone(this.data);
+      this.formattedData = cloneDeepIfHasValue(this.data);
     }
 
     if (changedProperties.has('app') || changedProperties.has('indicatorType')) {
@@ -395,7 +396,7 @@ export class DisaggregationTable extends DisaggregationHelpersMixin(UtilsMixin(L
     });
 
     const cellsValid = this.fields.every((field) => !field.invalid);
-    const percentagesValid = this._fieldsAreValid();
+    const percentagesValid = fieldsAreValid(this.shadowRoot);
 
     if (!cellsValid || !percentagesValid) {
       return Promise.reject();
