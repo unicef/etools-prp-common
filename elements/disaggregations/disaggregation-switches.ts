@@ -1,7 +1,6 @@
 import {html, LitElement} from 'lit';
 import {property, customElement, state} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
-import UtilsMixin from '../../mixins/utils-mixin';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
@@ -9,9 +8,10 @@ import '../message-box';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/dist/general.util';
 
 @customElement('disaggregation-switches')
-class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement)) {
+class DisaggregationSwitches extends DisaggregationMixin(LitElement) {
   @property({type: Object})
   mapping!: any;
 
@@ -115,7 +115,7 @@ class DisaggregationSwitches extends DisaggregationMixin(UtilsMixin(LitElement))
   }
 
   _formatFieldName(name: string) {
-    return this._capitalizeFirstLetter(name);
+    return capitalizeFirstLetter(name);
   }
 
   fieldValueChanged(field: any) {

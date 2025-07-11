@@ -7,7 +7,6 @@ import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-co
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-row';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-header';
-import UtilsMixin from '../mixins/utils-mixin';
 import './project-status';
 import './page-body';
 import './list-placeholder';
@@ -25,7 +24,7 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
  * @appliesMixin UtilsMixin
  */
 @customElement('pull-modal')
-export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
+export class PullModal extends connect(store)(LitElement) {
   static styles = [layoutStyles];
 
   @property({type: String})
@@ -202,7 +201,6 @@ export class PullModal extends UtilsMixin(connect(store)(LitElement)) {
     })
       .then((res: any) => {
         this.data = {reports: res};
-        this.opened = true;
       })
       .catch((err: any) => {
         fireEvent(this, 'toast', {

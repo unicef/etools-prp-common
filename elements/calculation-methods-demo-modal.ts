@@ -4,7 +4,6 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
-import UtilsMixin from '../mixins/utils-mixin';
 import './calculation-methods-demo-locations';
 import './calculation-methods-demo-periods';
 import './etools-prp-number';
@@ -15,7 +14,7 @@ import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
  * @appliesMixin UtilsMixin
  */
 @customElement('calculation-methods-demo-modal')
-export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
+export class CalculationMethodsDemoModal extends LitElement {
   render() {
     return html`
       <style>
@@ -100,11 +99,11 @@ export class CalculationMethodsDemoModal extends UtilsMixin(LitElement) {
           </labelled-item>
 
           <br />
-          ${this._equals(this.domain, 'locations')
+          ${this.domain === 'locations'
             ? html` <calculation-methods-demo-locations .totals="${this.locationTotals}">
               </calculation-methods-demo-locations>`
             : ``}
-          ${this._equals(this.domain, 'reporting periods')
+          ${this.domain === 'reporting periods'
             ? html`
               <calculation-methods-demo-periods .totals="${this.locationTotals}">
                 </calculation-methods-demo-locations>`

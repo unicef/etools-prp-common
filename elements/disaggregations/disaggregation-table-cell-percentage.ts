@@ -6,6 +6,7 @@ import {DisaggregationFieldEl} from './disaggregation-field';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {toPercentage} from '@unicef-polymer/etools-utils/dist/general.util';
 
 @customElement('disaggregation-table-cell-percentage')
 class DisaggregationTableCellPercentage extends LitElement {
@@ -84,7 +85,7 @@ class DisaggregationTableCellPercentage extends LitElement {
                   ></disaggregation-field>
                 </div>
               </div>
-              <div class="computed-value">${this._toPercentage(this.data?.c)}</div>
+              <div class="computed-value">${toPercentage(this.data?.c)}</div>
             </div>
           `
         : html`
@@ -99,7 +100,7 @@ class DisaggregationTableCellPercentage extends LitElement {
                         <etools-prp-number .value="${this.data?.d}"></etools-prp-number>
                       </div>
                     </div>
-                    <div class="computed-value">${this._toPercentage(this.data?.c)}</div>
+                    <div class="computed-value">${toPercentage(this.data?.c)}</div>
                   </div>
                 `
               : html` <div class="cellValue">0</div> `}
@@ -189,10 +190,6 @@ class DisaggregationTableCellPercentage extends LitElement {
 
   _removeEventListeners() {
     this.removeEventListener('field-value-changed', this._handleInput as any);
-  }
-
-  _toPercentage(value: number | null): string {
-    return value != null ? `${Math.floor(value * 100)}%` : '0%';
   }
 }
 

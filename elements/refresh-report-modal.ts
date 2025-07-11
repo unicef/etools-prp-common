@@ -1,6 +1,5 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import UtilsMixin from '../mixins/utils-mixin';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import './error-modal';
 import './etools-prp-number';
@@ -13,7 +12,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
  * @appliesMixin RoutingMixin
  */
 @customElement('refresh-report-modal')
-export class RefreshReportModal extends UtilsMixin(LitElement) {
+export class RefreshReportModal extends LitElement {
   render() {
     return html`
       <style>
@@ -32,8 +31,8 @@ export class RefreshReportModal extends UtilsMixin(LitElement) {
         ?disableDismissBtn="${this.busy}"
       >
         <h3>
-          ${this._equals(this.data?.report_type, 'PR') ? html`${translate('YOU_ARE_ABOUT_TO_DELETE')}` : ``}
-          ${this._equals(this.data?.report_type, 'IR') ? html`${translate('YOU_ARE_ABOUT_TO_LOCATION')}` : ``}
+          ${this.data?.report_type === 'PR' ? html`${translate('YOU_ARE_ABOUT_TO_DELETE')}` : ``}
+          ${this.data?.report_type === 'IR' ? html`${translate('YOU_ARE_ABOUT_TO_LOCATION')}` : ``}
         </h3>
       </etools-dialog>
     `;

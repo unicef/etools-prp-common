@@ -1,6 +1,5 @@
 import {LitElement, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import UtilsMixin from '../mixins/utils-mixin';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
 import {setToken} from '../../redux/actions';
 import {store} from '../../redux/store';
@@ -13,7 +12,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
  * @appliesMixin UtilsMixin
  */
 @customElement('etools-prp-auth')
-export class EtoolsPrpAuth extends connect(store)(UtilsMixin(LitElement)) {
+export class EtoolsPrpAuth extends connect(store)(LitElement) {
   @property({type: String})
   token!: string;
 

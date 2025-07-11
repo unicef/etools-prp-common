@@ -1,6 +1,5 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
-import UtilsMixin from '../../../mixins/utils-mixin';
 import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
@@ -12,7 +11,7 @@ import '../disaggregation-table-row';
  * @appliesMixin UtilsMixin
  */
 @customElement('one-disaggregation')
-export class OneDisaggregation extends DisaggregationMixin(UtilsMixin(LitElement)) {
+export class OneDisaggregation extends DisaggregationMixin(LitElement) {
   @property({type: Number})
   editable!: number;
 

@@ -1,13 +1,12 @@
 import {html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
-import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
 import './disaggregation-field';
 import '../../elements/etools-prp-number';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 
 @customElement('disaggregation-table-cell-number')
-class DisaggregationTableCellNumber extends UtilsMixin(LitElement) {
+class DisaggregationTableCellNumber extends LitElement {
   @property({type: Object})
   data!: any;
 

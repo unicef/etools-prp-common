@@ -29,13 +29,14 @@ import {RootState} from '../../typings/redux.types';
 import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {cloneDeepIfHasValue, formatIndicatorValue} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
  * @customElement
  * @appliesMixin UtilsMixin
  */
 @customElement('indicator-details')
-export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
+export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
   render() {
     if (!this.dataLoaded) {
       return;
@@ -347,7 +348,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                     </div>
 
                                     <dl>
-                                      ${this._equals(location.display_type, 'number')
+                                      ${location.display_type === 'number'
                                         ? html` <dt>
                                               ${translate('LOCATION_PROGRESS_AGAINST')}
                                               ${this._localizeLowerCased(location.reporting_entity?.title)}:
@@ -366,16 +367,18 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
                                         : html`
                                             <dt>${translate('LOCATION_PROGRESS')}:</dt>
                                             <dd>
-                                              ${this._formatIndicatorValue(
+                                              ${formatIndicatorValue(
                                                 location.display_type,
-                                                location.location_progress?.c
+                                                location.location_progress?.c,
+                                                false
                                               )}
                                             </dd>
                                             <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
-                                              ${this._formatIndicatorValue(
+                                              ${formatIndicatorValue(
                                                 location.display_type,
-                                                location.previous_location_progress?.c
+                                                location.previous_location_progress?.c,
+                                                false
                                               )}
                                             </dd>
                                           `}
@@ -595,7 +598,7 @@ export class IndicatorDetails extends connect(store)(UtilsMixin(LitElement)) {
     if (!data || !key) {
       return;
     }
-    const disaggregations = this._clone(data[key]);
+    const disaggregations = cloneDeepIfHasValue(data[key]);
     if (this.updatedIndicatorId && this.updatedIndicatorId === key) {
       this.checkReportIsComplete(disaggregations);
       this.updatedIndicatorId = undefined;

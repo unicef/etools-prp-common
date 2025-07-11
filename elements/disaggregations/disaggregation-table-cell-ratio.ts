@@ -1,16 +1,16 @@
 import {html, LitElement, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
-import UtilsMixin from '../../mixins/utils-mixin';
 import './disaggregation-table-cell';
 import './disaggregation-field';
 import '../../elements/etools-prp-number';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
 
 @customElement('disaggregation-table-cell-ratio')
-class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
+class DisaggregationTableCellRatio extends LitElement {
   @property({type: String})
   vName!: string;
 
@@ -167,7 +167,7 @@ class DisaggregationTableCellRatio extends UtilsMixin(LitElement) {
   connectedCallback() {
     super.connectedCallback();
     this._addEventListeners();
-    const nullData = this._clone(this.data);
+    const nullData = cloneDeepIfHasValue(this.data);
     this.data = nullData;
   }
 
