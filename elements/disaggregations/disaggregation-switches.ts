@@ -81,7 +81,7 @@ class DisaggregationSwitches extends DisaggregationMixin(LitElement) {
                 ? html`
                     <message-box type="warning">
                       If one or more disaggregation box is unchecked, the reporting table will be simplified however the
-                      report will not be in line with the disaggregation agreed in the PD/SSFA.
+                      report will not be in line with the disaggregation agreed in the PD/SPD.
                     </message-box>
                   `
                 : ''}
