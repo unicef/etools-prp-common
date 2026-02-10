@@ -7,7 +7,7 @@ import {translate, get as getTranslation} from '@unicef-polymer/etools-unicef/sr
 import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {DisaggregationTableEl} from './disaggregation-table';
-import {formatIndicatorValue} from '@unicef-polymer/etools-utils/dist/general.util';
+import {formatIndicatorValue} from '../../../utils/utils';
 
 @customElement('disaggregation-modal')
 export class DisaggregationModal extends LitElement {

@@ -29,7 +29,8 @@ import {RootState} from '../../typings/redux.types';
 import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
-import {cloneDeepIfHasValue, formatIndicatorValue} from '@unicef-polymer/etools-utils/dist/general.util';
+import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
+import {formatIndicatorValue} from '../../utils/utils';
 
 /**
  * @customElement
