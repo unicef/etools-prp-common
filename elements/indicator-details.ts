@@ -30,7 +30,7 @@ import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
-import {formatIndicatorValue} from '../../utils/utils';
+import {displayIndicatorValueFromatted} from '../../utils/utils';
 
 /**
  * @customElement
@@ -368,7 +368,7 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
                                         : html`
                                             <dt>${translate('LOCATION_PROGRESS')}:</dt>
                                             <dd>
-                                              ${formatIndicatorValue(
+                                              ${displayIndicatorValueFromatted(
                                                 location.display_type,
                                                 location.location_progress?.c,
                                                 false
@@ -376,7 +376,7 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
                                             </dd>
                                             <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
-                                              ${formatIndicatorValue(
+                                              ${displayIndicatorValueFromatted(
                                                 location.display_type,
                                                 location.previous_location_progress?.c,
                                                 false
@@ -546,7 +546,8 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
           endpoint: {url: this.disaggregationsUrl},
           params: this.params
         }),
-        String(this.indicatorId)
+        String(this.indicatorId),
+        this.currentPd.id
       )
     );
   }
