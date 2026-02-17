@@ -30,7 +30,7 @@ import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
-import {displayIndicatorValueFromatted} from '../../utils/utils';
+import {displayIndicatorValueFormatted} from '../../utils/utils';
 
 /**
  * @customElement
@@ -368,7 +368,7 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
                                         : html`
                                             <dt>${translate('LOCATION_PROGRESS')}:</dt>
                                             <dd>
-                                              ${displayIndicatorValueFromatted(
+                                              ${displayIndicatorValueFormatted(
                                                 location.display_type,
                                                 location.location_progress?.c,
                                                 false
@@ -376,7 +376,7 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
                                             </dd>
                                             <dt>${translate('PREVIOUS_LOCATION_PROGRESS')}:</dt>
                                             <dd>
-                                              ${displayIndicatorValueFromatted(
+                                              ${displayIndicatorValueFormatted(
                                                 location.display_type,
                                                 location.previous_location_progress?.c,
                                                 false
