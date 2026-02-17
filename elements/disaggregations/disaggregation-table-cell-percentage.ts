@@ -152,6 +152,12 @@ class DisaggregationTableCellPercentage extends LitElement {
       if (!v.validate() || !d.validate()) {
         change.c = null;
       } else {
+        if (typeof change.v === 'undefined') {
+          change.v = v.value;
+        }
+        if (typeof change.d === 'undefined') {
+          change.d = d.value;
+        }
         change.c = change.d === 0 ? 0 : change.v / change.d;
 
         fireEvent(this, 'field-value-changed', {
