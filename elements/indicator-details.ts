@@ -602,7 +602,7 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
     }
     const disaggregations = cloneDeepIfHasValue(data[key]);
 
-    if (disaggregations.disagg_lookup_map) {
+    if (disaggregations && disaggregations.disagg_lookup_map) {
       disaggregations.disagg_lookup_map = getDisaggregationsWithGroups(disaggregations.disagg_lookup_map);
       const existingDisaggIDs = (disaggregations.disagg_lookup_map || []).map((x) => x.id);
       (disaggregations.indicator_location_data || []).forEach((location: any) => {
