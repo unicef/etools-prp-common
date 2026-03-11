@@ -387,7 +387,7 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
                                     <disaggregation-table
                                       class="printme print-styles"
                                       .data="${location}"
-                                      .mapping="${getDisaggregationsWithGroups(this.disaggregations.disagg_lookup_map)}"
+                                      .mapping="${this.disaggregations.disagg_lookup_map}"
                                       .labels="${this.disaggregations.labels}"
                                     >
                                     </disaggregation-table>
@@ -526,6 +526,14 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
       this.disaggregations = this._computeDisaggregations(this.data, this.indicatorId);
     }
     if (changedProperties.has('disaggregations')) {
+      this.disaggregations = getDisaggregationsWithGroups(this.disaggregations.disagg_lookup_map);
+      const existingDisaggIDs = (this.disaggregations.disagg_lookup_map || []).map((x) => x.id);
+      (this.disaggregations.indicator_location_data || []).forEach((location: any) => {
+        location.num_disaggregation = location.level_reported = this.disaggregations.disagg_lookup_map.length;
+        location.disaggregation_reported_on = (location.disaggregation_reported_on || []).filter((x: any) =>
+          existingDisaggIDs.includes(x.id)
+        );
+      });
       this.locationData = this._computeLocationData(this.disaggregations.indicator_location_data);
       this.loading = false;
       this.isHfIndicator = this._computeIsHfIndicator(this.disaggregations);
