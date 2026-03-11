@@ -30,7 +30,7 @@ import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
-import {displayIndicatorValueFormatted} from '../../utils/utils';
+import {displayIndicatorValueFormatted, getDisaggregationsWithGroups} from '../../utils/utils';
 
 /**
  * @customElement
@@ -387,7 +387,7 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
                                     <disaggregation-table
                                       class="printme print-styles"
                                       .data="${location}"
-                                      .mapping="${this.disaggregations.disagg_lookup_map}"
+                                      .mapping="${getDisaggregationsWithGroups(this.disaggregations.disagg_lookup_map)}"
                                       .labels="${this.disaggregations.labels}"
                                     >
                                     </disaggregation-table>
