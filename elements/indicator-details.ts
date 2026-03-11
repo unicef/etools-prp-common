@@ -600,16 +600,18 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
     if (!data || !key) {
       return;
     }
-    let disaggregations = cloneDeepIfHasValue(data[key]);
+    const disaggregations = cloneDeepIfHasValue(data[key]);
 
-    disaggregations = getDisaggregationsWithGroups(disaggregations.disagg_lookup_map);
-    const existingDisaggIDs = (disaggregations.disagg_lookup_map || []).map((x) => x.id);
-    (disaggregations.indicator_location_data || []).forEach((location: any) => {
-      location.num_disaggregation = location.level_reported = disaggregations.disagg_lookup_map.length;
-      location.disaggregation_reported_on = (location.disaggregation_reported_on || []).filter((x: any) =>
-        existingDisaggIDs.includes(x.id)
-      );
-    });
+    if (disaggregations.disagg_lookup_map) {
+      disaggregations.disagg_lookup_map = getDisaggregationsWithGroups(disaggregations.disagg_lookup_map);
+      const existingDisaggIDs = (disaggregations.disagg_lookup_map || []).map((x) => x.id);
+      (disaggregations.indicator_location_data || []).forEach((location: any) => {
+        location.num_disaggregation = location.level_reported = disaggregations.disagg_lookup_map.length;
+        location.disaggregation_reported_on = (location.disaggregation_reported_on || []).filter((x: any) =>
+          existingDisaggIDs.includes(x.id)
+        );
+      });
+    }
 
     if (this.updatedIndicatorId && this.updatedIndicatorId === key) {
       this.checkReportIsComplete(disaggregations);
