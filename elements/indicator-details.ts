@@ -526,14 +526,6 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
       this.disaggregations = this._computeDisaggregations(this.data, this.indicatorId);
     }
     if (changedProperties.has('disaggregations')) {
-      this.disaggregations = getDisaggregationsWithGroups(this.disaggregations.disagg_lookup_map);
-      const existingDisaggIDs = (this.disaggregations.disagg_lookup_map || []).map((x) => x.id);
-      (this.disaggregations.indicator_location_data || []).forEach((location: any) => {
-        location.num_disaggregation = location.level_reported = this.disaggregations.disagg_lookup_map.length;
-        location.disaggregation_reported_on = (location.disaggregation_reported_on || []).filter((x: any) =>
-          existingDisaggIDs.includes(x.id)
-        );
-      });
       this.locationData = this._computeLocationData(this.disaggregations.indicator_location_data);
       this.loading = false;
       this.isHfIndicator = this._computeIsHfIndicator(this.disaggregations);
@@ -608,7 +600,17 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
     if (!data || !key) {
       return;
     }
-    const disaggregations = cloneDeepIfHasValue(data[key]);
+    let disaggregations = cloneDeepIfHasValue(data[key]);
+
+    disaggregations = getDisaggregationsWithGroups(disaggregations.disagg_lookup_map);
+    const existingDisaggIDs = (disaggregations.disagg_lookup_map || []).map((x) => x.id);
+    (disaggregations.indicator_location_data || []).forEach((location: any) => {
+      location.num_disaggregation = location.level_reported = disaggregations.disagg_lookup_map.length;
+      location.disaggregation_reported_on = (location.disaggregation_reported_on || []).filter((x: any) =>
+        existingDisaggIDs.includes(x.id)
+      );
+    });
+
     if (this.updatedIndicatorId && this.updatedIndicatorId === key) {
       this.checkReportIsComplete(disaggregations);
       this.updatedIndicatorId = undefined;
