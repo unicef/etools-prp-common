@@ -30,7 +30,7 @@ import {store} from '../../redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
-import {displayIndicatorValueFormatted, getDisaggregationsWithGroups} from '../../utils/utils';
+import {displayIndicatorValueFormatted} from '../../utils/utils';
 
 /**
  * @customElement
@@ -601,17 +601,6 @@ export class IndicatorDetails extends UtilsMixin(connect(store)(LitElement)) {
       return;
     }
     const disaggregations = cloneDeepIfHasValue(data[key]);
-
-    if (disaggregations && disaggregations.disagg_lookup_map) {
-      disaggregations.disagg_lookup_map = getDisaggregationsWithGroups(disaggregations.disagg_lookup_map);
-      const existingDisaggIDs = (disaggregations.disagg_lookup_map || []).map((x) => x.id);
-      (disaggregations.indicator_location_data || []).forEach((location: any) => {
-        location.num_disaggregation = location.level_reported = disaggregations.disagg_lookup_map.length;
-        location.disaggregation_reported_on = (location.disaggregation_reported_on || []).filter((x: any) =>
-          existingDisaggIDs.includes(x.id)
-        );
-      });
-    }
 
     if (this.updatedIndicatorId && this.updatedIndicatorId === key) {
       this.checkReportIsComplete(disaggregations);

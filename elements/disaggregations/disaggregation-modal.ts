@@ -7,7 +7,7 @@ import {translate, get as getTranslation} from '@unicef-polymer/etools-unicef/sr
 import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {DisaggregationTableEl} from './disaggregation-table';
-import {displayIndicatorValueFormatted, getDisaggregationsWithGroups} from '../../../utils/utils';
+import {displayIndicatorValueFormatted} from '../../../utils/utils';
 
 @customElement('disaggregation-modal')
 export class DisaggregationModal extends LitElement {
@@ -123,7 +123,7 @@ export class DisaggregationModal extends LitElement {
             slot="disaggregation-table"
             .data="${this.topLevelLocation.byEntity[0]}"
             .byEntity="${this.topLevelLocation.byEntity}"
-            .mapping="${getDisaggregationsWithGroups(this.disaggregations.disagg_lookup_map)}"
+            .mapping="${this.disaggregations.disagg_lookup_map}"
             .labels="${this.disaggregations.labels}"
             .indicatorId="${this.indicatorId}"
             editable="1"
