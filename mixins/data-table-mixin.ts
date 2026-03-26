@@ -1,9 +1,9 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import {property, state} from 'lit/decorators.js';
-import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
-import {store} from '../../redux/store';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/src/singleton/router';
+import {store} from '@etools-apps/prp/redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 
 function DataTableMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DataTableClass extends baseClass {

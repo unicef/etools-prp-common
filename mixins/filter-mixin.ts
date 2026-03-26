@@ -1,7 +1,7 @@
 import {LitElement} from 'lit';
 import {property, state} from 'lit/decorators.js';
 import {Constructor} from '../typings/globals.types';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 
 function FilterMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class FilterClass extends baseClass {

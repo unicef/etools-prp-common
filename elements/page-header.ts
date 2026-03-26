@@ -1,11 +1,11 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '../styles/shared-styles';
-import {store} from '../../redux/store';
-import {RootState} from '../../typings/redux.types';
+import {store} from '@etools-apps/prp/redux/store';
+import {RootState} from '@etools-apps/prp/typings/redux.types';
 
 /**
  * @customElement

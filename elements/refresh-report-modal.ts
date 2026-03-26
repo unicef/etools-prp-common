@@ -3,8 +3,8 @@ import {customElement, property} from 'lit/decorators.js';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import './error-modal';
 import './etools-prp-number';
-import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
-import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {sendRequest} from '@unicef-polymer/etools-utils/src/etools-ajax';
+import {openDialog} from '@unicef-polymer/etools-utils/src/dialog.util';
 
 /**
  * @customElement

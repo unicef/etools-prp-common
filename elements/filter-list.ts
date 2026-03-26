@@ -3,13 +3,13 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
-import {RootState} from '../../typings/redux.types';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
-import {store} from '../../redux/store';
-import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {store} from '@etools-apps/prp/redux/store';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/src/singleton/router';
 import {getCurrentPath} from '../utils/util';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 
 /**
  * @customElement

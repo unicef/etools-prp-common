@@ -4,7 +4,7 @@ import DisaggregationMixin from '../../../mixins/disaggregations-mixin';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {disaggregationTableStyles} from '../../../styles/disaggregation-table-styles';
 import '../disaggregation-table-row';
-import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/dist/general.util';
+import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/src/general.util';
 
 /**
  * @customElement

@@ -1,10 +1,10 @@
 import {LitElement, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
-import {setToken} from '../../redux/actions';
-import {store} from '../../redux/store';
-import {RootState} from '../../typings/redux.types';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {setToken} from '@etools-apps/prp/redux/action';
+import {store} from '@etools-apps/prp/redux/store';
+import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 
 /**
  * @customElement

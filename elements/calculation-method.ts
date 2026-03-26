@@ -1,10 +1,10 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {store} from '../../redux/store';
+import {store} from '@etools-apps/prp/redux/store';
 
 /**
  * @appliesMixin UtilsBehavior

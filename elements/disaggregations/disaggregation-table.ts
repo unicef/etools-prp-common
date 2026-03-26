@@ -4,8 +4,8 @@ import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixin';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import Endpoints from '../../endpoints';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {disaggregationsUpdateForLocation} from '../../../redux/actions/disaggregations';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
+import {disaggregationsUpdateForLocation} from '@etools-apps/prp/redux/actions/disaggregations';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './table-content/three-disaggregations';
 import './table-content/two-disaggregations';
@@ -13,12 +13,12 @@ import './table-content/one-disaggregation';
 import './table-content/zero-disaggregations';
 import './disaggregation-switches';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
-import {store} from '../../../redux/store';
+import {store} from '@etools-apps/prp/redux/store';
 import {RootState} from '../../../typings/redux.types';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
-import {cloneDeepIfHasValue, valueWithDefault} from '@unicef-polymer/etools-utils/dist/general.util';
-import {fieldsAreValid} from '@unicef-polymer/etools-utils/dist/validation.util';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
+import {sendRequest} from '@unicef-polymer/etools-utils/src/etools-ajax';
+import {cloneDeepIfHasValue, valueWithDefault} from '@unicef-polymer/etools-utils/src/general.util';
+import {fieldsAreValid} from '@unicef-polymer/etools-utils/src/validation.util';
 
 @customElement('disaggregation-table')
 export class DisaggregationTable extends DisaggregationHelpersMixin(LitElement) {

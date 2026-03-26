@@ -1,6 +1,6 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 
 function ErrorHandlerMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class ErrorHandlerClass extends baseClass {

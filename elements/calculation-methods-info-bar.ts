@@ -3,7 +3,7 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import './calculation-methods-demo-modal';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {openDialog} from '@unicef-polymer/etools-utils/src/dialog.util';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import {tableStyles} from '../styles/table-styles';
 import {customElement} from 'lit/decorators.js';

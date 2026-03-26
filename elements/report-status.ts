@@ -1,10 +1,10 @@
 import {LitElement, html} from 'lit';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
 import {customElement, property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
-import {store} from '../../redux/store';
-import {RootState} from '../../typings/redux.types';
+import {store} from '@etools-apps/prp/redux/store';
+import {RootState} from '@etools-apps/prp/typings/redux.types';
 
 /**
  * @customElement

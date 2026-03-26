@@ -8,11 +8,11 @@ import './report-status';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './refresh-report-modal';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
-import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {openDialog} from '@unicef-polymer/etools-utils/src/dialog.util';
 
 /**
 

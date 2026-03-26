@@ -5,10 +5,10 @@ import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import DisaggregationMixin from '../../mixins/disaggregations-mixin';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
 import '../message-box';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
-import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
-import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/dist/general.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
+import {openDialog} from '@unicef-polymer/etools-utils/src/dialog.util';
+import '@unicef-polymer/etools-modules-common/src/layout/are-you-sure';
+import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/src/general.util';
 
 @customElement('disaggregation-switches')
 class DisaggregationSwitches extends DisaggregationMixin(LitElement) {

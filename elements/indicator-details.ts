@@ -1,8 +1,8 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {repeat} from 'lit/directives/repeat.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
@@ -20,17 +20,17 @@ import '../elements/report-status';
 import './pull-modal';
 import UtilsMixin from '../mixins/utils-mixin';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
-import {disaggregationsFetch} from '../../redux/actions/disaggregations';
+import {disaggregationsFetch} from '@etools-apps/prp/redux/actions/disaggregations';
 import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
-import {RootState} from '../../typings/redux.types';
-import {store} from '../../redux/store';
-import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
-import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
-import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
-import {displayIndicatorValueFormatted} from '../../utils/utils';
+import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {store} from '@etools-apps/prp/redux/store';
+import {sendRequest} from '@unicef-polymer/etools-utils/src/etools-ajax';
+import {openDialog} from '@unicef-polymer/etools-utils/src/dialog.util';
+import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/src/general.util';
+import {displayIndicatorValueFormatted} from '@etools-apps/prp/utils/utils';
 
 /**
  * @customElement

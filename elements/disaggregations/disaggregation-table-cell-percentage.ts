@@ -4,9 +4,9 @@ import '../../elements/etools-prp-number';
 import './disaggregation-field';
 import {DisaggregationFieldEl} from './disaggregation-field';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import {toPercentage} from '@unicef-polymer/etools-utils/dist/general.util';
+import {toPercentage} from '@unicef-polymer/etools-utils/src/general.util';
 
 @customElement('disaggregation-table-cell-percentage')
 class DisaggregationTableCellPercentage extends LitElement {

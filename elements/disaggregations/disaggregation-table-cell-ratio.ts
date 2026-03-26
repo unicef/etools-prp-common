@@ -5,9 +5,9 @@ import './disaggregation-table-cell';
 import './disaggregation-field';
 import '../../elements/etools-prp-number';
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/dist/general.util';
+import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/src/general.util';
 
 @customElement('disaggregation-table-cell-ratio')
 class DisaggregationTableCellRatio extends LitElement {

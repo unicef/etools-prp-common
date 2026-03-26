@@ -1,6 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table-column';
@@ -11,13 +11,13 @@ import './project-status';
 import './page-body';
 import './list-placeholder';
 import './status-badge';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import Endpoints from '../endpoints';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {tableStyles} from '../styles/table-styles';
-import {store} from '../../redux/store';
-import {RootState} from '../../typings/redux.types';
-import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
+import {store} from '@etools-apps/prp/redux/store';
+import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {sendRequest} from '@unicef-polymer/etools-utils/src/etools-ajax';
 
 /**
  * @customElement

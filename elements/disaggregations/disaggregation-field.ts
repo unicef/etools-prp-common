@@ -2,7 +2,7 @@ import {html, LitElement, PropertyValues} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import DisaggregationFieldMixin from '../../mixins/disaggregation-field-mixin';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 
 @customElement('disaggregation-field')

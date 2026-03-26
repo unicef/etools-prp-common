@@ -1,4 +1,4 @@
-import {RootState} from '../../../typings/redux.types';
+import {RootState} from '@etools-apps/prp/typings/redux.types';
 import {createSelector} from 'reselect';
 
 function getAllPD(state: RootState) {

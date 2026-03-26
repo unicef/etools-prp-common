@@ -4,7 +4,7 @@ import {disaggregationTableStyles} from '../../styles/disaggregation-table-style
 import './disaggregation-table-cell-number';
 import './disaggregation-table-cell-percentage';
 import './disaggregation-table-cell-ratio';
-import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/dist/general.util';
+import {capitalizeFirstLetter} from '@unicef-polymer/etools-utils/src/general.util';
 
 @customElement('disaggregation-table-row')
 class DisaggregationTableRow extends LitElement {

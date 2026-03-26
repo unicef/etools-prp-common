@@ -1,9 +1,9 @@
 import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
-import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
-import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
-import {store} from '../../redux/store';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {debounce} from '@unicef-polymer/etools-utils/src/debouncer.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/src/singleton/router';
+import {store} from '@etools-apps/prp/redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 
 /**
  * @mixinFunction

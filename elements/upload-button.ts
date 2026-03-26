@@ -4,8 +4,8 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-file';
 import {get as getTranslation} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import './error-box';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {upload} from '@unicef-polymer/etools-utils/dist/etools-ajax/upload-helper';
+import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
+import {upload} from '@unicef-polymer/etools-utils/src/etools-ajax/upload-helper';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
 /**

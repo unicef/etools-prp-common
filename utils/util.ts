@@ -1,4 +1,4 @@
-import {store} from '../../redux/store';
+import {store} from '@etools-apps/prp/redux/store';
 import {get as getTranslation} from '@unicef-polymer/etools-unicef/src/etools-translate';
 
 const pdListStatuses: any = {
