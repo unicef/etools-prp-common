@@ -47,21 +47,15 @@ export class AppRedirect extends connect(store)(LitElement) {
   }
 
   _redirectIfNeeded(app: string | undefined, workspaces: string | any[] | undefined, workspace: string | undefined, profile: { partner: any; access: string | any[]; }) {
-    console.log('app', app);
-    console.log('workspaces', JSON.stringify(workspaces, null, 4)); 
-    console.log('workspace', workspace);
-    console.log('profile', JSON.stringify(profile, null, 4));
     if (workspaces && !workspaces.length) {
       // user has no workspaces
       location.href = '/unauthorized';
     }
     if (!app || app === 'null' || !workspace || workspace === 'null' || !profile) {
-      console.log('redirecting to unauthorized 1');
       return;
     }
     // redirect to `unauthorized` only if we have a selected partner, otherwise let the option to select one
     if (profile.partner && (!profile.access || !profile.access.length || profile.access.indexOf(app) === -1)) {
-      console.log('redirecting to unauthorized 2', profile.partner , !profile.access , !profile.access.length , profile.access.indexOf(app) === -1);
       location.href = '/unauthorized';
     }
   }
