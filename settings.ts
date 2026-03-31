@@ -1,13 +1,13 @@
 const Settings = {
   layout: {
-    threshold: '(min-width: 600px)'
+    threshold: "(min-width: 600px)"
   },
 
-  dateFormat: 'DD-MMM-YYYY',
-  datepickerFormat: 'YYYY-MM-DD',
+  dateFormat: "DD-MMM-YYYY",
+  datepickerFormat: "YYYY-MM-DD",
 
   ip: {
-    readOnlyStatuses: ['Sub', 'Acc', 'Rej']
+    readOnlyStatuses: ["Sub", "Acc", "Rej"]
   },
 
   cluster: {
