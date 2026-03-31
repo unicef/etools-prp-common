@@ -5,7 +5,7 @@ import DisaggregationHelpersMixin from '../../mixins/disaggregation-helpers-mixi
 import {disaggregationTableStyles} from '../../styles/disaggregation-table-styles';
 import Endpoints from '../../endpoints';
 import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
-import {disaggregationsUpdateForLocation} from '@etools-apps/prp/redux/actions/disaggregations';
+import {disaggregationsUpdateForLocation} from '@etools-apps/prp/src_ts/redux/actions/disaggregations';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import './table-content/three-disaggregations';
 import './table-content/two-disaggregations';
@@ -13,7 +13,7 @@ import './table-content/one-disaggregation';
 import './table-content/zero-disaggregations';
 import './disaggregation-switches';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
-import {store} from '@etools-apps/prp/redux/store';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
 import {RootState} from '../../../typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 import {sendRequest} from '@unicef-polymer/etools-utils/src/etools-ajax';

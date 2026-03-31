@@ -4,7 +4,7 @@ import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import UtilsMixin from '../mixins/utils-mixin';
-import {store} from '@etools-apps/prp/redux/store';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
 
 /**
  * @appliesMixin UtilsBehavior

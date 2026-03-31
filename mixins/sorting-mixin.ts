@@ -2,7 +2,7 @@ import {LitElement} from 'lit';
 import {Constructor} from '../typings/globals.types';
 import {debounce} from '@unicef-polymer/etools-utils/src/debouncer.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/src/singleton/router';
-import {store} from '@etools-apps/prp/redux/store';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 
 /**

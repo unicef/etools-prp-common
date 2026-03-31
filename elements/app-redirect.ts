@@ -1,8 +1,8 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
-import {RootState} from '@etools-apps/prp/typings/redux.types';
-import {store} from '@etools-apps/prp/redux/store';
+import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
 
 @customElement('app-redirect')
 export class AppRedirect extends connect(store)(LitElement) {

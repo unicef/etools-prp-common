@@ -23,14 +23,14 @@ import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import Endpoints from '../endpoints';
 import {buttonsStyles} from '../styles/buttons-styles';
-import {disaggregationsFetch} from '@etools-apps/prp/redux/actions/disaggregations';
+import {disaggregationsFetch} from '@etools-apps/prp/src_ts/redux/actions/disaggregations';
 import {currentProgrammeDocument} from '../redux/selectors/programmeDocuments';
-import {RootState} from '@etools-apps/prp/typings/redux.types';
-import {store} from '@etools-apps/prp/redux/store';
+import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
 import {sendRequest} from '@unicef-polymer/etools-utils/src/etools-ajax';
 import {openDialog} from '@unicef-polymer/etools-utils/src/dialog.util';
 import {cloneDeepIfHasValue} from '@unicef-polymer/etools-utils/src/general.util';
-import {displayIndicatorValueFormatted} from '@etools-apps/prp/utils/utils';
+import {displayIndicatorValueFormatted} from '@etools-apps/prp/src_ts/utils/utils';
 
 /**
  * @customElement

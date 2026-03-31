@@ -3,8 +3,8 @@ import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
 import {customElement, property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
-import {store} from '@etools-apps/prp/redux/store';
-import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
+import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
 
 /**
  * @customElement

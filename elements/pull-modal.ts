@@ -15,8 +15,8 @@ import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';
 import Endpoints from '../endpoints';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {tableStyles} from '../styles/table-styles';
-import {store} from '@etools-apps/prp/redux/store';
-import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
+import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
 import {sendRequest} from '@unicef-polymer/etools-utils/src/etools-ajax';
 
 /**

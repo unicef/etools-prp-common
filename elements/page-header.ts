@@ -4,8 +4,8 @@ import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '../styles/shared-styles';
-import {store} from '@etools-apps/prp/redux/store';
-import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
+import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
 
 /**
  * @customElement

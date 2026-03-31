@@ -1,9 +1,9 @@
 import {LitElement, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
-import {setToken} from '@etools-apps/prp/redux/action';
-import {store} from '@etools-apps/prp/redux/store';
-import {RootState} from '@etools-apps/prp/typings/redux.types';
+import {setToken} from '@etools-apps/prp/src_ts/redux/action';
+import {store} from '@etools-apps/prp/src_ts/redux/store';
+import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 
 /**
