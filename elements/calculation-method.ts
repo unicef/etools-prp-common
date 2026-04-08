@@ -1,6 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils';
 import '@unicef-polymer/etools-unicef/src/etools-radio/etools-radio-group';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import UtilsMixin from '../mixins/utils-mixin';

@@ -2,7 +2,7 @@ import {css, html, LitElement} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
-import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles.js';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {translate, get as getTranslation} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import './disaggregation-table';
 import {fireEvent} from '@unicef-polymer/etools-utils/src/fire-event.util';

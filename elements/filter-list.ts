@@ -5,7 +5,7 @@ import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styl
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';
 import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
-import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils';
 import {store} from '@etools-apps/prp/src_ts/redux/store';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/src/singleton/router';
 import {getCurrentPath} from '../utils/util';

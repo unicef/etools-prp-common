@@ -1,7 +1,7 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {repeat} from 'lit/directives/repeat.js';
-import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/src/equality-comparisons.util';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';

@@ -1,5 +1,5 @@
 import {LitElement, html} from 'lit';
-import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils';
 import {customElement, property} from 'lit/decorators.js';
 import '../elements/status-badge';
 import {translate} from '@unicef-polymer/etools-unicef/src/etools-translate';

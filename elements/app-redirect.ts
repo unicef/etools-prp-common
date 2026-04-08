@@ -1,6 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils.js';
+import {connect} from '@unicef-polymer/etools-utils/src/pwa.utils';
 import {RootState} from '@etools-apps/prp/src_ts/typings/redux.types';
 import {store} from '@etools-apps/prp/src_ts/redux/store';
 
